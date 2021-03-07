@@ -9,7 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UHealth">
-        <activity android:name=".InitRegPage"></activity>
+        <activity
+            android:name=".MedicationAdder"
+            android:label="@string/title_activity_medication_adder"
+            android:theme="@style/Theme.UHealth.NoActionBar"></activity>
+        <activity
+            android:name=".AppointmentAdder"
+            android:label="@string/title_activity_appointment_adder"
+            android:theme="@style/Theme.UHealth.NoActionBar" />
+        <activity
+            android:name=".MedicationList"
+            android:label="@string/title_activity_medication_list"
+            android:theme="@style/Theme.UHealth.NoActionBar" />
+        <activity
+            android:name=".AppointmnetList"
+            android:label="@string/title_activity_appointmnet_list"
+            android:theme="@style/Theme.UHealth.NoActionBar" />
+        <activity android:name=".InitRegPage" />
         <activity android:name=".SignUpPage" />
         <activity android:name=".LoginPage" />
         <activity android:name=".MainActivity">
