@@ -1,12 +1,16 @@
 package com.example.uhealth;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +24,7 @@ import java.util.List;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -27,9 +32,19 @@ public class AppointmentAdder extends AppCompatActivity {
     final Button m_adder = findViewById(R.id.btnAddAppointmnet);
     final Button time_option = findViewById(R.id.btnPickTime);
     final TextView timeboard = findViewById(R.id.selectedTime);
-    final TextView doctornameview = findViewById(R.id.appointment_physcian_name);
-    final TextView locationview = findViewById(R.id.appointment_location);
+    final EditText doctornameview = findViewById(R.id.appointment_physcian_name);
+    final EditText locationview = findViewById(R.id.appointment_location);
+    final static int SET_APPOINTMENT_ALARM = 15;
+    public void setAlarm(Date date_time){
+        Intent intent = new Intent(AppointmentAdder.this, AlarmReceiver.class);
+        PendingIntent sender = PendingIntent.getBroadcast(AppointmentAdder.this, SET_APPOINTMENT_ALARM , intent, 0);
+        Calendar appointment_calendar  =Calendar.getInstance();
+        appointment_calendar.setTime(date_time);
+        appointment_calendar.add(appointment_calendar.DATE,-1);
+        AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        manager.set(AlarmManager.RTC_WAKEUP, appointment_calendar.getTimeInMillis(), sender);
 
+    }
     public void appointmentListener(){
        //final Date currentDate = new Date();
        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -39,6 +54,7 @@ public class AppointmentAdder extends AppCompatActivity {
        String mLocation =  locationview.getText().toString();
        String username = "demoName";
        String userid = "123456";
+      Date date_time = new Date();
 
         HashMap<String,Object> resMap = new HashMap<String,Object>();
         resMap.put("date",appointment_time);
@@ -57,6 +73,16 @@ public class AppointmentAdder extends AppCompatActivity {
         intent.putExtra("patientname",username);
         intent.putExtra("location",mLocation );
        setResult(RESULT_OK, intent);
+       try{
+           date_time = mdateformat.parse(appointment_time);
+           setAlarm(date_time);
+       }
+       catch(ParseException e){
+           e.printStackTrace();
+       }
+
+
+
 
        finish();
 
