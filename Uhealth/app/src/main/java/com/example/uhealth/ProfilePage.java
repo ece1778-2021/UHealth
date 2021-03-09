@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 public class ProfilePage extends AppCompatActivity {
     private Toolbar toolbar;
-    private Button mPlaceHolderInitReg, mPlaceHolderQuestionnaire;
+    private Button mPlaceHolderInitReg, mPlaceHolderQuestionnaire, mPlaceHolderapp, mPlaceHoldermed;
 
     private FireBaseInfo mFireBaseInfo;
     private CachedThreadPool threadPool;
@@ -46,6 +46,22 @@ public class ProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, Questionnaire.class);
+                startActivity(intent);
+            }
+        });
+        mPlaceHolderapp = findViewById(R.id.placeholder_app);
+        mPlaceHolderapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilePage.this, AppointmnetList.class);
+                startActivity(intent);
+            }
+        });
+        mPlaceHoldermed = findViewById(R.id.placeholder_med);
+        mPlaceHoldermed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilePage.this, MedicationList.class);
                 startActivity(intent);
             }
         });

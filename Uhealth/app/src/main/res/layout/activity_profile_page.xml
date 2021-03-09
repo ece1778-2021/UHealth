@@ -48,6 +48,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <Button
+                    android:id="@+id/placeholder_app"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="app_list"
+                    app:layout_constraintEnd_toEndOf="@+id/placeholder_questionnaire"
+                    app:layout_constraintTop_toBottomOf="@+id/placeholder_questionnaire" />
+
+                <Button
+                    android:id="@+id/placeholder_med"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="med_list"
+                    app:layout_constraintStart_toStartOf="@+id/placeholder_initreg"
+                    app:layout_constraintTop_toBottomOf="@+id/placeholder_initreg" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
