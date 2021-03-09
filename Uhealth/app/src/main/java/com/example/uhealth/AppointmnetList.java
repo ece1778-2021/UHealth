@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -113,6 +114,8 @@ public class AppointmnetList extends AppCompatActivity {
         setContentView(R.layout.activity_appointmnet_list);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_appointmnet);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         appointmentAdapter = new AppointmentAdapter(AppointmentList);
         recyclerView.setAdapter(appointmentAdapter );
 

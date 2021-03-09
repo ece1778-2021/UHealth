@@ -8,6 +8,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
@@ -129,6 +130,8 @@ public class MedicationList extends AppCompatActivity {
 
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_medication);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         medicationAdapter = new MedicationAdapter(MedicationList);
         recyclerView.setAdapter(medicationAdapter );
 

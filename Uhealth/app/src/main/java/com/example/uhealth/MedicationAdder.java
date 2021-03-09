@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 public class MedicationAdder extends AppCompatActivity {
-    final Button m_adder = findViewById(R.id.btnAddMedication);
+   Button m_adder ;//= findViewById(R.id.btnAddMedication);
 
-    final EditText storageview = findViewById(R.id.medication_storage);
-    final EditText intervalview = findViewById(R.id.medication_interval);
-    final EditText medicineview = findViewById(R.id.medicine_name);
+   EditText storageview;// = findViewById(R.id.medication_storage);
+     EditText intervalview;// = findViewById(R.id.medication_interval);
+     EditText medicineview ;//= findViewById(R.id.medicine_name);
 
     public void medicationListener(){
         //final Date currentDate = new Date();
@@ -50,6 +50,7 @@ public class MedicationAdder extends AppCompatActivity {
         intent.putExtra("initstorage",storage);
         intent.putExtra("interval",interval );
         setResult(RESULT_OK, intent);
+        finish();
 
 
     }
@@ -59,6 +60,11 @@ public class MedicationAdder extends AppCompatActivity {
         setContentView(R.layout.activity_medication_adder);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+         m_adder= findViewById(R.id.btnAddMedication);
+
+        storageview= findViewById(R.id.medication_storage);
+         intervalview = findViewById(R.id.medication_interval);
+         medicineview = findViewById(R.id.medicine_name);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

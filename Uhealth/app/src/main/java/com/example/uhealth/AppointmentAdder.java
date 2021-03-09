@@ -29,11 +29,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class AppointmentAdder extends AppCompatActivity {
-    final Button m_adder = findViewById(R.id.btnAddAppointmnet);
-    final Button time_option = findViewById(R.id.btnPickTime);
-    final TextView timeboard = findViewById(R.id.selectedTime);
-    final EditText doctornameview = findViewById(R.id.appointment_physcian_name);
-    final EditText locationview = findViewById(R.id.appointment_location);
+    Button m_adder ;// findViewById(R.id.btnAddAppointmnet);
+    Button time_option ;// findViewById(R.id.btnPickTime);
+    TextView timeboard ;// findViewById(R.id.selectedTime);
+    EditText doctornameview ;// findViewById(R.id.appointment_physcian_name);
+    EditText locationview ;//findViewById(R.id.appointment_location);
     final static int SET_APPOINTMENT_ALARM = 15;
     public void setAlarm(Date date_time){
         Intent intent = new Intent(AppointmentAdder.this, AlarmReceiver.class);
@@ -142,6 +142,12 @@ public class AppointmentAdder extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment_adder);
+         m_adder =findViewById(R.id.btnAddAppointmnet);
+         time_option =findViewById(R.id.btnPickTime);
+         timeboard = findViewById(R.id.selectedTime);
+        doctornameview = findViewById(R.id.appointment_physcian_name);
+         locationview = findViewById(R.id.appointment_location);
+
         timeboard.setText("1970-01-01-23:59");
         time_option.setOnClickListener(new View.OnClickListener() {
             @Override
