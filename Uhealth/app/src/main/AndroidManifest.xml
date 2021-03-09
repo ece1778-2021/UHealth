@@ -10,26 +10,59 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.UHealth">
 
+
+        <activity android:name=".Do_questions"
+            android:parentActivityName=".Questionnaire"></activity>
+
+        <activity android:name=".Questionnaire"
+            android:parentActivityName=".ProfilePage"/>
+
+        <activity
+            android:name=".ProfilePage"
+            android:exported="true"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.UHealth.nobar" />
+
+        <activity
+            android:name=".InitRegPage"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.UHealth.nobar" />
+
+        <activity
+            android:name=".SignUpPage"
+            android:exported="true"
+            android:noHistory="true"
+            android:parentActivityName=".LoginPage"
+            android:theme="@style/Theme.UHealth" />
+
+        <activity
+            android:name=".LoginPage"
+            android:exported="true"
+            android:theme="@style/Theme.UHealth.nobar" />
+
         <activity
             android:name=".MedicationAdder"
             android:label="@string/title_activity_medication_adder"
             android:theme="@style/Theme.UHealth.NoActionBar"></activity>
+
         <activity
             android:name=".AppointmentAdder"
             android:label="@string/title_activity_appointment_adder"
             android:theme="@style/Theme.UHealth.NoActionBar" />
+
         <activity
             android:name=".MedicationList"
             android:label="@string/title_activity_medication_list"
             android:theme="@style/Theme.UHealth.NoActionBar" />
+
         <activity
             android:name=".AppointmnetList"
             android:label="@string/title_activity_appointmnet_list"
             android:theme="@style/Theme.UHealth.NoActionBar" />
-        <activity android:name=".InitRegPage" />
-        <activity android:name=".SignUpPage" />
-        <activity android:name=".LoginPage" />
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".MainActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

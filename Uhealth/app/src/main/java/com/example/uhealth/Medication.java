@@ -6,6 +6,8 @@ public class Medication {
         //private String Status;
         private String Medicine;
         private String InitDate;
+        private String Username;
+        private String Uid;
 
         private int InitStorage;
         private int Interval;
@@ -15,6 +17,8 @@ public class Medication {
          //   this.Status  =(String)Initializer.get("status");
             this.Medicine = (String)Initializer.get("medicine");
             this.InitDate = (String)Initializer.get("initdate");
+            this.Uid= (String)Initializer.get("uid");
+            this.Username = (String)Initializer.get("username");
             this.InitStorage = (int)Initializer.get("initstorage");
             this.Interval = (int)Initializer.get("interval");
             //this.CurrentStorage = (int)Initializer.get("currentstorage");
@@ -25,6 +29,8 @@ public class Medication {
         public String getInitDate(){return InitDate; }
         public int getInitStorage(){return InitStorage;}
         public int getInterval(){return Interval;}
+        public String getUsername(){return Username;}
+        public String getUid(){return  Uid;}
        // public int getCurrentStorage(){return CurrentStorage;}
         //--Set-----------
       //  public void setStatus(String Status){this.Status = Status;}
@@ -32,6 +38,8 @@ public class Medication {
         public void setInitDate(String InitDate){this.InitDate = InitDate;}
         public void setInitStorage(int InitStorage){this.InitStorage = InitStorage;}
         public void setInterval(int Interval){this.Interval = Interval;}
+        public void setUsername(String Username){this.Username = Username;}
+        public void setUid(String Uid){this.Uid = Uid;}
         //public void setCurrentStorage(int CurrentStorage){this.CurrentStorage = CurrentStorage;}
 
 

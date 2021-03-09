@@ -3,9 +3,13 @@ package com.example.uhealth;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -16,12 +20,15 @@ import android.widget.EditText;
 import java.util.Date;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
-public class MedicationAdder extends AppCompatActivity {
-    final Button m_adder = findViewById(R.id.btnAddMedication);
+import java.util.HashMap;
 
-    final EditText storageview = findViewById(R.id.medication_storage);
-    final EditText intervalview = findViewById(R.id.medication_interval);
-    final EditText medicineview = findViewById(R.id.medicine_name);
+public class MedicationAdder extends AppCompatActivity {
+    private FireBaseInfo mFireBaseInfo;
+    Button m_adder ;//findViewById(R.id.btnAddMedication);
+
+    EditText storageview ;// findViewById(R.id.medication_storage);
+    EditText intervalview ;// findViewById(R.id.medication_interval);
+    EditText medicineview ;// findViewById(R.id.medicine_name);
 
     public void medicationListener(){
         //final Date currentDate = new Date();
@@ -31,17 +38,32 @@ public class MedicationAdder extends AppCompatActivity {
         String medicine = medicineview.getText().toString();
         String interval = intervalview.getText().toString();
         String storage	= storageview.getText().toString();
-        // String username = "demoName";
-        // String userid = "123456";
-	/*
-        HashMap<String,Object> resMap = new HashMap<String,Object>();
-        resMap.put("date",appointment_time);
-        resMap.put("physicainname",physician_name);
-        resMap.put("patientid",userid);
-        resMap.put("patientname",username);
-        resMap.put("location",mLocation );
-	*/
+        String username = mFireBaseInfo.mUser.getDisplayName();
+        String userid =mFireBaseInfo.mUser.getUid();
 
+        int int_interval = 1;
+        int int_storage = 100;
+        try{
+            int_interval=Integer.parseInt(interval);
+
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+        }
+        try{
+            int_storage=Integer.parseInt(storage);
+
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+        }
+
+        HashMap<String,Object> resMap = new HashMap<String,Object>();
+        resMap.put("initdate",current_time_text);
+        resMap.put("medicine",medicine);
+        resMap.put("initstorage",int_storage);
+        resMap.put("interval",int_interval);
+        resMap.put("uid",userid );
+        resMap.put("username",username);
+       // uploadMedicationList(resMap);
         Intent intent = new Intent();
 
         // intent.putExtra("data_return", resMap);
@@ -49,7 +71,30 @@ public class MedicationAdder extends AppCompatActivity {
         intent.putExtra("medicine",medicine );
         intent.putExtra("initstorage",storage);
         intent.putExtra("interval",interval );
+        intent.putExtra("username",username);
+        intent.putExtra("uid",userid);
         setResult(RESULT_OK, intent);
+
+
+        finish();
+       // Medication medication_to_upload = new Medication(resMap);
+    }
+    public void uploadMedicationList(HashMap<String,Object> instance){
+        mFireBaseInfo.mFirestore.collection("Medication").add(instance).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+
+
+
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+
+                    }
+                });
 
 
     }
@@ -59,7 +104,11 @@ public class MedicationAdder extends AppCompatActivity {
         setContentView(R.layout.activity_medication_adder);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        m_adder=findViewById(R.id.btnAddMedication);
 
+       storageview =findViewById(R.id.medication_storage);
+        intervalview = findViewById(R.id.medication_interval);
+        medicineview = findViewById(R.id.medicine_name);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
