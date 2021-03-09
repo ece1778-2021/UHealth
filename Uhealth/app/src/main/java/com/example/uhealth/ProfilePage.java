@@ -9,12 +9,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class ProfilePage extends AppCompatActivity {
     private Toolbar toolbar;
+    private Button mPlaceHolderInitReg, mPlaceHolderQuestionnaire;
 
     private FireBaseInfo mFireBaseInfo;
+    private CachedThreadPool threadPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,25 @@ public class ProfilePage extends AppCompatActivity {
         getSupportActionBar().setTitle("profile page");
 
         mFireBaseInfo = new FireBaseInfo();
+        threadPool = CachedThreadPool.getInstance();
+
+        mPlaceHolderInitReg = findViewById(R.id.placeholder_initreg);
+        mPlaceHolderInitReg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilePage.this, InitRegPage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        mPlaceHolderQuestionnaire = findViewById(R.id.placeholder_questionnaire);
+        mPlaceHolderQuestionnaire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilePage.this, Questionnaire.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

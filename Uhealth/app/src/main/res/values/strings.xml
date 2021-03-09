@@ -20,4 +20,11 @@ Fames ac turpis egestas sed. Tempus egestas sed sed risus pretium quam vulputate
 Mi proin sed libero enim sed faucibus. Fringilla phasellus faucibus scelerisque eleifend donec. Lacinia at quis risus sed vulputate odio. Dui id ornare arcu odio. Vel orci porta non pulvinar neque laoreet suspendisse interdum consectetur. Quam viverra orci sagittis eu volutpat odio facilisis mauris. Feugiat scelerisque varius morbi enim nunc faucibus. Ac felis donec et odio pellentesque diam volutpat. Justo eget magna fermentum iaculis eu. A iaculis at erat pellentesque. Ipsum nunc aliquet bibendum enim facilisis gravida neque.
 
 Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod nisi porta lorem mollis aliquam ut porttitor. Adipiscing vitae proin sagittis nisl rhoncus. Metus dictum at tempor commodo ullamcorper a. Et pharetra pharetra massa massa ultricies mi. Fringilla est ullamcorper eget nulla facilisi etiam dignissim. Est ullamcorper eget nulla facilisi etiam. Nisi lacus sed viverra tellus in. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices. Laoreet non curabitur gravida arcu ac tortor. Vestibulum mattis ullamcorper velit sed ullamcorper morbi. In iaculis nunc sed augue. Ipsum a arcu cursus vitae congue mauris rhoncus. Justo laoreet sit amet cursus sit amet. Vestibulum morbi blandit cursus risus at ultrices mi tempus imperdiet. Magna fermentum iaculis eu non diam phasellus vestibulum lorem sed. Tristique senectus et netus et malesuada fames. Purus viverra accumsan in nisl nisi scelerisque. Condimentum lacinia quis vel eros donec. Natoque penatibus et magnis dis.</string>
+    <string-array name="gender_option">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
