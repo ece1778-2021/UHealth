@@ -36,8 +36,12 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
     <string name="select_time">Select time</string>
     <string name="physcian_name">add physcian name</string>
     <string name="add_appointment">Add an appointment!</string>
-    <string name="interval">period of the medication(measured by hours)</string>
-    <string name="storage">available storage (measured by dose for one-time medication)</string>
+    <string name="interval">frequency of the medication(measured by hours)</string>
+    <string name="storage">available storage for your first repeat</string>
     <string name="add_medication">Add a medication plan</string>
-    <string name="add_an_appointment">Add an appointment</string>
+    <string name="select_appointment_type">Select appointment type</string>
+    <string name="office_appointment">office appointment</string>
+    <string name="start_of_medication">Start of Medication</string>
+    <string name="repeats_count">enter the number of repeats</string>
+    <string name="dosis">dosis per time(measured by the storage unit)</string>
 </resources>

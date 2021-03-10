@@ -17,6 +17,36 @@
         android:hint="@string/medicine_name"
         android:inputType="text"
         tools:ignore="Autofill" />
+    <!--add time selecter// change the //set date to init date-->
+    <!--repeats;#dosis;#frequency/#interval;/#pills per repeat-->
+    <Button
+        android:id="@+id/btnPickInitTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below ="@+id/medicine_name"
+        android:layout_marginTop="20dp"
+        android:text="@string/start_of_medication"
+        />
+    <TextView
+        android:id="@+id/startofRepeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below ="@+id/btnPickInitTime"
+        android:text="@string/select_time"
+        tools:ignore="Autofill" />
+    <EditText
+        android:id="@+id/repeatscount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:hint="@string/repeats_count"
+        android:layout_below ="@+id/startofRepeat"
+        android:inputType="number"
+        tools:ignore="Autofill" />
     <EditText
         android:id="@+id/medication_interval"
         android:layout_width="wrap_content"
@@ -24,7 +54,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:hint="@string/interval"
-        android:layout_below ="@+id/medicine_name"
+        android:layout_below ="@+id/repeatscount"
         android:inputType="number"
         tools:ignore="Autofill" />
     <EditText
@@ -35,6 +65,16 @@
         android:layout_centerHorizontal="true"
         android:hint="@string/storage"
         android:layout_below ="@+id/medication_interval"
+        android:inputType="number"
+        tools:ignore="Autofill" />
+    <EditText
+        android:id="@+id/dosis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:hint="@string/dosis"
+        android:layout_below ="@+id/medication_storage"
         android:inputType="number"
         tools:ignore="Autofill" />
 

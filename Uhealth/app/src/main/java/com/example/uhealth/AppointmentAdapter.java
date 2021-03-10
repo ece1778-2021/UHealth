@@ -30,8 +30,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         Appointment mAppointment=mAppointmentList.get(position);
         //note from res id to actual bitmap
         //holder.fruitImage.setImageResource(mphoto.getImageID());
-
-        holder.appointmentTag.setText(mAppointment.getDate());
+        String displayed = "On"+mAppointment.getDate()+"--"+mAppointment.getAppointmentType()+" at "+mAppointment.getApptLocation();
+        holder.appointmentTag.setText(displayed);
     }
     @Override
     public int getItemCount() {
