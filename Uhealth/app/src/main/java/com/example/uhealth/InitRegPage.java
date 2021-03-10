@@ -43,22 +43,24 @@ public class InitRegPage extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private EditText mName, mPhone, mEContact, mDietary, mAllergy, mSmokeinputET, mAlcoholinputET;
+    private EditText mName, mPhone, mEContact, mDietary, mAllergy, mDrug, mSmokeinputET, mAlcoholinputET;
     private CheckBox mSmokeCurrent, mAlcoholCurrent;
     private DatePickerDialog.OnDateSetListener mBirthdayListener, mSmokeStartListener, mSmokeEndListener, mAlcoholStartListener, mAlcoholEndListener;
-    private TextView mBirth, mSmokeStart, mSmokeEnd, mAlcohoStart, mAlcoholEnd, mSmokeDes, mAlcoholDes;
+    private TextView mBirth, mSmokeStart, mSmokeEnd, mAlcoholStart, mAlcoholEnd, mSmokeDes, mAlcoholDes;
     private Spinner spGender;
-    private RadioGroup rgAllergy;
+    private RadioGroup rgAllergy, rgDrug;
     private RadioButton rbAllergy, rbSurgery, rbTransfusion, rbSmoke, rbAlcohol, rbDrug;
 
     private RadioGroup rgHeart, rgCancer, rgHereditary;
+
+
 
     private enum dialogOption {
         SURGERY,
         TRANSFUSION
     };
 
-    private RadioGroup rgSurgery, rgTransfusion, rgSmoke, rgAlcohol, rgDrug;
+    private RadioGroup rgSurgery, rgTransfusion, rgSmoke, rgAlcohol;
     private Button btAddSurgery, btAddTransfusion;
     private RecyclerView rvSurgery, rvTransfusion;
     private RecyclerView.LayoutManager layoutManagerdialog1, layoutManagerdialog1tf;
@@ -70,7 +72,7 @@ public class InitRegPage extends AppCompatActivity {
     private Button msubmit, mSkip, mAddSurgery, mAddTransfusion;
 
     private String mBirthHolder, mGenderHolder, mSmokeStartHolder, mSmokeEndHolder, mAlcoholStartHolder, mAlcoholEndHolder;
-    private int mSmokeinputHolder, mAlcoholinputValue;
+    private int mSmokeinputHolder, mAlcoholinputHolder;
     private ArrayList<String> mSurgeryDates, mSurgeryNames, mTransfusionDates;
 
     @Override
@@ -145,6 +147,12 @@ public class InitRegPage extends AppCompatActivity {
         mSmokeEnd = layoutSmoke.findViewById(R.id.subview1_enddate);
         mSmokeStart = layoutSmoke.findViewById(R.id.subview1_startdate);
 
+        mDrug = findViewById(R.id.initreg_ET_drug);
+        rgDrug = findViewById(R.id.initreg_RG_drug);
+
+        layoutAlcohol = findViewById(R.id.alcohol_subview);
+        mAlcoholEnd = layoutAlcohol.findViewById(R.id.subview1_enddate);
+        mAlcoholStart = layoutAlcohol.findViewById(R.id.subview1_startdate);
 
         msubmit = findViewById(R.id.initreg_submit);
         mSkip = findViewById(R.id.initreg_toolbar_BT_skip);
@@ -161,6 +169,8 @@ public class InitRegPage extends AppCompatActivity {
             mGenderHolder = savedInstanceState.getString("GENDER", "Male");
 
             mAllergy.setVisibility(savedInstanceState.getInt("ALLERGY", View.GONE));
+            mDrug.setVisibility(savedInstanceState.getInt("DRUG", View.GONE));
+
             rhiddenSurgery.setVisibility(savedInstanceState.getInt("SURGERY", View.GONE));
             rhiddenTransfusion.setVisibility(savedInstanceState.getInt("TRANSFUSION", View.GONE));
 
@@ -173,6 +183,12 @@ public class InitRegPage extends AppCompatActivity {
             mSmokeStartHolder = savedInstanceState.getString("SMOKESTART", "");
             mSmokeEndHolder = savedInstanceState.getString("SMOKEEND", "");
             mSmokeinputHolder = savedInstanceState.getInt("SMOKEINPUT", 0);
+
+            layoutAlcohol.setVisibility(savedInstanceState.getInt("ALCOHOL", View.GONE));
+            mAlcoholEnd.setVisibility(savedInstanceState.getInt("ALCOHOLCURRENT", View.GONE));
+            mAlcoholStartHolder = savedInstanceState.getString("ALCOHOLSTART", "");
+            mAlcoholEndHolder = savedInstanceState.getString("ALCOHOLEND", "");
+            mAlcoholinputHolder = savedInstanceState.getInt("ALCOHOLINPUT", 0);
 
 
             if (!mBirthHolder.equals("")){
@@ -188,6 +204,12 @@ public class InitRegPage extends AppCompatActivity {
             if (!mSmokeEndHolder.equals("")){
                 mSmokeEnd.setText(mSmokeEndHolder);
             }
+            if (!mAlcoholStartHolder.equals("")){
+                mAlcoholStart.setText(mAlcoholStartHolder);
+            }
+            if (!mAlcoholEndHolder.equals("")){
+                mAlcoholEnd.setText(mAlcoholEndHolder);
+            }
 
 
         }else{
@@ -199,6 +221,10 @@ public class InitRegPage extends AppCompatActivity {
             mSmokeEndHolder = "";
             mSmokeinputHolder = 0;
 
+            mAlcoholStartHolder = "";
+            mAlcoholEndHolder = "";
+            mAlcoholinputHolder = 0;
+
             mSurgeryNames = new ArrayList<>();
             mSurgeryDates = new ArrayList<>();
             mTransfusionDates = new ArrayList<>();
@@ -207,6 +233,7 @@ public class InitRegPage extends AppCompatActivity {
         initViewSurgery();
         initViewTransfusion();
         initViewSmoke();
+        initViewAlcohol();
     }
 
 
@@ -214,6 +241,7 @@ public class InitRegPage extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("ALLERGY", mAllergy.getVisibility());
+        outState.putInt("DRUG", mDrug.getVisibility());
         outState.putInt("SURGERY", rhiddenSurgery.getVisibility());
         outState.putInt("TRANSFUSION", rhiddenTransfusion.getVisibility());
 
@@ -223,6 +251,11 @@ public class InitRegPage extends AppCompatActivity {
         outState.putString("SMOKEEND", mSmokeEndHolder);
         outState.putInt("SMOKEINPUT", mSmokeinputHolder);
 
+        outState.putInt("ALCOHOL", layoutAlcohol.getVisibility());
+        outState.putInt("ALCOHOLCURRENT", mAlcoholEnd.getVisibility());
+        outState.putString("ALCOHOLSTART", mAlcoholStartHolder);
+        outState.putString("ALCOHOLEND", mAlcoholEndHolder);
+        outState.putInt("ALCOHOLINPUT", mAlcoholinputHolder);
 
         outState.putStringArrayList("SURGERYNAMES", mSurgeryNames);
         outState.putStringArrayList("SURGERYDATES", mSurgeryDates);
@@ -250,6 +283,17 @@ public class InitRegPage extends AppCompatActivity {
         }
     }
 
+    public void selectDrug(View view) {
+        int radioid = rgDrug.getCheckedRadioButtonId();
+        rbDrug = findViewById(radioid);
+        if (rbDrug.getText().toString().equals("Yes")){
+            mDrug.setVisibility(View.VISIBLE);
+        }else{
+            mDrug.setVisibility(View.GONE);
+            mDrug.setText("");
+        }
+    }
+
     public void selectSmoke(View view) {
         int smokeid = rgSmoke.getCheckedRadioButtonId();
         rbSmoke = findViewById(smokeid);
@@ -266,6 +310,100 @@ public class InitRegPage extends AppCompatActivity {
             mSmokeEnd.setText("End");
             mSmokeinputET.setText("");
         }
+    }
+
+    public void selectAlcohol(View view){
+        int radioid = rgAlcohol.getCheckedRadioButtonId();
+        rbAlcohol = findViewById(radioid);
+        if (rbAlcohol.getText().toString().equals("Yes")){
+            layoutAlcohol.setVisibility(View.VISIBLE);
+        }else{
+            layoutAlcohol.setVisibility(View.GONE);
+            mAlcoholCurrent.setChecked(true);
+            mAlcoholinputHolder = 0;
+            mAlcoholStartHolder = "";
+            mAlcoholEndHolder = "";
+
+            mAlcoholStart.setText("Start");
+            mAlcoholEnd.setText("End");
+            mAlcoholinputET.setText("");
+        }
+
+    }
+
+
+    private void initViewAlcohol() {
+        rgAlcohol = findViewById(R.id.initreg_RG_alcohol);
+        mAlcoholCurrent = layoutAlcohol.findViewById(R.id.subview1_check);
+        mAlcoholDes = layoutAlcohol.findViewById(R.id.subview1_des);
+        mAlcoholDes.setText("Number of drinks per week");
+        mAlcoholinputET = layoutAlcohol.findViewById(R.id.subview1_input);
+        mAlcoholCurrent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mAlcoholCurrent.isChecked()){
+                    mAlcoholEnd.setVisibility(View.GONE);
+                    mAlcoholEnd.setText("End");
+                    mAlcoholEndHolder = "";
+                }else{
+                    mAlcoholEnd.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mAlcoholStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        InitRegPage.this,
+                        android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
+                        mAlcoholStartListener,
+                        year, month, day
+                );
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        mAlcoholStartListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month+1;
+                mAlcoholStartHolder = year +"/" + month + "/"+dayOfMonth;
+                mAlcoholStart.setText(mAlcoholStartHolder);
+            }
+        };
+
+        mAlcoholEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        InitRegPage.this,
+                        android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
+                        mAlcoholEndListener,
+                        year, month, day
+                );
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        mAlcoholEndListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month+1;
+                mAlcoholEndHolder = year +"/" + month + "/"+dayOfMonth;
+                mAlcoholEnd.setText(mAlcoholEndHolder);
+            }
+        };
     }
 
 
