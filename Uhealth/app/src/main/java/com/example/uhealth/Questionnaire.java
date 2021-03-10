@@ -57,9 +57,10 @@ public class Questionnaire extends AppCompatActivity {
                         }
                         mADquestionsets = new rvadapter_questionnaire_questions(mp, new rvadapter_questionnaire_questions.onQSClickListener() {
                             @Override
-                            public void onQSClick(String qs_id) {
+                            public void onQSClick(String qs_id, String qs_text) {
                                 Intent intent = new Intent(Questionnaire.this, Do_questions.class);
                                 intent.putExtra("qs_id", qs_id);
+                                intent.putExtra("qs_text", qs_text);
                                 Questionnaire.this.startActivity(intent);
                             }
                         });

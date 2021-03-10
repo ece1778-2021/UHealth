@@ -1,5 +1,6 @@
 package com.example.uhealth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -13,9 +14,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProfilePage extends AppCompatActivity {
     private Toolbar toolbar;
-    private Button mPlaceHolderInitReg, mPlaceHolderQuestionnaire, mPlaceHolderapp, mPlaceHoldermed;
+    private Button mPlaceHolderInitReg, mPlaceHolderQuestionnaire, mPlaceHolderapp, mPlaceHoldermed,mPlaceHolderPopulate;
 
     private FireBaseInfo mFireBaseInfo;
     private CachedThreadPool threadPool;
@@ -65,8 +77,18 @@ public class ProfilePage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        mPlaceHolderPopulate = findViewById(R.id.placeholder_populate);
+        mPlaceHolderPopulate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                for populate
+                Toast.makeText(ProfilePage.this,"disabled", Toast.LENGTH_SHORT).show();
+//                placeholderpopulate();
+            }
+        });
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,4 +120,69 @@ public class ProfilePage extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    private void placeholderpopulate() {
+        String question_text =
+                "Overall, how much does leaking urine interfere with your everyday life?"
+                ;
+        int[] weightarray = {0, 1, 2, 3,4,5,6,7,8,9,10};
+        String[] textarray = {
+                "0 (not at all)"
+                ,
+                "1"
+                ,
+                "2"
+                ,
+                "3"
+                ,
+                "4"
+                ,
+                "5"
+                ,
+                "6"
+                ,
+                "7"
+                ,
+                "8"
+                ,
+                "9"
+                ,
+                "10 (a great deal)"
+
+        };
+
+        if (weightarray.length != textarray.length){
+            Toast.makeText(this, "array no match", Toast.LENGTH_SHORT).show();
+        }
+
+        Map<String,Object> mp = new HashMap<>();
+        mp.put("text", question_text);
+
+        CollectionReference cref = mFireBaseInfo.mFirestore.collection("questionnaire")
+                .document(
+                        "M7ynd1hCO7Tw2Wi2v3Jt"
+                )
+                .collection("questions");
+        cref
+                .add(mp)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+
+                        String id = documentReference.getId();
+
+                        for (int i=0; i<weightarray.length;i++){
+                            Map<String,Object> in_mp=  new HashMap<>();
+                            in_mp.put("text", textarray[i]);
+                            in_mp.put("weight", weightarray[i]);
+                            cref.document(id).collection("answers").add(in_mp);
+                        }
+
+                        Toast.makeText(ProfilePage.this, "Done", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+    }
+
 }

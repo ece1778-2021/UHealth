@@ -64,13 +64,14 @@ public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvad
         public void onClick(View v) {
             if (v.getId() == mBT.getId()){
                 String key = rvadapter_questionnaire_questions.this.keyarray[getAdapterPosition()];
-                mlistener.onQSClick(key);
+                String text = listmap.get(key);
+                mlistener.onQSClick(key, text);
             }
         }
     }
 
     public interface onQSClickListener{
-        void onQSClick(String qs_id);
+        void onQSClick(String qs_id, String qs_text);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.uhealth;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,22 @@ public class rvadapter_question_answers extends RecyclerView.Adapter<rvadapter_q
     private LinkedHashMap<String, Map<String, String>> lmap;
     private int pos;
     private String[] keyarray;
+    private Frag_question.questionFragmentCallback fragmentCallback;
+    private CachedThreadPool threadPool;
+    private int lastpos;
 
 //    Constructor
-    public rvadapter_question_answers(LinkedHashMap<String, Map<String, String>> input, int position){
+    public rvadapter_question_answers(LinkedHashMap<String,
+            Map<String, String>> input, int position, Frag_question.questionFragmentCallback callback
+                                      ) {
         lmap = input;
         pos = position;
         Set<String> keyset = input.keySet();
         keyarray = keyset.toArray(new String[keyset.size()]);
+        fragmentCallback = callback;
+        threadPool = CachedThreadPool.getInstance();
+
+        lastpos = 0;
     }
 
     @NonNull
@@ -40,8 +50,14 @@ public class rvadapter_question_answers extends RecyclerView.Adapter<rvadapter_q
         String key = keyarray[position];
         String text = lmap.get(key).get("text");
         int weight = Integer.parseInt(lmap.get(key).get("weight"));
-
         holder.mBT.setText(text);
+
+        if (weight == fragmentCallback.getValue(pos)){
+            holder.mBT.setBackgroundColor(Color.rgb(226,11,11));
+            lastpos = position;
+        }else{
+            holder.mBT.setBackgroundColor(Color.rgb(11,11,226));
+        }
     }
 
     @Override
@@ -49,12 +65,25 @@ public class rvadapter_question_answers extends RecyclerView.Adapter<rvadapter_q
         return lmap.size();
     }
 
-    public class answers extends RecyclerView.ViewHolder {
+    public class answers extends RecyclerView.ViewHolder implements View.OnClickListener{
         Button mBT;
+
         public answers(@NonNull View itemView) {
             super(itemView);
             mBT = itemView.findViewById(R.id.rv_question_answer);
+            mBT.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == mBT.getId()){
+                int ansposition = getAdapterPosition();
+                String key = keyarray[ansposition];
+                int weightz = Integer.parseInt(lmap.get(key).get("weight"));
+                fragmentCallback.setValue(weightz, pos);
+                notifyItemChanged(lastpos);
+                notifyItemChanged(ansposition);
+            }
         }
     }
-
 }

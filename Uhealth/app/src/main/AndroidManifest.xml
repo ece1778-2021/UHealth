@@ -12,7 +12,7 @@
 
 
         <activity android:name=".Do_questions"
-            android:parentActivityName=".Questionnaire"></activity>
+            android:parentActivityName=".Questionnaire"/>
 
         <activity android:name=".Questionnaire"
             android:parentActivityName=".ProfilePage"/>

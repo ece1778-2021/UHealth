@@ -24,19 +24,23 @@ public class Fspadapter_question extends FragmentStatePagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        Frag_question frag_q = new Frag_question();
-        Bundle bundle = new Bundle();
-        String qid = list.get(position);
-        bundle.putString("qid", qid);
-        bundle.putString("qs_id", qs_id);
-        bundle.putInt("position", position);
-        frag_q.setArguments(bundle);
-        position = position+1;
-        return frag_q;
+        if (position < list.size()){
+            Frag_question frag_q = new Frag_question();
+            Bundle bundle = new Bundle();
+            String qid = list.get(position);
+            bundle.putString("qid", qid);
+            bundle.putString("qs_id", qs_id);
+            bundle.putInt("position", position);
+            frag_q.setArguments(bundle);
+            return frag_q;
+        }else{
+            Frag_submit frag_s = new Frag_submit();
+            return frag_s;
+        }
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return list.size()+1;
     }
 }

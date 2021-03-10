@@ -36,8 +36,6 @@ public class Frag_question extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private rvadapter_question_answers mAdapter;
 
-
-
     private String qid, qs_id;
     private int pos;
     private FireBaseInfo mFireBaseInfo;
@@ -124,8 +122,19 @@ public class Frag_question extends Fragment {
                         }
 
 
-//                        todo callback to activity and retrive value in array at this posiiton.
-                        mAdapter = new rvadapter_question_answers(mp, pos);
+                        mAdapter = new rvadapter_question_answers(mp, pos,
+                                new questionFragmentCallback() {
+                                    @Override
+                                    public int getValue(int position) {
+                                        return ((Do_questions)getActivity()).getQuestionnaireValue(position);
+                                    }
+
+                                    @Override
+                                    public void setValue(int weight, int position) {
+                                        ((Do_questions)getActivity()).setQuestionnaireValue(weight, position);
+                                    }
+                                }
+                                );
                         recyclerView.setAdapter(mAdapter);
                         recyclerView.setHasFixedSize(true);
 
@@ -139,9 +148,9 @@ public class Frag_question extends Fragment {
                 });
     }
 
-//    public interface updateactivity{
-//        void updateactdata(int weight, int position);
-//        int getactdata(int position);
-//    }
+    public interface questionFragmentCallback{
+        int getValue(int position);
+        void setValue(int weight, int position);
+    }
 
 }
