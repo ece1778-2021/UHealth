@@ -3,9 +3,11 @@ package com.example.uhealth;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,14 +19,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class InitRegPage extends AppCompatActivity {
@@ -32,31 +38,40 @@ public class InitRegPage extends AppCompatActivity {
     private FireBaseInfo mFireBaseInfo;
     private CachedThreadPool threadPool;
     private ProgressDialog progressDialog;
+    private Dialog dialog;
     private Handler handler;
 
     private Toolbar toolbar;
 
-    private EditText mName, mPhone, mEContact, mDietary, mAllergy;
-    private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private TextView mBirth;
+    private EditText mName, mPhone, mEContact, mDietary, mAllergy, mSmokeinputET, mAlcoholinputET;
+    private CheckBox mSmokeCurrent, mAlcoholCurrent;
+    private DatePickerDialog.OnDateSetListener mBirthdayListener, mSmokeStartListener, mSmokeEndListener, mAlcoholStartListener, mAlcoholEndListener;
+    private TextView mBirth, mSmokeStart, mSmokeEnd, mAlcohoStart, mAlcoholEnd, mSmokeDes, mAlcoholDes;
     private Spinner spGender;
     private RadioGroup rgAllergy;
-    private RadioButton rbAllergy;
+    private RadioButton rbAllergy, rbSurgery, rbTransfusion, rbSmoke, rbAlcohol, rbDrug;
 
     private RadioGroup rgHeart, rgCancer, rgHereditary;
 
+    private enum dialogOption {
+        SURGERY,
+        TRANSFUSION
+    };
 
-//    todo implement dynamic recyclerview w/ add and minus
-    private RadioGroup rgSurgery;
-    private Button btAddSurgery;
-    private RecyclerView rcSurgery;
-    private RecyclerView.LayoutManager layoutManager;
+    private RadioGroup rgSurgery, rgTransfusion, rgSmoke, rgAlcohol, rgDrug;
+    private Button btAddSurgery, btAddTransfusion;
+    private RecyclerView rvSurgery, rvTransfusion;
+    private RecyclerView.LayoutManager layoutManagerdialog1, layoutManagerdialog1tf;
+    private RelativeLayout rhiddenSurgery, rhiddenTransfusion;
+    private rvadapter_initreg_dialog1 mRVAdapterdialog1, mRVAdapterdialog1tf;
 
+    private RelativeLayout layoutSmoke, layoutAlcohol;
 
+    private Button msubmit, mSkip, mAddSurgery, mAddTransfusion;
 
-    private Button msubmit, mSkip;
-
-    private String mBirthHolder, mGenderHolder;
+    private String mBirthHolder, mGenderHolder, mSmokeStartHolder, mSmokeEndHolder, mAlcoholStartHolder, mAlcoholEndHolder;
+    private int mSmokeinputHolder, mAlcoholinputValue;
+    private ArrayList<String> mSurgeryDates, mSurgeryNames, mTransfusionDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +101,14 @@ public class InitRegPage extends AppCompatActivity {
                 DatePickerDialog dialog = new DatePickerDialog(
                         InitRegPage.this,
                         android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
-                        mDateSetListener,
+                        mBirthdayListener,
                         year, month, day
                 );
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        mBirthdayListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 month = month+1;
@@ -123,8 +138,12 @@ public class InitRegPage extends AppCompatActivity {
         rgCancer = findViewById(R.id.initreg_RG_cancer);
         rgHereditary = findViewById(R.id.initreg_RG_hereditary);
 
+        rhiddenSurgery = findViewById(R.id.initreg_surgeryhidden);
+        rhiddenTransfusion = findViewById(R.id.initreg_transfusionhidden);
 
-
+        layoutSmoke = findViewById(R.id.smoke_subview);
+        mSmokeEnd = layoutSmoke.findViewById(R.id.subview1_enddate);
+        mSmokeStart = layoutSmoke.findViewById(R.id.subview1_startdate);
 
 
         msubmit = findViewById(R.id.initreg_submit);
@@ -140,7 +159,22 @@ public class InitRegPage extends AppCompatActivity {
         if (savedInstanceState!=null){
             mBirthHolder = savedInstanceState.getString("BIRTHDAY", "");
             mGenderHolder = savedInstanceState.getString("GENDER", "Male");
+
             mAllergy.setVisibility(savedInstanceState.getInt("ALLERGY", View.GONE));
+            rhiddenSurgery.setVisibility(savedInstanceState.getInt("SURGERY", View.GONE));
+            rhiddenTransfusion.setVisibility(savedInstanceState.getInt("TRANSFUSION", View.GONE));
+
+            mSurgeryNames = savedInstanceState.getStringArrayList("SURGERYNAMES");
+            mSurgeryDates = savedInstanceState.getStringArrayList("SURGERYDATES");
+            mTransfusionDates = savedInstanceState.getStringArrayList("TRANSFUSIONDATES");
+
+            layoutSmoke.setVisibility(savedInstanceState.getInt("SMOKE", View.GONE));
+            mSmokeEnd.setVisibility(savedInstanceState.getInt("SMOKECURRENT", View.GONE));
+            mSmokeStartHolder = savedInstanceState.getString("SMOKESTART", "");
+            mSmokeEndHolder = savedInstanceState.getString("SMOKEEND", "");
+            mSmokeinputHolder = savedInstanceState.getInt("SMOKEINPUT", 0);
+
+
             if (!mBirthHolder.equals("")){
                 mBirth.setText(mBirthHolder);
             }
@@ -148,22 +182,59 @@ public class InitRegPage extends AppCompatActivity {
                 int spinnerpos = sp_gender_adapter.getPosition(mGenderHolder);
                 spGender.setSelection(spinnerpos);
             }
+            if (!mSmokeStartHolder.equals("")){
+                mSmokeStart.setText(mSmokeStartHolder);
+            }
+            if (!mSmokeEndHolder.equals("")){
+                mSmokeEnd.setText(mSmokeEndHolder);
+            }
+
+
         }else{
+//            first time
             mBirthHolder = "";
             mGenderHolder = "";
+
+            mSmokeStartHolder = "";
+            mSmokeEndHolder = "";
+            mSmokeinputHolder = 0;
+
+            mSurgeryNames = new ArrayList<>();
+            mSurgeryDates = new ArrayList<>();
+            mTransfusionDates = new ArrayList<>();
         }
 
+        initViewSurgery();
+        initViewTransfusion();
+        initViewSmoke();
     }
+
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("ALLERGY", mAllergy.getVisibility());
+        outState.putInt("SURGERY", rhiddenSurgery.getVisibility());
+        outState.putInt("TRANSFUSION", rhiddenTransfusion.getVisibility());
+
+        outState.putInt("SMOKE", layoutSmoke.getVisibility());
+        outState.putInt("SMOKECURRENT", mSmokeEnd.getVisibility());
+        outState.putString("SMOKESTART", mSmokeStartHolder);
+        outState.putString("SMOKEEND", mSmokeEndHolder);
+        outState.putInt("SMOKEINPUT", mSmokeinputHolder);
+
+
+        outState.putStringArrayList("SURGERYNAMES", mSurgeryNames);
+        outState.putStringArrayList("SURGERYDATES", mSurgeryDates);
+        outState.putStringArrayList("TRANSFUSIONDATES", mTransfusionDates);
+
         if (!mBirthHolder.equals("")){
             outState.putString("BIRTHDAY", mBirthHolder);
         }
         if (!mGenderHolder.equals("")){
             outState.putString("GENDER", mGenderHolder);
         }
+
         super.onSaveInstanceState(outState);
 
     }
@@ -179,7 +250,246 @@ public class InitRegPage extends AppCompatActivity {
         }
     }
 
-    private boolean checkfields(){
-        return true;
+    public void selectSmoke(View view) {
+        int smokeid = rgSmoke.getCheckedRadioButtonId();
+        rbSmoke = findViewById(smokeid);
+        if (rbSmoke.getText().toString().equals("Yes")){
+            layoutSmoke.setVisibility(View.VISIBLE);
+        }else{
+            layoutSmoke.setVisibility(View.GONE);
+            mSmokeCurrent.setChecked(true);
+            mSmokeinputHolder = 0;
+            mSmokeStartHolder = "";
+            mSmokeEndHolder = "";
+
+            mSmokeStart.setText("Start");
+            mSmokeEnd.setText("End");
+            mSmokeinputET.setText("");
+        }
+    }
+
+
+    private void initViewSmoke() {
+        rgSmoke = findViewById(R.id.initreg_RG_smoke);
+        mSmokeCurrent = layoutSmoke.findViewById(R.id.subview1_check);
+        mSmokeDes = layoutSmoke.findViewById(R.id.subview1_des);
+        mSmokeDes.setText("Number of cigarretes per day");
+        mSmokeinputET = layoutSmoke.findViewById(R.id.subview1_input);
+        mSmokeCurrent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mSmokeCurrent.isChecked()){
+                    mSmokeEnd.setVisibility(View.GONE);
+                    mSmokeEnd.setText("End");
+                    mSmokeEndHolder = "";
+                }else{
+                    mSmokeEnd.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        mSmokeStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        InitRegPage.this,
+                        android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
+                        mSmokeStartListener,
+                        year, month, day
+                );
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        mSmokeStartListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month+1;
+                mSmokeStartHolder = year +"/" + month + "/"+dayOfMonth;
+                mSmokeStart.setText(mSmokeStartHolder);
+            }
+        };
+
+        mSmokeEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        InitRegPage.this,
+                        android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
+                        mSmokeEndListener,
+                        year, month, day
+                );
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+        mSmokeEndListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month = month+1;
+                mSmokeEndHolder = year +"/" + month + "/"+dayOfMonth;
+                mSmokeEnd.setText(mSmokeEndHolder);
+            }
+        };
+    }
+
+    private void initViewTransfusion() {
+        rgTransfusion = findViewById(R.id.initreg_RG_transfusion);
+        rvTransfusion = findViewById(R.id.initreg_RV_transfusion);
+        btAddTransfusion = findViewById(R.id.initreg_BT_addtransfusion);
+        layoutManagerdialog1tf = new GridLayoutManager(this, 1);
+
+        mRVAdapterdialog1tf = new rvadapter_initreg_dialog1(new removeRV() {
+            @Override
+            public void rfSurgery(int position) {
+                mSurgeryNames.remove(position);
+                mSurgeryDates.remove(position);
+            }
+
+            @Override
+            public void rfTransfusion(int position) {
+                mTransfusionDates.remove(position);
+            }
+        }, mTransfusionDates);
+
+        rvTransfusion.setLayoutManager(layoutManagerdialog1tf);
+        rvTransfusion.setAdapter(mRVAdapterdialog1tf);
+        rvTransfusion.setHasFixedSize(true);
+
+        btAddTransfusion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builddialog(dialogOption.TRANSFUSION);
+            }
+        });
+    }
+
+    private void initViewSurgery() {
+        rgSurgery = findViewById(R.id.initreg_RG_surgery);
+        rvSurgery = findViewById(R.id.initreg_RV_surgery);
+        btAddSurgery = findViewById(R.id.initreg_BT_addsurgery);
+        layoutManagerdialog1 = new GridLayoutManager(this, 1);
+
+        mRVAdapterdialog1 = new rvadapter_initreg_dialog1(new removeRV() {
+            @Override
+            public void rfSurgery(int position) {
+                mSurgeryNames.remove(position);
+                mSurgeryDates.remove(position);
+            }
+
+            @Override
+            public void rfTransfusion(int position) {
+                mTransfusionDates.remove(position);
+            }
+        }, mSurgeryNames, mSurgeryDates);
+        rvSurgery.setLayoutManager(layoutManagerdialog1);
+        rvSurgery.setAdapter(mRVAdapterdialog1);
+        rvSurgery.setHasFixedSize(true);
+
+        btAddSurgery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builddialog(dialogOption.SURGERY);
+            }
+        });
+    }
+
+    private void builddialog(dialogOption val) {
+        dialog = new Dialog(this);
+        ImageButton mCancel, mAdd;
+        EditText mName, mDate;
+        dialog.setContentView(R.layout.dialog_initreg_type1);
+        mName = dialog.findViewById(R.id.initreg_dialog1_name);
+        mDate = dialog.findViewById(R.id.initreg_dialog1_date);
+        mCancel = dialog.findViewById(R.id.initreg_dialog1_cancel);
+        mAdd = dialog.findViewById(R.id.initreg_dialog1_add);
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        switch (val){
+            case SURGERY:
+                mAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String name = mName.getText().toString();
+                        String date = mDate.getText().toString();
+                        if (name.equals("")){
+                            mName.setError("Cant be empty");
+                            return;
+                        }
+                        if (date.equals("")){
+                            mDate.setError("Cant be empty");
+                            return;
+                        }
+                        mSurgeryNames.add(name);
+                        mSurgeryDates.add(date);
+                        mRVAdapterdialog1.notifyItemInserted(mSurgeryNames.size()-1);
+                        dialog.dismiss();
+                    }
+                });
+                break;
+            case TRANSFUSION:
+                mName.setVisibility(View.GONE);
+                mAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String date = mDate.getText().toString();
+                        if (date.equals("")){
+                            mDate.setError("Cant be empty");
+                        }
+                        mTransfusionDates.add(date);
+                        mRVAdapterdialog1tf.notifyItemInserted(mTransfusionDates.size()-1);
+                        dialog.dismiss();
+                    }
+                });
+                break;
+            default:
+                Log.e(TAG, "Build Dialog Option Incorrect");
+        }
+        dialog.show();
+
+    }
+
+    public void selectTransfusion(View view) {
+        int tfid = rgTransfusion.getCheckedRadioButtonId();
+        rbTransfusion = findViewById(tfid);
+        if (rbTransfusion.getText().toString().equals("Yes")){
+            rhiddenTransfusion.setVisibility(View.VISIBLE);
+        }else{
+            mTransfusionDates.clear();
+            mRVAdapterdialog1tf.notifyDataSetChanged();
+            rhiddenTransfusion.setVisibility(View.GONE);
+        }
+    }
+
+    public void selectSurgery(View view) {
+        int surgeryid = rgSurgery.getCheckedRadioButtonId();
+        rbSurgery = findViewById(surgeryid);
+        if (rbSurgery.getText().toString().equals("Yes")){
+            rhiddenSurgery.setVisibility(View.VISIBLE);
+        }else{
+            mSurgeryNames.clear();
+            mSurgeryDates.clear();
+            mRVAdapterdialog1.notifyDataSetChanged();
+            rhiddenSurgery.setVisibility(View.GONE);
+        }
+    }
+
+    public interface removeRV{
+        void rfSurgery(int position);
+        void rfTransfusion(int position);
     }
 }

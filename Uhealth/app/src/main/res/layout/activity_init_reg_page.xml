@@ -398,12 +398,10 @@
                     android:textColor="@color/design_default_color_primary"
                     android:textSize="24sp"
                     android:text="Medical History" />
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray"/>
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -431,6 +429,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:onClick="selectSurgery"
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_surgery_no"
@@ -438,11 +437,19 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+                            android:onClick="selectSurgery"
                             android:text="No"/>
                     </RadioGroup>
+
+                    <RelativeLayout
+                        android:id="@+id/initreg_surgeryhidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_below="@+id/initreg_RG_surgery">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/initreg_RV_surgery"
-                        android:layout_below="@+id/initreg_RG_surgery"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <Button
@@ -452,6 +459,8 @@
                         android:layout_height="wrap_content"
                         android:text="+"
                         />
+                    </RelativeLayout>
+
 
                 </RelativeLayout>
                 <RelativeLayout
@@ -480,6 +489,7 @@
                             android:id="@+id/initreg_RB_transfusion_yes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="selectTransfusion"
                             android:layout_marginEnd="20dp"
                             android:text="Yes"/>
                         <RadioButton
@@ -488,11 +498,20 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+                            android:onClick="selectTransfusion"
                             android:text="No"/>
                     </RadioGroup>
+
+                    <RelativeLayout
+                        android:id="@+id/initreg_transfusionhidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/initreg_RG_transfusion"
+                        android:visibility="gone"
+                        >
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/initreg_RV_transfusion"
-                        android:layout_below="@+id/initreg_RG_transfusion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <Button
@@ -502,6 +521,8 @@
                         android:layout_height="wrap_content"
                         android:text="+"
                         />
+                    </RelativeLayout>
+
 
                 </RelativeLayout>
                 <RelativeLayout
@@ -531,31 +552,24 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:onClick="selectSmoke"
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_smoke_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:onClick="selectSmoke"
                             android:checked="true"
                             android:text="No"/>
                     </RadioGroup>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/initreg_RV_smoke"
-                        android:layout_below="@+id/initreg_RG_smoke"
+                    <include
+                        android:id="@+id/smoke_subview"
+                        layout="@layout/subview1_initreg"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <Button
-                        android:id="@+id/initreg_BT_addsmoke"
-                        android:layout_below="@+id/initreg_RV_smoke"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+"
-                        />
-
+                        android:layout_below="@id/initreg_RG_smoke"/>
                 </RelativeLayout>
-
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -606,7 +620,6 @@
                         />
 
                 </RelativeLayout>
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
