@@ -37,7 +37,7 @@ public class MedicationAdder extends AppCompatActivity {
     Button btnInitTime;//findViewById(R.id.btnPickInitTime);
     EditText dosisview;//=findViewById(R.id.dosis);
 
-
+    private FireBaseInfo mFireBaseInfo;
 
     public void medicationListener(){
         //final Date currentDate = new Date();
@@ -49,8 +49,8 @@ public class MedicationAdder extends AppCompatActivity {
         String storage	= storageview.getText().toString();
         String dosis = dosisview.getText().toString();
         //----re adding username/uid to medication list
-        // String username = "demoName";
-        // String userid = "123456";
+        String username = "Default Name";
+        String userid = mFireBaseInfo.mUser.getUid();
         String init_of_repeat = start_repeat.getText().toString();
         String repeat_counts = repeats_counter.getText().toString();//actually inieger
 	/*
@@ -65,6 +65,8 @@ public class MedicationAdder extends AppCompatActivity {
         Intent intent = new Intent();
 
         // intent.putExtra("data_return", resMap);
+        intent.putExtra("username",username);
+        intent.putExtra("uid",userid );
         intent.putExtra("initdate",current_time_text);
         intent.putExtra("medicine",medicine );
         intent.putExtra("initstorage",storage);
@@ -152,7 +154,7 @@ public class MedicationAdder extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         init_views();
-
+        mFireBaseInfo =new FireBaseInfo();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

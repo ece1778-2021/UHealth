@@ -42,6 +42,7 @@ public class AppointmentAdder extends AppCompatActivity {
     EditText locationview ;//findViewById(R.id.appointment_location);
 
     private AlertDialog mtypeSelectionDialog;
+    private FireBaseInfo mFireBaseInfo;
 
     final static int SET_APPOINTMENT_ALARM = 15;
 
@@ -63,11 +64,13 @@ public class AppointmentAdder extends AppCompatActivity {
        String physician_name = doctornameview.getText().toString();
        String str_selected_type = selectedtype.getText().toString();
        String mLocation =  locationview.getText().toString();
-       String username = "demoName";
-       String userid = "123456";
-      Date date_time = new Date();
+       String username = "Default Name";
+       String userid = mFireBaseInfo.mAuth.getUid();
+       // String userid = "uid123";
+        Date date_time = new Date();
 
         HashMap<String,Object> resMap = new HashMap<String,Object>();
+
         resMap.put("type",str_selected_type);
         resMap.put("date",appointment_time);
         resMap.put("physicainname",physician_name);
@@ -79,6 +82,8 @@ public class AppointmentAdder extends AppCompatActivity {
        Intent intent = new Intent();
 
       // intent.putExtra("data_return", resMap);
+        intent.putExtra("username",username);
+        intent.putExtra("uid",userid);
         intent.putExtra("type",str_selected_type);
         intent.putExtra("date",appointment_time);
         intent.putExtra("physicainname",physician_name);
@@ -185,6 +190,7 @@ public class AppointmentAdder extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment_adder);
+        mFireBaseInfo =new FireBaseInfo();
          m_adder =findViewById(R.id.btnAddAppointmnet);
          time_option =findViewById(R.id.btnPickTime);
          timeboard = findViewById(R.id.selectedTime);
