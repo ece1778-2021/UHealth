@@ -1,4 +1,4 @@
-package com.example.uhealth;
+package com.example.uhealth.Fragments;
 
 import android.os.Bundle;
 
@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.example.uhealth.Activity.Do_questions;
+import com.example.uhealth.R;
 
 
 public class Frag_submit extends Fragment {

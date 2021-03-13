@@ -1,5 +1,6 @@
-package com.example.uhealth;
+package com.example.uhealth.Adapters;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,11 +8,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.uhealth.Activity.Do_questions;
+import com.example.uhealth.Fragments.Frag_question;
+import com.example.uhealth.Fragments.Frag_submit;
+
 import java.util.ArrayList;
 
 public class Fspadapter_question extends FragmentStatePagerAdapter {
     private ArrayList<String> list;
     private String qs_id;
+    private Context mContext;
 
     public Fspadapter_question(@NonNull FragmentManager fm, int behavior,
                                ArrayList<String> input,

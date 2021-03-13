@@ -11,33 +11,33 @@
         android:theme="@style/Theme.UHealth">
 
 
-        <activity android:name=".Do_questions"
-            android:parentActivityName=".Questionnaire"/>
+        <activity android:name=".Activity.Do_questions"
+            android:parentActivityName=".Activity.Questionnaire"/>
 
-        <activity android:name=".Questionnaire"
-            android:parentActivityName=".ProfilePage"/>
+        <activity android:name=".Activity.Questionnaire"
+            android:parentActivityName=".Activity.ProfilePage"/>
 
         <activity
-            android:name=".ProfilePage"
+            android:name=".Activity.ProfilePage"
             android:exported="true"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".Activity.MainActivity"
             android:theme="@style/Theme.UHealth.nobar" />
 
         <activity
-            android:name=".InitRegPage"
+            android:name=".Activity.InitRegPage"
             android:exported="true"
             android:noHistory="true"
             android:theme="@style/Theme.UHealth.nobar" />
 
         <activity
-            android:name=".SignUpPage"
+            android:name=".Activity.SignUpPage"
             android:exported="true"
             android:noHistory="true"
-            android:parentActivityName=".LoginPage"
+            android:parentActivityName=".Activity.LoginPage"
             android:theme="@style/Theme.UHealth" />
 
         <activity
-            android:name=".LoginPage"
+            android:name=".Activity.LoginPage"
             android:exported="true"
             android:theme="@style/Theme.UHealth.nobar" />
 
@@ -61,7 +61,7 @@
             android:label="@string/title_activity_appointmnet_list"
             android:theme="@style/Theme.UHealth.NoActionBar" />
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".Activity.MainActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,5 @@
-package com.example.uhealth;
+package com.example.uhealth.Adapters;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,10 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.uhealth.DataStructures.CachedThreadPool;
+import com.example.uhealth.Fragments.Frag_question;
+import com.example.uhealth.R;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

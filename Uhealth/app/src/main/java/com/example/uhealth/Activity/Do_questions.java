@@ -1,4 +1,4 @@
-package com.example.uhealth;
+package com.example.uhealth.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +15,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.uhealth.DataStructures.CachedThreadPool;
+import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.Adapters.Fspadapter_question;
+import com.example.uhealth.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.slider.Slider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -42,9 +47,11 @@ public class Do_questions extends AppCompatActivity {
 
     private boolean initanswers;
     private int[] answerweights;
+    private ArrayList<String> otheranswers;
 
     private ProgressDialog progressDialog;
     private Dialog dialog;
+    private Slider slider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,29 +65,36 @@ public class Do_questions extends AppCompatActivity {
         threadPool = CachedThreadPool.getInstance();
         progressDialog = new ProgressDialog(this);
         dialog = new Dialog(this);
+        slider = findViewById(R.id.slider);
 
         qidlist = new ArrayList<>();
+        otheranswers = new ArrayList<>();
 
         mVPquestion = findViewById(R.id.doquestions_VP_question);
 
         initanswers = true;
+        getSupportActionBar().setTitle("Questions");
+
         if (savedInstanceState!=null){
             int[] ans = savedInstanceState.getIntArray("answers");
+            ArrayList<String> tmpotherans = savedInstanceState.getStringArrayList("OTHERANSWERS");
             if (ans!=null){
                 initanswers = false;
                 answerweights = ans;
             }
+            if (tmpotherans!=null){
+                otheranswers = tmpotherans;
+            }
         }
-
         getqid();
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putIntArray("answers", answerweights);
+        outState.putStringArrayList("OTHERANSWERS", otheranswers);
         super.onSaveInstanceState(outState);
     }
-
     private void getqid() {
         mFireBaseInfo.mFirestore
                 .collection("questionnaire")
@@ -93,6 +107,7 @@ public class Do_questions extends AppCompatActivity {
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()){
                             String qid = documentSnapshot.getId();
                             Do_questions.this.qidlist.add(qid);
+
                         }
 
                         if (initanswers){
@@ -100,12 +115,35 @@ public class Do_questions extends AppCompatActivity {
                             Arrays.fill(answerweights, -1);
                         }
 
+                        Do_questions.this.slider.setValueTo((float)qidlist.size());
+
                         mQadapter = new Fspadapter_question(getSupportFragmentManager(),
                                 FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
                                 qidlist,
                                 mqs_id
                                 );
                         mVPquestion.setAdapter(mQadapter);
+                        mVPquestion.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                            @Override
+                            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                            }
+
+                            @Override
+                            public void onPageSelected(int position) {
+                                slider.setValue((float)position);
+                            }
+
+                            @Override
+                            public void onPageScrollStateChanged(int state) {
+
+                            }
+                        });
+                        slider.addOnChangeListener(new Slider.OnChangeListener() {
+                            @Override
+                            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                                mVPquestion.setCurrentItem((int)value);
+                            }
+                        });
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -116,14 +154,6 @@ public class Do_questions extends AppCompatActivity {
         });
 
     }
-
-    public void setQuestionnaireValue(int weight, int position){
-        answerweights[position] = weight;
-    }
-    public int getQuestionnaireValue(int position){
-        return answerweights[position];
-    }
-
     public void submitAnswers(){
         progressDialog.show();
         progressDialog.setCancelable(false);
@@ -158,6 +188,9 @@ public class Do_questions extends AppCompatActivity {
                             user_score.put("qs_id", mqs_id);
                             user_score.put("score", f_sum);
                             user_score.put("timestamp", System.currentTimeMillis()/1000);
+                            if (!otheranswers.isEmpty()){
+                                user_score.put("others", otheranswers);
+                            }
 
                             mFireBaseInfo.mFirestore.collection("user_score").add(user_score)
                                     .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -184,7 +217,6 @@ public class Do_questions extends AppCompatActivity {
 
         threadPool.add_run(r);
     }
-
     private void openCheckFailDialog(int index) {
         Button mPos, mNeg;
         TextView mComment;
@@ -204,8 +236,25 @@ public class Do_questions extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                slider.setValue((float)index);
                 mVPquestion.setCurrentItem(index);
             }
         });
+    }
+
+    public boolean checkMultiSelectValue(String input){
+        return otheranswers.contains(input);
+    }
+    public void addMultiSelectValue(String input){
+        otheranswers.add(input);
+    }
+    public void rmMultiSelectValue(String input){
+        otheranswers.remove(input);
+    }
+    public int getQuestionnaireValue(int position){
+        return answerweights[position];
+    }
+    public void setQuestionnaireValue(int weight, int position){
+        answerweights[position] = weight;
     }
 }

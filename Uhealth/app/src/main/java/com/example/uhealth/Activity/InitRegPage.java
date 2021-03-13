@@ -1,4 +1,4 @@
-package com.example.uhealth;
+package com.example.uhealth.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,10 +30,16 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.uhealth.DataStructures.CachedThreadPool;
+import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.R;
+import com.example.uhealth.Adapters.rvadapter_initreg_dialog1;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class InitRegPage extends AppCompatActivity {
+//    todo fragment pager and fragment list
     private static final String TAG = InitRegPage.class.getSimpleName();
     private FireBaseInfo mFireBaseInfo;
     private CachedThreadPool threadPool;

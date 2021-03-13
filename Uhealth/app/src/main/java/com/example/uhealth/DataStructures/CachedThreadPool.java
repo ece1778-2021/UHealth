@@ -1,4 +1,4 @@
-package com.example.uhealth;
+package com.example.uhealth.DataStructures;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

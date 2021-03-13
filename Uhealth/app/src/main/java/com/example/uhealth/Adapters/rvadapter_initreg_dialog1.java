@@ -1,16 +1,16 @@
-package com.example.uhealth;
+package com.example.uhealth.Adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.uhealth.Activity.InitRegPage;
+import com.example.uhealth.R;
 
 import java.util.ArrayList;
 
