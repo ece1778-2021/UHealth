@@ -1,15 +1,19 @@
 package com.example.uhealth.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uhealth.AppointmnetList;
@@ -17,33 +21,50 @@ import com.example.uhealth.DataStructures.CachedThreadPool;
 import com.example.uhealth.DataStructures.FireBaseInfo;
 import com.example.uhealth.MedicationList;
 import com.example.uhealth.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfilePage extends AppCompatActivity {
-    private Toolbar toolbar;
-    private Button mPlaceHolderInitReg, mPlaceHolderQuestionnaire, mPlaceHolderapp, mPlaceHoldermed,mPlaceHolderPopulate;
-
     private FireBaseInfo mFireBaseInfo;
-    private CachedThreadPool threadPool;
+    private Toolbar toolbar;
+    private TextView mUsername;
+
+    private RelativeLayout mPlaceHolderInitReg, mPlaceHolderapp, mPlaceHoldermed, mPlaceHolderQuestionnaire;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
 
+        mFireBaseInfo = new FireBaseInfo();
         toolbar = findViewById(R.id.profilepg_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("profile page");
 
-        mFireBaseInfo = new FireBaseInfo();
-        threadPool = CachedThreadPool.getInstance();
+        mUsername = findViewById(R.id.profileusername);
 
-        mPlaceHolderInitReg = findViewById(R.id.placeholder_initreg);
+        mPlaceHolderInitReg = findViewById(R.id.infopageSection);
+
+        mPlaceHolderQuestionnaire = findViewById(R.id.questionnaireSection);
+
+        mPlaceHolderapp = findViewById(R.id.appointmentSection);
+
+        mPlaceHoldermed = findViewById(R.id.medicationSection);
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         mPlaceHolderInitReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,7 +73,6 @@ public class ProfilePage extends AppCompatActivity {
                 finish();
             }
         });
-        mPlaceHolderQuestionnaire = findViewById(R.id.placeholder_questionnaire);
         mPlaceHolderQuestionnaire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +80,6 @@ public class ProfilePage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mPlaceHolderapp = findViewById(R.id.placeholder_app);
         mPlaceHolderapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +87,6 @@ public class ProfilePage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mPlaceHoldermed = findViewById(R.id.placeholder_med);
         mPlaceHoldermed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,18 +94,25 @@ public class ProfilePage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mPlaceHolderPopulate = findViewById(R.id.placeholder_populate);
-        mPlaceHolderPopulate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                for populate
-                Toast.makeText(ProfilePage.this,"disabled", Toast.LENGTH_SHORT).show();
-//                placeholderpopulate();
-            }
-        });
-
+        mFireBaseInfo.mFirestore.collection("users").document(mFireBaseInfo.mUser.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            try {
+                                mUsername.setText(documentSnapshot.get("username").toString());
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }else{
+                            Toast.makeText(ProfilePage.this, "load username failed", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }
+                });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,69 +144,4 @@ public class ProfilePage extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
-    private void placeholderpopulate() {
-        String question_text =
-                "Overall, how much does leaking urine interfere with your everyday life?"
-                ;
-        int[] weightarray = {0, 1, 2, 3,4,5,6,7,8,9,10};
-        String[] textarray = {
-                "0 (not at all)"
-                ,
-                "1"
-                ,
-                "2"
-                ,
-                "3"
-                ,
-                "4"
-                ,
-                "5"
-                ,
-                "6"
-                ,
-                "7"
-                ,
-                "8"
-                ,
-                "9"
-                ,
-                "10 (a great deal)"
-
-        };
-
-        if (weightarray.length != textarray.length){
-            Toast.makeText(this, "array no match", Toast.LENGTH_SHORT).show();
-        }
-
-        Map<String,Object> mp = new HashMap<>();
-        mp.put("text", question_text);
-
-        CollectionReference cref = mFireBaseInfo.mFirestore.collection("questionnaire")
-                .document(
-                        "M7ynd1hCO7Tw2Wi2v3Jt"
-                )
-                .collection("questions");
-        cref
-                .add(mp)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-
-                        String id = documentReference.getId();
-
-                        for (int i=0; i<weightarray.length;i++){
-                            Map<String,Object> in_mp=  new HashMap<>();
-                            in_mp.put("text", textarray[i]);
-                            in_mp.put("weight", weightarray[i]);
-                            cref.document(id).collection("answers").add(in_mp);
-                        }
-
-                        Toast.makeText(ProfilePage.this, "Done", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-    }
-
 }

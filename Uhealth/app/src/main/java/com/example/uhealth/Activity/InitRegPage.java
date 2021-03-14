@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class InitRegPage extends AppCompatActivity {
-//    todo fragment pager and fragment list
+
     private static final String TAG = InitRegPage.class.getSimpleName();
     private FireBaseInfo mFireBaseInfo;
     private CachedThreadPool threadPool;
@@ -49,17 +50,21 @@ public class InitRegPage extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private EditText mName, mPhone, mEContact, mDietary, mAllergy, mDrug, mSmokeinputET, mAlcoholinputET;
-    private CheckBox mSmokeCurrent, mAlcoholCurrent;
-    private DatePickerDialog.OnDateSetListener mBirthdayListener, mSmokeStartListener, mSmokeEndListener, mAlcoholStartListener, mAlcoholEndListener;
-    private TextView mBirth, mSmokeStart, mSmokeEnd, mAlcoholStart, mAlcoholEnd, mSmokeDes, mAlcoholDes;
+    private EditText mName, mPhone, mEContact, mDietary, mAllergy;
+    private TextView mBirth;
     private Spinner spGender;
-    private RadioGroup rgAllergy, rgDrug;
-    private RadioButton rbAllergy, rbSurgery, rbTransfusion, rbSmoke, rbAlcohol, rbDrug;
+    private DatePickerDialog.OnDateSetListener mBirthdayListener;
+    private RadioGroup rgAllergy;
+    private RadioButton rbAllergy;
+
+    private EditText mDrug, mSmokeinputET, mAlcoholinputET;
+    private CheckBox mSmokeCurrent, mAlcoholCurrent;
+    private DatePickerDialog.OnDateSetListener mSmokeStartListener, mSmokeEndListener, mAlcoholStartListener, mAlcoholEndListener;
+    private TextView mSmokeStart, mSmokeEnd, mAlcoholStart, mAlcoholEnd, mSmokeDes, mAlcoholDes;
+    private RadioGroup rgDrug;
+    private RadioButton rbSurgery, rbTransfusion, rbSmoke, rbAlcohol, rbDrug;
 
     private RadioGroup rgHeart, rgCancer, rgHereditary;
-
-
 
     private enum dialogOption {
         SURGERY,
@@ -75,9 +80,13 @@ public class InitRegPage extends AppCompatActivity {
 
     private RelativeLayout layoutSmoke, layoutAlcohol;
 
-    private Button msubmit, mSkip, mAddSurgery, mAddTransfusion;
+    private Button mAddSurgery, mAddTransfusion;
 
-    private String mBirthHolder, mGenderHolder, mSmokeStartHolder, mSmokeEndHolder, mAlcoholStartHolder, mAlcoholEndHolder;
+    private Button msubmit;
+    private Button mSkip;
+
+    private String mBirthHolder, mGenderHolder;
+    private String mSmokeStartHolder, mSmokeEndHolder, mAlcoholStartHolder, mAlcoholEndHolder;
     private int mSmokeinputHolder, mAlcoholinputHolder;
     private ArrayList<String> mSurgeryDates, mSurgeryNames, mTransfusionDates;
 
@@ -85,9 +94,9 @@ public class InitRegPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_reg_page);
+
         toolbar = findViewById(R.id.initreg_toolbar);
         setSupportActionBar(toolbar);
-
         mFireBaseInfo = new FireBaseInfo();
         threadPool = CachedThreadPool.getInstance();
         progressDialog = new ProgressDialog(this);
@@ -98,6 +107,7 @@ public class InitRegPage extends AppCompatActivity {
         mDietary = findViewById(R.id.initreg_ET_dietary);
         mAllergy = findViewById(R.id.initreg_ET_allergy);
         mBirth = findViewById(R.id.initreg_TV_showbirth);
+
         mBirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -337,7 +347,6 @@ public class InitRegPage extends AppCompatActivity {
 
     }
 
-
     private void initViewAlcohol() {
         rgAlcohol = findViewById(R.id.initreg_RG_alcohol);
         mAlcoholCurrent = layoutAlcohol.findViewById(R.id.subview1_check);
@@ -411,7 +420,6 @@ public class InitRegPage extends AppCompatActivity {
             }
         };
     }
-
 
     private void initViewSmoke() {
         rgSmoke = findViewById(R.id.initreg_RG_smoke);
@@ -550,19 +558,48 @@ public class InitRegPage extends AppCompatActivity {
 
     private void builddialog(dialogOption val) {
         dialog = new Dialog(this);
-        ImageButton mCancel, mAdd;
-        EditText mName, mDate;
+        ImageButton mCancel, mAdd, mDateAdd;
+        EditText mName;
+        RelativeLayout nameSection;
+        TextView mDate;
         dialog.setContentView(R.layout.dialog_initreg_type1);
+        nameSection = dialog.findViewById(R.id.dialog1_nameSection);
         mName = dialog.findViewById(R.id.initreg_dialog1_name);
         mDate = dialog.findViewById(R.id.initreg_dialog1_date);
+        mDateAdd = dialog.findViewById(R.id.dialog1_dateBT);
+        mDateAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        InitRegPage.this,
+                        android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                month = month+1;
+                                String temp_date = year +"/" + month + "/"+dayOfMonth;
+                                mDate.setText(temp_date);
+                            }
+                        },
+                        year, month, day
+                );
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
         mCancel = dialog.findViewById(R.id.initreg_dialog1_cancel);
-        mAdd = dialog.findViewById(R.id.initreg_dialog1_add);
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
+        mAdd = dialog.findViewById(R.id.initreg_dialog1_add);
         switch (val){
             case SURGERY:
                 mAdd.setOnClickListener(new View.OnClickListener() {
@@ -580,13 +617,14 @@ public class InitRegPage extends AppCompatActivity {
                         }
                         mSurgeryNames.add(name);
                         mSurgeryDates.add(date);
-                        mRVAdapterdialog1.notifyItemInserted(mSurgeryNames.size()-1);
+//                        mRVAdapterdialog1.notifyItemInserted(mSurgeryNames.size());
+                        mRVAdapterdialog1.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });
                 break;
             case TRANSFUSION:
-                mName.setVisibility(View.GONE);
+                nameSection.setVisibility(View.GONE);
                 mAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -595,7 +633,8 @@ public class InitRegPage extends AppCompatActivity {
                             mDate.setError("Cant be empty");
                         }
                         mTransfusionDates.add(date);
-                        mRVAdapterdialog1tf.notifyItemInserted(mTransfusionDates.size()-1);
+//                        mRVAdapterdialog1tf.notifyItemInserted(mTransfusionDates.size());
+                        mRVAdapterdialog1tf.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });
@@ -604,7 +643,6 @@ public class InitRegPage extends AppCompatActivity {
                 Log.e(TAG, "Build Dialog Option Incorrect");
         }
         dialog.show();
-
     }
 
     public void selectTransfusion(View view) {
