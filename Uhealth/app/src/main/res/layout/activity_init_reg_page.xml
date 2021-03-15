@@ -457,6 +457,9 @@
                         android:layout_below="@+id/initreg_RV_surgery"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@android:color/transparent"
+                        android:textColor="@android:color/black"
                         android:text="+"
                         />
                     </RelativeLayout>
@@ -519,6 +522,9 @@
                         android:layout_below="@+id/initreg_RV_transfusion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@android:color/transparent"
+                        android:textColor="@android:color/black"
                         android:text="+"
                         />
                     </RelativeLayout>

@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_margin="20dp"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Guideline
@@ -35,6 +36,7 @@
         android:id="@+id/dialog_unansweredquestion_TV_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:text="Unanswered Question on Page: "
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="parent"

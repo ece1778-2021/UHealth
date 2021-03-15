@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="20dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/quesiton_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="100dp">
 
     <Button
         android:id="@+id/rv_questionnaires_questionnaires"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Placeholder" />
+        android:background="@android:color/darker_gray"
+        android:text="Placeholder" >
+    </Button>
+    </androidx.cardview.widget.CardView>
+
 
     <FrameLayout
         android:id="@+id/graphlayout"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="360dp"
-        android:layout_below="@+id/rv_questionnaires_questionnaires">
+        android:layout_below="@+id/quesiton_card">
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/linechart"
