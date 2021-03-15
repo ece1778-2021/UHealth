@@ -7,7 +7,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/default_str"
-        android:textSize="15sp" />
+        android:layout_marginLeft ="20dp"
+        android:layout_marginTop="20dp"
+        android:textSize="30sp"
+        android:layout_alignParentStart="true"/>
+    <Button
+        android:id="@+id/btnAppointmentUpdater"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf ="@+id/btnAppointmentChecker"
+        android:text="UPDATE"
+        />
+    <Button
+        android:id="@+id/btnAppointmentChecker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_toLeftOf ="@+id/btnAppointmentRemover"
+        android:text="CHECK"
+        />
+    <Button
+        android:id="@+id/btnAppointmentRemover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentEnd="true"
+        android:text="DELETE"
+        />
+
     <!-- android:layout_above=-->
     <!-- android:layout_toRightOf=-->
     <!-- android:layout_toLeftOf=-->

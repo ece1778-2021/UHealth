@@ -203,7 +203,7 @@ public class AppointmentAdder extends AppCompatActivity {
         selectedtype = findViewById(R.id.selectedType);
 
 
-=
+
 
         timeboard.setText("1970-01-01-23:59");
         btnSelectType.setOnClickListener(new View.OnClickListener() {
