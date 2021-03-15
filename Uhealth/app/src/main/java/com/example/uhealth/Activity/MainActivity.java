@@ -1,15 +1,15 @@
-package com.example.uhealth;
+package com.example.uhealth.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.R;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {

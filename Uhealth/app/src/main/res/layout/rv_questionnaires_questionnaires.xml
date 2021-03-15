@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     android:layout_width="match_parent" android:layout_height="match_parent"
+=======
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+>>>>>>> develop
     android:layout_margin="20dp">
 
     <Button
@@ -8,4 +12,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Placeholder" />
+<<<<<<< HEAD
+=======
+
+    <FrameLayout
+        android:id="@+id/graphlayout"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_below="@+id/rv_questionnaires_questionnaires">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/linechart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+
+>>>>>>> develop
 </RelativeLayout>

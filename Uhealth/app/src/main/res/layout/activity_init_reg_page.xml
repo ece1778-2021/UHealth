@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".InitRegPage">
-
+    tools:context=".Activity.InitRegPage">
+    <!--0-->
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
@@ -431,6 +431,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+                            android:onClick="selectSurgery"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_surgery_no"
@@ -438,11 +440,21 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+
+                            android:onClick="selectSurgery"
                             android:text="No"/>
                     </RadioGroup>
+
+                    <RelativeLayout
+                        android:id="@+id/initreg_surgeryhidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_below="@+id/initreg_RG_surgery">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/initreg_RV_surgery"
-                        android:layout_below="@+id/initreg_RG_surgery"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <Button
@@ -452,6 +464,9 @@
                         android:layout_height="wrap_content"
                         android:text="+"
                         />
+
+                    </RelativeLayout>
+
 
                 </RelativeLayout>
                 <RelativeLayout
@@ -480,6 +495,9 @@
                             android:id="@+id/initreg_RB_transfusion_yes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+
+                            android:onClick="selectTransfusion"
+
                             android:layout_marginEnd="20dp"
                             android:text="Yes"/>
                         <RadioButton
@@ -488,11 +506,23 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+
+
+                            android:onClick="selectTransfusion"
                             android:text="No"/>
                     </RadioGroup>
+
+                    <RelativeLayout
+                        android:id="@+id/initreg_transfusionhidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/initreg_RG_transfusion"
+                        android:visibility="gone"
+                        >
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/initreg_RV_transfusion"
-                        android:layout_below="@+id/initreg_RG_transfusion"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <Button
@@ -502,7 +532,7 @@
                         android:layout_height="wrap_content"
                         android:text="+"
                         />
-
+                    </RelativeLayout>
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -531,30 +561,26 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
+                            android:onClick="selectSmoke"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_smoke_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+               android:onClick="selectSmoke"
                             android:checked="true"
                             android:text="No"/>
                     </RadioGroup>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/initreg_RV_smoke"
-                        android:layout_below="@+id/initreg_RG_smoke"
+                    <include
+                        android:id="@+id/smoke_subview"
+                        layout="@layout/subview1_initreg"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <Button
-                        android:id="@+id/initreg_BT_addsmoke"
-                        android:layout_below="@+id/initreg_RV_smoke"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+"
-                        />
-
+                        android:layout_below="@id/initreg_RG_smoke"/>
                 </RelativeLayout>
-
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -583,27 +609,35 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
+                            android:onClick="selectDrug"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_drug_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
+                            android:onClick="selectDrug"
                             android:checked="true"
                             android:text="No"/>
                     </RadioGroup>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/initreg_RV_drug"
-                        android:layout_below="@+id/initreg_RG_drug"
+
+                    <EditText
+                        android:id="@+id/initreg_ET_drug"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <Button
-                        android:id="@+id/initreg_BT_adddrug"
-                        android:layout_below="@+id/initreg_RV_drug"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+"
+                        android:layout_below="@+id/initreg_RG_drug"
+                        android:ems="10"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:hint="Past Drug"
+                        android:inputType="text"
+                        android:visibility="gone"
+                        android:text=""
                         />
+
 
                 </RelativeLayout>
 
@@ -617,7 +651,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:text="Smoking History"
+
+                        android:text="Alcohol use"
+
                         />
                     <RadioGroup
                         android:id="@+id/initreg_RG_alcohol"
@@ -634,6 +670,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
+                            android:onClick="selectAlcohol"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_alcohol_no"
@@ -641,20 +680,19 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+
+                            android:onClick="selectAlcohol"
                             android:text="No"/>
                     </RadioGroup>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/initreg_RV_alcohol"
-                        android:layout_below="@+id/initreg_RG_alcohol"
+                    <include
+                        android:id="@+id/alcohol_subview"
+                        layout="@layout/subview1_initreg"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <Button
-                        android:id="@+id/initreg_BT_addalcohol"
-                        android:layout_below="@+id/initreg_RV_alcohol"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="+"
-                        />
+                        android:layout_below="@id/initreg_RG_alcohol"/>
+
+
+
 
                 </RelativeLayout>
 

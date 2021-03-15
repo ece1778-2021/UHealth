@@ -32,6 +32,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class AppointmentAdder extends AppCompatActivity {
+
     private Button m_adder ;// findViewById(R.id.btnAddAppointmnet);
     private Button time_option ;// findViewById(R.id.btnPickTime);
 
@@ -191,15 +192,18 @@ public class AppointmentAdder extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment_adder);
         mFireBaseInfo =new FireBaseInfo();
+
          m_adder =findViewById(R.id.btnAddAppointmnet);
          time_option =findViewById(R.id.btnPickTime);
          timeboard = findViewById(R.id.selectedTime);
         doctornameview = findViewById(R.id.appointment_physcian_name);
          locationview = findViewById(R.id.appointment_location);
+
         btnSelectType = findViewById(R.id.btnPickType);
         selectedtype = findViewById(R.id.selectedType);
 
 
+=
 
         timeboard.setText("1970-01-01-23:59");
         btnSelectType.setOnClickListener(new View.OnClickListener() {

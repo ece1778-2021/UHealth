@@ -39,6 +39,7 @@ public class MedicationAdder extends AppCompatActivity {
 
     private FireBaseInfo mFireBaseInfo;
 
+
     public void medicationListener(){
         //final Date currentDate = new Date();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -76,6 +77,7 @@ public class MedicationAdder extends AppCompatActivity {
         intent.putExtra("dosis",dosis );
         setResult(RESULT_OK, intent);
         finish();
+
 
 
     }
@@ -125,6 +127,7 @@ public class MedicationAdder extends AppCompatActivity {
     public void init_views(){
         m_adder= findViewById(R.id.btnAddMedication);
 
+
         storageview= findViewById(R.id.medication_storage);
         intervalview = findViewById(R.id.medication_interval);
         medicineview = findViewById(R.id.medicine_name);
@@ -153,8 +156,10 @@ public class MedicationAdder extends AppCompatActivity {
         setContentView(R.layout.activity_medication_adder);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         init_views();
         mFireBaseInfo =new FireBaseInfo();
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

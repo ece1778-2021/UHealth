@@ -4,16 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfilePage">
+
+    tools:context=".Activity.ProfilePage">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
+
+            android:id="@+id/profile_appbarlayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/profile_appbarlayout">
+            android:layout_height="wrap_content">
+
 
             <include layout="@layout/toolbar_profilepage">
 
@@ -24,48 +28,177 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/profile_appbarlayout">
-            <androidx.constraintlayout.widget.ConstraintLayout
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/placeholder_initreg"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="initreg"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_margin="30dp">
 
-                <Button
-                    android:id="@+id/placeholder_questionnaire"
-                    android:layout_width="wrap_content"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardavatar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:foregroundGravity="center"
+                        app:cardCornerRadius="160dp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_user_foreground" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+
+                    <TextView
+                        android:id="@+id/profileusername"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toEndOf="@id/cardavatar"
+                        android:text="Username" />
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="50dp"
-                    android:text="questionnaire"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                <Button
-                    android:id="@+id/placeholder_app"
-                    android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:id="@+id/questionnaireSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="20dp"
+                        android:background="#FF9800"
+                        android:backgroundTint="#51AF9F4C"
+                        >
+
+                        <ImageView
+                            android:id="@+id/questionpic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            app:srcCompat="@drawable/ic_question_foreground" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:layout_below="@id/questionpic"
+                            android:layout_centerHorizontal="true"
+                            android:gravity="center"
+                            android:text="Questionnaires" />
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:id="@+id/infopageSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:layout_weight="1"
+                        android:background="#FF9800"
+                        android:backgroundTint="#51AF9F4C"
+                        >
+
+                        <ImageView
+                            android:id="@+id/infopic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            app:srcCompat="@drawable/ic_info_foreground" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/infopic"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="10dp"
+                            android:gravity="center"
+                            android:text="Personnal Info"
+                            />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="app_list"
-                    app:layout_constraintEnd_toEndOf="@+id/placeholder_questionnaire"
-                    app:layout_constraintTop_toBottomOf="@+id/placeholder_questionnaire" />
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                <Button
-                    android:id="@+id/placeholder_med"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="med_list"
-                    app:layout_constraintStart_toStartOf="@+id/placeholder_initreg"
-                    app:layout_constraintTop_toBottomOf="@+id/placeholder_initreg" />
+                    <RelativeLayout
+                        android:id="@+id/appointmentSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="20dp"
+                        android:background="#FF9800"
+                        android:backgroundTint="#51AF9F4C"
+                        >
 
+                        <ImageView
+                            android:id="@+id/appointmentpic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            app:srcCompat="@drawable/ic_calendarpic_foreground" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/appointmentpic"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="10dp"
+                            android:gravity="center"
+                            android:text="Appointments"
+                            />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/medicationSection"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="20dp"
+                        android:background="#FF9800"
+                        android:backgroundTint="#51AF9F4C"
+                        >
+
+                        <ImageView
+                            android:id="@+id/medicationpic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            app:srcCompat="@drawable/ic_medicationpic_foreground" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/medicationpic"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="10dp"
+                            android:gravity="center"
+                            android:text="Medications"
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
         </ScrollView>
 
     </RelativeLayout>

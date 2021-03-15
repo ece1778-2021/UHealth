@@ -4,11 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Do_questions">
+
+    tools:context=".Activity.Do_questions">
+
+    <com.google.android.material.slider.Slider
+        android:layout_margin="20dp"
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickVisible="true"
+        android:valueFrom="0.0"
+        android:stepSize="1.0"
+        android:valueTo="10.0"
+        app:labelBehavior="gone"
+        app:trackColorActive="@android:color/holo_green_dark"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/doquestions_VP_question"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/slider" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

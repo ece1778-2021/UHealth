@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UHealth">
+<<<<<<< HEAD
 
 
         <activity android:name=".Do_questions"
@@ -46,6 +47,38 @@
             android:label="@string/title_activity_medication_adder"
             android:theme="@style/Theme.UHealth.NoActionBar"></activity>
 
+=======
+        <activity
+            android:name=".Activity.Do_questions"
+            android:parentActivityName=".Activity.Questionnaire" />
+        <activity
+            android:name=".Activity.Questionnaire"
+            android:parentActivityName=".Activity.ProfilePage" />
+        <activity
+            android:name=".Activity.ProfilePage"
+            android:exported="true"
+            android:parentActivityName=".Activity.MainActivity"
+            android:theme="@style/Theme.UHealth.nobar" />
+        <activity
+            android:name=".Activity.InitRegPage"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/Theme.UHealth.nobar" />
+        <activity
+            android:name=".Activity.SignUpPage"
+            android:exported="true"
+            android:noHistory="true"
+            android:parentActivityName=".Activity.LoginPage"
+            android:theme="@style/Theme.UHealth" />
+        <activity
+            android:name=".Activity.LoginPage"
+            android:exported="true"
+            android:theme="@style/Theme.UHealth.nobar" />
+        <activity
+            android:name=".MedicationAdder"
+            android:label="@string/title_activity_medication_adder"
+            android:theme="@style/Theme.UHealth.NoActionBar" />
+>>>>>>> develop
         <activity
             android:name=".AppointmentAdder"
             android:label="@string/title_activity_appointment_adder"
@@ -60,8 +93,13 @@
             android:name=".AppointmnetList"
             android:label="@string/title_activity_appointmnet_list"
             android:theme="@style/Theme.UHealth.NoActionBar" />
+<<<<<<< HEAD
 
         <activity android:name=".MainActivity"
+=======
+        <activity
+            android:name=".Activity.MainActivity"
+>>>>>>> develop
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -69,7 +107,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
