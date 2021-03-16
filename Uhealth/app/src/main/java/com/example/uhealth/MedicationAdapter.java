@@ -27,11 +27,12 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull MedicationAdapter.ViewHolder holder, int position) {
 
+
         Medication mMedication=mMedicationList.get(position);
         //note from res id to actual bitmap
         //holder.fruitImage.setImageResource(mphoto.getImageID());
-
-        holder.medicationTag.setText(mMedication.getMedicine());
+        String medication_snippet = mMedication.getMedicine()+"start from:"+mMedication.getInitDate()+"repeats:"+String.valueOf(mMedication.getRepeats());
+        holder.medicationTag.setText(medication_snippet);
     }
     @Override
     public int getItemCount() {

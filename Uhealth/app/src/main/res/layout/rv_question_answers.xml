@@ -4,12 +4,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:layout_margin="2.5dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="100dp">
+
+
 
     <Button
         android:id="@+id/rv_question_answer"

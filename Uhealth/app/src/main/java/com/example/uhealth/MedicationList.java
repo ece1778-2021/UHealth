@@ -3,15 +3,24 @@ package com.example.uhealth;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +30,8 @@ import java.util.List;
 
 public class MedicationList extends AppCompatActivity {
     List<Medication> MedicationList = new ArrayList<>();
-    MedicationAdapter medicationAdapter;
+   MedicationAdapter medicationAdapter;
+    private FireBaseInfo mFireBaseInfo;
     final static int REQUEST_ADD_A_MEDICATION = 200;
     public void start_adder(){
         Intent addMedIntent = new Intent(this,MedicationAdder.class);
@@ -72,17 +82,78 @@ public class MedicationList extends AppCompatActivity {
         }
 
     }
+    public void download_medication_list(){
+        String uid = mFireBaseInfo.mUser.getUid();
+        mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("uid",uid).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        @Override
+        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            if (task.isSuccessful()) {
+
+                QuerySnapshot query_res =  task.getResult();
+                List<DocumentSnapshot> documents = query_res.getDocuments();
+                for(int i =0; i < documents.size();i++){
+                    DocumentSnapshot instance = documents.get(i);
+                    HashMap<String,Object> resMap =new HashMap<String,Object>();
+
+                    resMap.put("initdate",instance.get("initdate"));
+                    resMap.put("username",instance.get("username"));
+                    resMap.put("repeats",instance.get("repeats"));
+                    resMap.put("medicine",instance.get("medicine"));
+                    resMap.put("uid",instance.get("uid"));
+                    resMap.put("dosis",instance.get("dosis") );
+                    resMap.put("initstorage",instance.get("initstorage") );
+                    resMap.put("interval",instance.get("interval") );
+
+                    Medication mmedication = new Medication(resMap);
+                    bubble(mmedication );
+                }
+                medicationAdapter.notifyDataSetChanged();
+
+
+
+            } else {
+                // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+            }
+        }
+    });
+
+
+
+    }
+    public void upload_medication_instance(HashMap<String,Object> resMap){
+        mFireBaseInfo.mFirestore.collection("Medication").add(resMap) .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                //Toast.makeText(RegisterActivity.this, "Congratulation!!!", Toast.LENGTH_LONG).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //  Toast.makeText(RegisterActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+
+                    }
+
+                    ;
+                });;
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         int istorage=20;
         int iinterval = 12;
+        int irepeatcounts = 3;
+        int dosis = 1;
         switch (requestCode) {
 
             case REQUEST_ADD_A_MEDICATION  :{
                 if (resultCode == RESULT_OK) {
 
                     HashMap<String,Object> resMap = new HashMap<String,Object>();
+                    resMap.put("username",data.getStringExtra("username"));
+                    resMap.put("uid",data.getStringExtra("uid"));
                     resMap.put("medicine",data.getStringExtra("medicine"));
                     resMap.put("initdate",data.getStringExtra("initdate"));
                     try{
@@ -97,10 +168,26 @@ public class MedicationList extends AppCompatActivity {
                     }catch(NumberFormatException e){
                         e.printStackTrace();
                     }
+
+                    try{
+                        irepeatcounts =Integer.parseInt(data.getStringExtra("repeats"));
+
+                    }catch(NumberFormatException e){
+                        e.printStackTrace();
+                    }
+
+                    try{
+                        dosis =Integer.parseInt(data.getStringExtra("dosis"));
+
+                    }catch(NumberFormatException e){
+                        e.printStackTrace();
+                    }
+                    resMap.put("dosis",dosis);
                     resMap.put("initstorage",istorage);
                     resMap.put("interval",iinterval);
+                    resMap.put("repeats",irepeatcounts);
 
-
+                    upload_medication_instance(resMap);
                     Medication temp_appointment = new Medication(resMap);
                     bubble(temp_appointment);
                     medicationAdapter.notifyDataSetChanged();
@@ -128,12 +215,14 @@ public class MedicationList extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
 
 
-
+        mFireBaseInfo =new FireBaseInfo();
         RecyclerView recyclerView = findViewById(R.id.recycler_view_medication);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         medicationAdapter = new MedicationAdapter(MedicationList);
         recyclerView.setAdapter(medicationAdapter );
+        download_medication_list();
+        medicationAdapter.notifyDataSetChanged();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

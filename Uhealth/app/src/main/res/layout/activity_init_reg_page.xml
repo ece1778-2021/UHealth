@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.InitRegPage">
-
+    <!--0-->
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
@@ -398,10 +398,12 @@
                     android:textColor="@color/design_default_color_primary"
                     android:textSize="24sp"
                     android:text="Medical History" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray"/>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -430,6 +432,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:onClick="selectSurgery"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_surgery_no"
@@ -437,6 +440,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+
                             android:onClick="selectSurgery"
                             android:text="No"/>
                     </RadioGroup>
@@ -450,6 +454,7 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/initreg_RV_surgery"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <Button
@@ -462,6 +467,7 @@
                         android:textColor="@android:color/black"
                         android:text="+"
                         />
+
                     </RelativeLayout>
 
 
@@ -492,7 +498,9 @@
                             android:id="@+id/initreg_RB_transfusion_yes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+
                             android:onClick="selectTransfusion"
+
                             android:layout_marginEnd="20dp"
                             android:text="Yes"/>
                         <RadioButton
@@ -501,6 +509,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+
+
                             android:onClick="selectTransfusion"
                             android:text="No"/>
                     </RadioGroup>
@@ -515,6 +525,7 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/initreg_RV_transfusion"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <Button
@@ -528,8 +539,6 @@
                         android:text="+"
                         />
                     </RelativeLayout>
-
-
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -558,14 +567,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
                             android:onClick="selectSmoke"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_smoke_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
-                            android:onClick="selectSmoke"
+               android:onClick="selectSmoke"
                             android:checked="true"
                             android:text="No"/>
                     </RadioGroup>
@@ -576,6 +587,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/initreg_RG_smoke"/>
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -603,13 +615,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
                             android:onClick="selectDrug"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_drug_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
                             android:onClick="selectDrug"
                             android:checked="true"
                             android:text="No"/>
@@ -631,6 +646,7 @@
 
 
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -641,7 +657,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
+
                         android:text="Alcohol use"
+
                         />
                     <RadioGroup
                         android:id="@+id/initreg_RG_alcohol"
@@ -658,7 +676,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
+
                             android:onClick="selectAlcohol"
+
                             android:text="Yes"/>
                         <RadioButton
                             android:id="@+id/initreg_RB_alcohol_no"
@@ -666,6 +686,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:checked="true"
+
                             android:onClick="selectAlcohol"
                             android:text="No"/>
                     </RadioGroup>
@@ -675,6 +696,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/initreg_RG_alcohol"/>
+
 
 
 

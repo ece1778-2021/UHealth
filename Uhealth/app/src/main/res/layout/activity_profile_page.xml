@@ -4,16 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".Activity.ProfilePage">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
+
             android:id="@+id/profile_appbarlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
 
             <include layout="@layout/toolbar_profilepage">
 
@@ -24,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/profile_appbarlayout">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -193,9 +198,11 @@
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
+
         </ScrollView>
 
     </RelativeLayout>
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
