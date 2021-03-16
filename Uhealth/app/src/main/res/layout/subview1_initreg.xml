@@ -11,11 +11,19 @@
         android:text="Start Date" />
 
     <TextView
+        android:id="@+id/subview1_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/subview1_startdate"
+        android:layout_margin="10dp"
+        android:text="to"/>
+
+    <TextView
         android:id="@+id/subview1_enddate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_toEndOf="@+id/subview1_startdate"
+        android:layout_toEndOf="@+id/subview1_to"
         android:visibility="gone"
         android:text="End Date" />
 

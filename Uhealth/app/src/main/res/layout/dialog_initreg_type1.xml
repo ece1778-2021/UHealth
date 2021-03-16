@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="20dp"
     android:gravity="center">
 
     <RelativeLayout
@@ -64,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/initreg_dialog1_date"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_question_foreground" />
+            app:srcCompat="@drawable/ic_calendarpic_foreground" />
     </RelativeLayout>
 
     <ImageButton
