@@ -75,14 +75,19 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <RelativeLayout
-                        android:id="@+id/questionnaireSection"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="20dp"
-                        android:background="#FF9800"
-                        android:backgroundTint="#51AF9F4C"
+                        app:cardCornerRadius="20dp"
+                        >
+
+                    <RelativeLayout
+                        android:id="@+id/questionnaireSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/grayLight"
                         >
 
                         <ImageView
@@ -93,25 +98,35 @@
                             app:srcCompat="@drawable/ic_question_foreground" />
 
                         <TextView
+                            android:layout_below="@id/questionpic"
+                            android:text="Questionnaires"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:layout_below="@id/questionpic"
+                            android:layout_marginTop="10dp"
                             android:layout_centerHorizontal="true"
                             android:gravity="center"
-                            android:text="Questionnaires" />
+                            android:background="@color/orangeDark"
+                            android:textColor="@color/grayLight"
+                            />
 
                     </RelativeLayout>
 
+                    </androidx.cardview.widget.CardView>
+
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="20dp"
+                        app:cardCornerRadius="20dp">
 
                     <RelativeLayout
                         android:id="@+id/infopageSection"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:layout_weight="1"
-                        android:background="#FF9800"
-                        android:backgroundTint="#51AF9F4C"
+                        android:background="@color/grayLight"
                         >
 
                         <ImageView
@@ -122,16 +137,21 @@
                             app:srcCompat="@drawable/ic_info_foreground" />
 
                         <TextView
+                            android:layout_below="@id/infopic"
+                            android:text="Personnal Info"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/infopic"
+                            android:layout_marginTop="10dp"
                             android:layout_centerHorizontal="true"
-                            android:layout_margin="10dp"
                             android:gravity="center"
-                            android:text="Personnal Info"
+                            android:background="@color/orangeDark"
+                            android:textColor="@color/grayLight"
                             />
 
                     </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
 
                 </LinearLayout>
 
@@ -141,14 +161,18 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <RelativeLayout
-                        android:id="@+id/appointmentSection"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="20dp"
-                        android:background="#FF9800"
-                        android:backgroundTint="#51AF9F4C"
+                        app:cardCornerRadius="20dp">
+
+                    <RelativeLayout
+                        android:id="@+id/appointmentSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/grayLight"
                         >
 
                         <ImageView
@@ -159,24 +183,33 @@
                             app:srcCompat="@drawable/ic_calendarpic_foreground" />
 
                         <TextView
+                            android:layout_below="@id/appointmentpic"
+                            android:text="Appointments"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/appointmentpic"
+                            android:layout_marginTop="10dp"
                             android:layout_centerHorizontal="true"
-                            android:layout_margin="10dp"
                             android:gravity="center"
-                            android:text="Appointments"
+                            android:background="@color/orangeDark"
+                            android:textColor="@color/grayLight"
                             />
                     </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
 
-                    <RelativeLayout
-                        android:id="@+id/medicationSection"
+
+                    <androidx.cardview.widget.CardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="20dp"
-                        android:background="#FF9800"
-                        android:backgroundTint="#51AF9F4C"
+                        app:cardCornerRadius="20dp">
+
+                    <RelativeLayout
+                        android:id="@+id/medicationSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/grayLight"
                         >
 
                         <ImageView
@@ -187,15 +220,20 @@
                             app:srcCompat="@drawable/ic_medicationpic_foreground" />
 
                         <TextView
+                            android:layout_below="@id/medicationpic"
+                            android:text="Medications"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/medicationpic"
+                            android:layout_marginTop="10dp"
                             android:layout_centerHorizontal="true"
-                            android:layout_margin="10dp"
                             android:gravity="center"
-                            android:text="Medications"
+                            android:background="@color/orangeDark"
+                            android:textColor="@color/grayLight"
                             />
                     </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
                 </LinearLayout>
             </LinearLayout>
 
