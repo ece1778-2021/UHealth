@@ -1,5 +1,5 @@
 package com.example.uhealth;
-
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +10,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.uhealth.Activity.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
@@ -52,7 +59,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         final Appointment mAppointment=mAppointmentList.get(position);
         //note from res id to actual bitmap
         //holder.fruitImage.setImageResource(mphoto.getImageID());
-        String displayed = position+"";
+        String displayed = position+"  "+mAppointment.getAppointmentType();
         holder.appointmentTag.setText(displayed);
 
         holder.appointmentChecker.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +86,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 mShowAppointmentDialog.show();
             }
         });
+        /*
         holder.appointmentRemover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,17 +112,22 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
             }
         });
+        */
+
         holder.appointmentUpdater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //mAppointment
-                final String[] items = {"office appointment","chemotherapy","surgery or procedure appointment","radiation session","imaging appointment"};
+                final String[] items = {"Finished","Canceled","Postponed"};
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
                 alertBuilder.setTitle("Select your appointment type.");
                 alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+
+                        mListStack.add(0,items[i]);
+
 
                         //Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
                     }
@@ -124,8 +137,33 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //send result to firebase
+                        String selectedUpdate  = mListStack.get(0);
+                        mFireBaseInfo.mFirestore.collection("Appointment").whereEqualTo("date",mAppointment.getDate())
+                                .whereEqualTo("patientid",mAppointment.getPatientID()).get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
 
+                                            QuerySnapshot query_res =  task.getResult();
+                                            List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                                            DocumentSnapshot delDocument = documents.get(0);
+                                            if(delDocument!=null ){
+                                                DocumentReference delDocumentRef = delDocument.getReference();
+                                                delDocumentRef.update("stauts",selectedUpdate );
+
+                                            }else{
+
+                                            }
+
+
+                                        } else {
+                                            // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                        mUpdateAppointmentDialog.dismiss();
                     }
                 });
 
@@ -137,11 +175,26 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     }
                 });
                 mUpdateAppointmentDialog = alertBuilder.create();
-                mUpdateAppointmentDialog.show();
+
+                try{
+                    SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    Date date_time = mdateformat.parse(mAppointment.getDate());;
+                    final Date currentDate = new Date();
+
+                    if(currentDate.getTime() - date_time.getTime() > 0){
+                        mUpdateAppointmentDialog.show();
+                    }else{
+                        // nothing happened
+                    }
+                }catch(java.text.ParseException e){
+                    e.printStackTrace();
+                }
+
 
             }
         });
     }
+    private List<String> mListStack = new ArrayList<String>();
     private ItemClickListener mItemClickListener;
     public interface ItemClickListener{
         public void onItemClick(int position);
@@ -160,14 +213,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView appointmentTag;
-        Button appointmentRemover;
+       // Button appointmentRemover;
         Button appointmentChecker;
         Button appointmentUpdater;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);//btnAppointmentUpdater
             appointmentTag =itemView.findViewById(R.id.appointmnet_text_unit);
-            appointmentRemover =itemView.findViewById(R.id.btnAppointmentRemover);
+            //appointmentRemover =itemView.findViewById(R.id.btnAppointmentRemover);
             appointmentChecker =itemView.findViewById(R.id.btnAppointmentChecker);
             appointmentUpdater =itemView.findViewById(R.id.btnAppointmentUpdater);
         }

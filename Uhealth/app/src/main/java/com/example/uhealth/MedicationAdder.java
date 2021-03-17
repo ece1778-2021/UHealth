@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+import java.util.Calendar;
 public class MedicationAdder extends AppCompatActivity {
    Button m_adder ;//= findViewById(R.id.btnAddMedication);
 
@@ -44,6 +44,7 @@ public class MedicationAdder extends AppCompatActivity {
         //final Date currentDate = new Date();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
         final Date currentDate = new Date();
+        Date NextUpdate = new Date();
         String current_time_text = mdateformat.format(currentDate);
         String medicine = medicineview.getText().toString();
         String interval = intervalview.getText().toString();
@@ -54,6 +55,17 @@ public class MedicationAdder extends AppCompatActivity {
         String userid = mFireBaseInfo.mUser.getUid();
         String init_of_repeat = start_repeat.getText().toString();
         String repeat_counts = repeats_counter.getText().toString();//actually inieger
+        Calendar medication_calendar  =Calendar.getInstance();
+        medication_calendar.setTime(currentDate);
+        String next_time_text =new String(current_time_text);
+        try{
+            int nNumInterval = Integer.valueOf(interval);
+            medication_calendar.add(medication_calendar.HOUR_OF_DAY,nNumInterval);
+            next_time_text = mdateformat.format(medication_calendar.getTime());
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+        }
+        medication_calendar.add(medication_calendar.HOUR_OF_DAY,-1);
 	/*
         HashMap<String,Object> resMap = new HashMap<String,Object>();
         resMap.put("date",appointment_time);
@@ -68,12 +80,15 @@ public class MedicationAdder extends AppCompatActivity {
         // intent.putExtra("data_return", resMap);
         intent.putExtra("username",username);
         intent.putExtra("uid",userid );
-        intent.putExtra("initdate",current_time_text);
+        //intent.putExtra("initdate",current_time_text);
+        intent.putExtra("lastupdate",current_time_text);
+        intent.putExtra("nextupdate",next_time_text);
         intent.putExtra("medicine",medicine );
+        intent.putExtra("status","Scheduled" );
         intent.putExtra("initstorage",storage);
         intent.putExtra("interval",interval );
-        intent.putExtra("repeats",init_of_repeat);
-        intent.putExtra("interval",repeat_counts );
+        intent.putExtra("intidate",init_of_repeat);
+        intent.putExtra("repeates",repeat_counts );
         intent.putExtra("dosis",dosis );
         setResult(RESULT_OK, intent);
         finish();

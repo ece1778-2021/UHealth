@@ -1,8 +1,9 @@
 package com.example.uhealth;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
+import androidx.appcompat.app.AlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +34,9 @@ public class MedicationList extends AppCompatActivity {
     List<Medication> MedicationList = new ArrayList<>();
    MedicationAdapter medicationAdapter;
     private FireBaseInfo mFireBaseInfo;
+    Button MedicationRemover,MedicationAdder;
+    private AlertDialog mRemoveMedicationDialog;
+    private AlertDialog mAlarmMedicationDialog;
     final static int REQUEST_ADD_A_MEDICATION = 200;
     public void start_adder(){
         Intent addMedIntent = new Intent(this,MedicationAdder.class);
@@ -94,16 +99,8 @@ public class MedicationList extends AppCompatActivity {
                 List<DocumentSnapshot> documents = query_res.getDocuments();
                 for(int i =0; i < documents.size();i++){
                     DocumentSnapshot instance = documents.get(i);
-                    HashMap<String,Object> resMap =new HashMap<String,Object>();
+                    HashMap<String,Object> resMap = (HashMap)instance.getData();
 
-                    resMap.put("initdate",instance.get("initdate"));
-                    resMap.put("username",instance.get("username"));
-                    resMap.put("repeats",instance.get("repeats"));
-                    resMap.put("medicine",instance.get("medicine"));
-                    resMap.put("uid",instance.get("uid"));
-                    resMap.put("dosis",instance.get("dosis") );
-                    resMap.put("initstorage",instance.get("initstorage") );
-                    resMap.put("interval",instance.get("interval") );
 
                     Medication mmedication = new Medication(resMap);
                     bubble(mmedication );
@@ -156,6 +153,9 @@ public class MedicationList extends AppCompatActivity {
                     resMap.put("uid",data.getStringExtra("uid"));
                     resMap.put("medicine",data.getStringExtra("medicine"));
                     resMap.put("initdate",data.getStringExtra("initdate"));
+                    resMap.put("status",data.getStringExtra("status"));
+                    resMap.put("lastupdate",data.getStringExtra("lastupdate"));
+                    resMap.put("nextupdate",data.getStringExtra("nextupdate"));
                     try{
                         istorage=Integer.parseInt(data.getStringExtra("initstorage"));
 
@@ -205,6 +205,117 @@ public class MedicationList extends AppCompatActivity {
         }
 
     }
+    int selectedInd=0;
+    public void startRemover(){
+        List<String> TitleList = new ArrayList<String>();
+        String element;
+
+
+        if(MedicationList.size()==0){
+            TitleList.add("Empty medication list");
+        }
+        else{
+            for (int ind =0; ind < MedicationList.size();ind++){
+                Medication iterator = MedicationList.get(ind);
+                element = ind+""+"Last Update:"+iterator.getLastUpdate();
+                TitleList.add(element);
+            }
+
+
+        }
+
+
+
+        final String[] items=TitleList.toArray(new String[TitleList.size()]);
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Select an Medication to Cancel");
+        alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                selectedInd=  i;
+            }
+        });
+
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // mirror image
+                if(items[0].equals("Empty medication list")  ){
+
+
+                }
+                else{
+                    // Log.d("aqaqaq",i+"");
+                    Medication InstToDel = MedicationList.get(selectedInd);
+                    //remote remove
+                    remoteDelMedication(InstToDel);
+                    remoteDelMedication(InstToDel);
+                    //locally remove
+                    MedicationList.remove(selectedInd);
+                    medicationAdapter.notifyDataSetChanged();
+
+
+
+                }
+                mRemoveMedicationDialog.dismiss();
+            }
+        });
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mRemoveMedicationDialog.dismiss();
+            }
+        });
+        mRemoveMedicationDialog = alertBuilder.create();
+        mRemoveMedicationDialog.show();
+
+    }
+    public void remoteDelMedication(Medication instance){
+        FireBaseInfo mFireBaseInfo = new FireBaseInfo();
+        mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("uid",instance.getUid()).whereEqualTo("initdate",instance.getInitDate()).whereEqualTo("lastupdate",instance.getLastUpdate()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            QuerySnapshot query_res =  task.getResult();
+                            List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                            DocumentSnapshot delDocument = documents.get(0);
+                            if(delDocument!=null ){
+                                DocumentReference delDocumentRef = delDocument.getReference();
+                                delDocumentRef.update("status","Canceled");
+
+                            }else{
+
+                            }
+
+
+                        } else {
+                            // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+    public void initListener(){
+        MedicationRemover = findViewById(R.id.btnDelMedication);
+        MedicationAdder = findViewById(R.id.btnAddMedication);;
+
+        MedicationRemover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRemover();
+            }
+        });
+
+        MedicationAdder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start_adder();
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,7 +334,8 @@ public class MedicationList extends AppCompatActivity {
         recyclerView.setAdapter(medicationAdapter );
         download_medication_list();
         medicationAdapter.notifyDataSetChanged();
-
+        initListener();
+        fab.setVisibility(View.INVISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

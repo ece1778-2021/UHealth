@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -47,18 +48,9 @@ public class AppointmentAdder extends AppCompatActivity {
 
     final static int SET_APPOINTMENT_ALARM = 15;
 
-    public void setAlarm(Date date_time){
-        Intent intent = new Intent(AppointmentAdder.this, AlarmReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(AppointmentAdder.this, SET_APPOINTMENT_ALARM , intent, 0);
-        Calendar appointment_calendar  =Calendar.getInstance();
-        appointment_calendar.setTime(date_time);
-        appointment_calendar.add(appointment_calendar.DATE,-1);
-        AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        manager.set(AlarmManager.RTC_WAKEUP, appointment_calendar.getTimeInMillis(), sender);
 
-    }
     public void appointmentListener(){
-       //final Date currentDate = new Date();
+       final Date currentDate = new Date();
        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
        String appointment_time = timeboard.getText().toString();
        //String current_time_text = mdateformat.format(currentDate);
@@ -69,9 +61,33 @@ public class AppointmentAdder extends AppCompatActivity {
        String userid = mFireBaseInfo.mAuth.getUid();
        // String userid = "uid123";
         Date date_time = new Date();
-
+        String status ="Scheduled";
         HashMap<String,Object> resMap = new HashMap<String,Object>();
+        try{
+            Long comp = mdateformat.parse(appointment_time).getTime() - currentDate.getTime();
 
+            if(comp > 0){
+                if(comp > 1000*60*60*24){ //longer than 1 day
+                    resMap.put("status","Scheduled");
+                    status = "Scheduled";
+                }
+                else{
+                    resMap.put("status","Scheduled");
+                    status = "Scheduled";
+                }
+            }
+            else{
+                resMap.put("status","Past");
+                status = "Past";
+            }
+
+
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+        resMap.put("username",username);
+        resMap.put("uid",userid);
+        resMap.put("status",status);
         resMap.put("type",str_selected_type);
         resMap.put("date",appointment_time);
         resMap.put("physicainname",physician_name);
@@ -82,23 +98,21 @@ public class AppointmentAdder extends AppCompatActivity {
 
        Intent intent = new Intent();
 
-      // intent.putExtra("data_return", resMap);
+       //intent.putExtra("data_return", resMap);
+
         intent.putExtra("username",username);
         intent.putExtra("uid",userid);
+        intent.putExtra("status",status);
         intent.putExtra("type",str_selected_type);
         intent.putExtra("date",appointment_time);
         intent.putExtra("physicainname",physician_name);
         intent.putExtra("patientid",userid);
         intent.putExtra("patientname",username);
         intent.putExtra("location",mLocation );
+
+        Log.d("HHHH","we are 0002");
        setResult(RESULT_OK, intent);
-       try{
-           date_time = mdateformat.parse(appointment_time);
-           setAlarm(date_time);
-       }
-       catch(ParseException e){
-           e.printStackTrace();
-       }
+
        finish();
 
 

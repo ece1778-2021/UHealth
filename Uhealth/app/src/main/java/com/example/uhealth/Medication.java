@@ -3,49 +3,57 @@ package com.example.uhealth;
 import java.util.HashMap;
 
 public class Medication {
-        //private String Status;
+        private String Status;
         private String Medicine;
         private String InitDate;
-        private int Repeats;
-        private int InitStorage;
-        private int Interval;
-        private int Dosis;
+        private long Repeats;
+        private long InitStorage;
+        private long Interval;
+        private long Dosis;
         private String Username;
         private String Uid;
+        private String LastUpdate;//time
+        private String NextUpdate;//to be updated
         //private int CurrentStorage;
         //--------Initializer------------
         public Medication(HashMap<String,Object> Initializer){
-         //   this.Status  =(String)Initializer.get("status");
-            this.Dosis = (int)Initializer.get("dosis");
-;            this.Medicine = (String)Initializer.get("medicine");
+           this.Status  =Initializer.get("status").toString();
+            this.Dosis = Long.valueOf(Initializer.get("dosis").toString());
+;            this.Medicine = Initializer.get("medicine").toString();
             this.InitDate = (String)Initializer.get("initdate");
-            this.InitStorage = (int)Initializer.get("initstorage");
-            this.Interval = (int)Initializer.get("interval");
-            this.Repeats = (int)Initializer.get("repeats");
-            this.Username = (String)Initializer.get("username");
-            this.Uid = (String)Initializer.get("uid");
+            this.InitStorage =  Long.valueOf(Initializer.get("initstorage").toString());
+            this.Interval =  Long.valueOf(Initializer.get("interval").toString());
+            this.Repeats = Long.valueOf(Initializer.get("repeats").toString());
+            this.LastUpdate = Initializer.get("lastupdate").toString();
+            this.NextUpdate = Initializer.get("nextupdate").toString();
+            this.Username =Initializer.get("username").toString();
+            this.Uid = Initializer.get("uid").toString();
             // no user id yet
             //this.CurrentStorage = (int)Initializer.get("currentstorage");
         }
     //----Get-------------
-        //public String getStatus(){return Status;}
-        public int getRepeats(){return Repeats;}
+        public String getStatus(){return Status;}
+        public long getRepeats(){return Repeats;}
         public String getUsername(){return Username;}
         public String getUid(){return Uid;}
-        public int getDosis(){return Dosis;}
+        public long getDosis(){return Dosis;}
         public String getMedicine(){return Medicine;}
         public String getInitDate(){return InitDate; }
-        public int getInitStorage(){return InitStorage;}
-        public int getInterval(){return Interval;}
+        public long getInitStorage(){return InitStorage;}
+        public long getInterval(){return Interval;}
+        public String getLastUpdate(){return LastUpdate;}
+        public String getNextUpdate(){return NextUpdate;}
        // public int getCurrentStorage(){return CurrentStorage;}
         //--Set-----------
-      //  public void setStatus(String Status){this.Status = Status;}
+        public void setStatus(String Status){this.Status = Status;}
+        public void setLastUpdate(String LastUpdate){this.LastUpdate = LastUpdate;}
+    public void setNextUpdate(String NextUpdate){this.NextUpdate = NextUpdate;}
         public void setMedicine(String Medicine){this.Medicine = Medicine;}
         public void setInitDate(String InitDate){this.InitDate = InitDate;}
-        public void setInitStorage(int InitStorage){this.InitStorage = InitStorage;}
-        public void setInterval(int Interval){this.Interval = Interval;}
-        public void setRepeats(int Repeats){this.Repeats = Repeats;}
-        public void setDosis(int Dosis){this.Dosis = Dosis;}
+        public void setInitStorage(long InitStorage){this.InitStorage = InitStorage;}
+        public void setInterval(long Interval){this.Interval = Interval;}
+        public void setRepeats(long Repeats){this.Repeats = Repeats;}
+        public void setDosis(long Dosis){this.Dosis = Dosis;}
         public void setUid(String uid){this.Uid = Uid;};
         public void setUsername(String Username){this.Username = Username;}
         //public void setCurrentStorage(int CurrentStorage){this.CurrentStorage = CurrentStorage;}
