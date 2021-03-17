@@ -263,9 +263,10 @@ public class AppointmnetList extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public void alarmDialog(String AppointmentType){
+    public void alarmDialog(String AppointmentType,String apttime){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         final  String Title = "Notification of a/an"+AppointmentType ;
+        final String[] item ={"Don't forget your" + AppointmentType+"at"+apttime,};
         alertBuilder.setTitle(Title);
         alertBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -312,6 +313,20 @@ public class AppointmnetList extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
+        Intent starter = getIntent();
+        Bundle extras = starter.getExtras();
+        if (extras != null) {
+            boolean isAppointment = extras.getBoolean("isAppointment", false);
+            if (isAppointment) {
+                //-----------------------------------------
+
+                //-----------------------------------------
+                startMedia();// Do something
+                alarmDialog(starter.getStringExtra("apttype"),starter.getStringExtra("apttime"));
+            } else {
+                //Do nothing
+            }
+        }
 
 
 
@@ -444,20 +459,7 @@ public class AppointmnetList extends AppCompatActivity {
         initListener();
 
         //-----------------------------------------------------
-        Intent starter = getIntent();
-        Bundle extras = starter.getExtras();
-        if (extras != null) {
-            boolean isNew = extras.getBoolean("typefromalarm", false);
-            if (isNew) {
-                //-----------------------------------------
 
-                //-----------------------------------------
-                startMedia();// Do something
-                alarmDialog(starter.getStringExtra("typefromalarm"));
-            } else {
-                //Do nothing
-            }
-        }
         //--------------------------------------------------
         FloatingActionButton fab = findViewById(R.id.fab);
 

@@ -121,7 +121,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 final String[] items = {"Finished","Canceled","Postponed"};
 
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
-                alertBuilder.setTitle("Select your appointment type.");
+                alertBuilder.setTitle("Select your appointment feedback.");
                 alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

@@ -26,7 +26,8 @@ public class MyAlarmReceiver extends BroadcastReceiver {
             boolean isMedication= extras.getBoolean("isMedication", false);
             if (isAppointment) {
                 //-----------------------------------------
-                Toast.makeText(context, "Don't forget your" + extras.getString("apttype")+"at"+extras.getString("apttime"), Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Don't forget your" + extras.getString("apttype")+"at"+extras.getString("apttime"), Toast.LENGTH_LONG).show();
+
 
             } else {
 

@@ -166,22 +166,23 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                     }
                                 });
                         mUpdateMedicationDialog.dismiss();
-                        try{
-                            SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-                            Date date_time = mdateformat.parse(mMedication.getNextUpdate());
-                            final Date currentDate = new Date();
 
-                            if(currentDate.getTime() - date_time.getTime() > 0){
-                                mUpdateMedicationDialog.show();
-                            }else{
-                                // nothing happened
-                            }
-                        }catch(java.text.ParseException e){
-                            e.printStackTrace();
-                        }
                     }
 
                 });
+                try{
+                    SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                    Date date_time = mdateformat.parse(mMedication.getNextUpdate());
+                    final Date currentDate = new Date();
+
+                    if(currentDate.getTime() - date_time.getTime() > 0){
+                        mUpdateMedicationDialog.show();
+                    }else{
+                        // nothing happened
+                    }
+                }catch(java.text.ParseException e){
+                    e.printStackTrace();
+                }
 
             }});
     }
