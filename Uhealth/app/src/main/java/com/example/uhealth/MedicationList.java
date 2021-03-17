@@ -1,5 +1,7 @@
 package com.example.uhealth;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,7 +45,20 @@ public class MedicationList extends AppCompatActivity {
         startActivityForResult(addMedIntent, REQUEST_ADD_A_MEDICATION);
 
     }
+    public void finalDemo(Date date_time,String medicine){
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        long time = System.currentTimeMillis();
 
+        Intent intent = new Intent(MedicationList.this,MyAlarmReceiver.class);
+        intent.putExtra("isMedication",true);
+        intent.putExtra("medtime",mdateformat.format(date_time));
+        intent.putExtra("medicine",medicine);
+        PendingIntent pi = PendingIntent.getBroadcast(MedicationList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        manager.set(AlarmManager.RTC_WAKEUP,time+30*1000,pi);
+        // Toast.makeText(AppointmnetList.this,"What is this"+mFormat.format(time+5*1000),Toast.LENGTH_SHORT).show();
+
+    }
     public void bubble(Medication newinstance){
         final Date currentDate = new Date();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
@@ -191,7 +206,24 @@ public class MedicationList extends AppCompatActivity {
                     Medication temp_appointment = new Medication(resMap);
                     bubble(temp_appointment);
                     medicationAdapter.notifyDataSetChanged();
+                    try{
 
+
+                        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                        Date date_time = mdateformat.parse(resMap.get("nextupdate").toString());;
+                        final Date currentDate = new Date();
+
+                        if( date_time.getTime() -currentDate.getTime()> 0) {
+
+
+                            //setAlarm(date_time,resMap.get("type").toString());
+                            finalDemo(date_time,resMap.get("medicine").toString());
+                        }
+
+
+                    }catch(java.text.ParseException e){
+                        e.printStackTrace();
+                    }
                 }
             }
 

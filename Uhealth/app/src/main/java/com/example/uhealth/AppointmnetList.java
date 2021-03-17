@@ -59,21 +59,23 @@ public class AppointmnetList extends AppCompatActivity {
 
     }
     public void setAlarm(Date date_time,String atype){
+        Toast.makeText(AppointmnetList.this,"Trying to create alarm",Toast.LENGTH_LONG).show();
+      //  SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        Date cur = new Date();
 
-        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Log.d("ZXZXZX","TRYING TO SET ALARM");
-        Intent intent = new Intent(AppointmnetList.this, AlarmReceiver.class);
-        intent.putExtra("type",atype);
-        Toast.makeText(AppointmnetList.this,atype,Toast.LENGTH_SHORT).show();
+       // Log.d("ZXZXZX","TRYING TO SET ALARM");MyAlarmReceiver
+        Intent intent = new Intent(AppointmnetList.this, MyAlarmReceiver.class);
+        //intent.putExtra("type",atype);
+      //  Toast.makeText(AppointmnetList.this,atype,Toast.LENGTH_SHORT).show();
         PendingIntent sender = PendingIntent.getBroadcast(AppointmnetList.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Calendar appointment_calendar  =Calendar.getInstance();
-        appointment_calendar.setTime(date_time);
+     //   Calendar appointment_calendar  =Calendar.getInstance();
+        //appointment_calendar.setTime(date_time);
 
-        appointment_calendar.add(appointment_calendar.DAY_OF_MONTH,-1);
+      //  appointment_calendar.add(appointment_calendar.DAY_OF_MONTH,-1);
 
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        manager.setExact(AlarmManager.RTC, appointment_calendar.getTimeInMillis(), sender);
-
+  //      manager.setExact(AlarmManager.RTC_WAKEUP, appointment_calendar.getTimeInMillis(), sender);
+        manager.set(AlarmManager.RTC_WAKEUP, cur.getTime()+20*1000, sender);
     }
     public void bubble(Appointment newinstance){
         final Date currentDate = new Date();
@@ -118,7 +120,20 @@ public class AppointmnetList extends AppCompatActivity {
         }
 
     }
+    public void finalDemo(Date date_time,String aptype){
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        long time = System.currentTimeMillis();
 
+        Intent intent = new Intent(AppointmnetList.this,MyAlarmReceiver.class);
+        intent.putExtra("isAppointment",true);
+        intent.putExtra("apttime",mdateformat.format(date_time));
+        intent.putExtra("apttype",aptype);
+        PendingIntent pi = PendingIntent.getBroadcast(AppointmnetList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        manager.set(AlarmManager.RTC_WAKEUP,time+30*1000,pi);
+       // Toast.makeText(AppointmnetList.this,"What is this"+mFormat.format(time+5*1000),Toast.LENGTH_SHORT).show();
+
+    }
     public void download_medication_list(){
         String uid = mFireBaseInfo.mUser.getUid();
         mFireBaseInfo.mFirestore.collection("Appointment").whereEqualTo("patientid",uid).get()
@@ -204,8 +219,8 @@ public class AppointmnetList extends AppCompatActivity {
                     appointmentAdapter.notifyDataSetChanged();
                     Log.d("HHHH","we are 0003");
                     try{
-                        Toast.makeText(AppointmnetList.this,"Trying to create alarm",Toast.LENGTH_LONG).show();
-                        Log.d("HHHH","we are 0003");
+
+
                         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                         Date date_time = mdateformat.parse(resMap.get("date").toString());;
                         final Date currentDate = new Date();
@@ -213,7 +228,8 @@ public class AppointmnetList extends AppCompatActivity {
                         if( date_time.getTime() -currentDate.getTime()> 0) {
 
 
-                            setAlarm(date_time,resMap.get("type").toString());
+                            //setAlarm(date_time,resMap.get("type").toString());
+                            finalDemo(date_time,resMap.get("type").toString());
                         }
 
 
@@ -297,26 +313,7 @@ public class AppointmnetList extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
 
-        Intent starter = getIntent();
-        Bundle extras = starter.getExtras();
-        if (extras != null) {
-            boolean isNew = extras.getBoolean("typefromalarm", false);
-            if (isNew) {
-                //-----------------------------------------
-                requestWindowFeature(Window.FEATURE_NO_TITLE); // hide title
-                Window win = getWindow();
-                WindowManager.LayoutParams winParams = win.getAttributes();
-                winParams.flags |= (WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-                //-----------------------------------------
-                startMedia();// Do something
-                alarmDialog(starter.getStringExtra("typefromalarm"));
-            } else {
-                //Do nothing
-            }
-        }
 
     }
     int selectedInd=0;
@@ -445,6 +442,23 @@ public class AppointmnetList extends AppCompatActivity {
         setSupportActionBar(toolbar);
         download_medication_list();
         initListener();
+
+        //-----------------------------------------------------
+        Intent starter = getIntent();
+        Bundle extras = starter.getExtras();
+        if (extras != null) {
+            boolean isNew = extras.getBoolean("typefromalarm", false);
+            if (isNew) {
+                //-----------------------------------------
+
+                //-----------------------------------------
+                startMedia();// Do something
+                alarmDialog(starter.getStringExtra("typefromalarm"));
+            } else {
+                //Do nothing
+            }
+        }
+        //--------------------------------------------------
         FloatingActionButton fab = findViewById(R.id.fab);
 
         fab.setVisibility(View.INVISIBLE);
