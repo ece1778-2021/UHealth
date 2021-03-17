@@ -42,7 +42,7 @@ public class MedicationAdder extends AppCompatActivity {
 
     public void medicationListener(){
         //final Date currentDate = new Date();
-        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         final Date currentDate = new Date();
         Date NextUpdate = new Date();
         String current_time_text = mdateformat.format(currentDate);

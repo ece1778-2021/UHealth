@@ -5,10 +5,10 @@
     <!---add a button or not?-->
     <TextView
         android:id="@+id/medication_text_unit"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/default_str"
-        android:textSize="15sp" />
+        android:textSize="20sp" />
     <Button
         android:id="@+id/btnMedicationUpdater"
         android:layout_width="wrap_content"

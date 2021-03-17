@@ -2,6 +2,7 @@ package com.example.uhealth;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -27,8 +28,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 import java.util.Calendar;
@@ -45,6 +49,7 @@ public class AppointmnetList extends AppCompatActivity {
     private AlertDialog mAlarmAppointmentDialog;
     Button AppointmentRemover,AppointmentAdder;
     private FireBaseInfo mFireBaseInfo;
+    private PowerManager.WakeLock mWakelock;
     final static int REQUEST_ADD_AN_APPOINTMENT = 100;
     final static int SET_APPOINTMENT_ALARM = 15;
     private MediaPlayer mp = new MediaPlayer();
@@ -54,14 +59,20 @@ public class AppointmnetList extends AppCompatActivity {
 
     }
     public void setAlarm(Date date_time,String atype){
+
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Log.d("ZXZXZX","TRYING TO SET ALARM");
         Intent intent = new Intent(AppointmnetList.this, AlarmReceiver.class);
         intent.putExtra("type",atype);
-        PendingIntent sender = PendingIntent.getBroadcast(AppointmnetList.this, SET_APPOINTMENT_ALARM , intent, 0);
+        Toast.makeText(AppointmnetList.this,atype,Toast.LENGTH_SHORT).show();
+        PendingIntent sender = PendingIntent.getBroadcast(AppointmnetList.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar appointment_calendar  =Calendar.getInstance();
         appointment_calendar.setTime(date_time);
+
         appointment_calendar.add(appointment_calendar.DAY_OF_MONTH,-1);
+
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        manager.set(AlarmManager.RTC_WAKEUP, appointment_calendar.getTimeInMillis(), sender);
+        manager.setExact(AlarmManager.RTC, appointment_calendar.getTimeInMillis(), sender);
 
     }
     public void bubble(Appointment newinstance){
@@ -92,7 +103,7 @@ public class AppointmnetList extends AppCompatActivity {
                     }catch(Exception e){
 
                     }
-                    if(newtime<oldtime){
+                    if(newtime <oldtime){
 
                     }
                     else{
@@ -140,7 +151,7 @@ public class AppointmnetList extends AppCompatActivity {
 
 
                         } else {
-                            // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+
                         }
                     }
                 });
@@ -153,7 +164,7 @@ public class AppointmnetList extends AppCompatActivity {
         mFireBaseInfo.mFirestore.collection("Appointment").add(resMap) .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                //Toast.makeText(RegisterActivity.this, "Congratulation!!!", Toast.LENGTH_LONG).show();
+
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -176,7 +187,7 @@ public class AppointmnetList extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                    // HashMap<String,Object> resMap = (HashMap)data.getSerializableExtra("data_return");
                     HashMap<String,Object> resMap = new HashMap<String,Object>();
-
+                    Toast.makeText(AppointmnetList.this,"Successfuly added",Toast.LENGTH_LONG);
                     resMap.put("date",data.getStringExtra("date"));
                     resMap.put("physicainname",data.getStringExtra("physicainname"));
                     resMap.put("patientid",data.getStringExtra("patientid"));
@@ -191,16 +202,16 @@ public class AppointmnetList extends AppCompatActivity {
                     Appointment temp_appointment = new Appointment(resMap);
                     bubble(temp_appointment);
                     appointmentAdapter.notifyDataSetChanged();
-
-                   upload_appointment_instance(resMap);
-
+                    Log.d("HHHH","we are 0003");
                     try{
+                        Toast.makeText(AppointmnetList.this,"Trying to create alarm",Toast.LENGTH_LONG).show();
                         Log.d("HHHH","we are 0003");
-                        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                         Date date_time = mdateformat.parse(resMap.get("date").toString());;
                         final Date currentDate = new Date();
 
-                        if(currentDate.getTime() - date_time.getTime() > 0) {
+                        if( date_time.getTime() -currentDate.getTime()> 0) {
+
 
                             setAlarm(date_time,resMap.get("type").toString());
                         }
@@ -209,6 +220,9 @@ public class AppointmnetList extends AppCompatActivity {
                     }catch(java.text.ParseException e){
                         e.printStackTrace();
                     }
+
+
+                    upload_appointment_instance(resMap);
 
                 }
             }
@@ -248,6 +262,37 @@ public class AppointmnetList extends AppCompatActivity {
         mAlarmAppointmentDialog.show();
             //mAlarmAppointmentDialog
     }
+    private void acquireWakeLock() {
+        if (mWakelock == null) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            mWakelock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP
+                    | PowerManager.SCREEN_DIM_WAKE_LOCK, this.getClass()
+                    .getCanonicalName());
+            mWakelock.acquire();
+        }
+    }
+
+    /**
+     * 释放锁屏
+     */
+    private void releaseWakeLock() {
+        if (mWakelock != null && mWakelock.isHeld()) {
+            mWakelock.release();
+            mWakelock = null;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseWakeLock();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        acquireWakeLock();
+    }
     @Override
     protected void onStart(){
         super.onStart();
@@ -257,6 +302,15 @@ public class AppointmnetList extends AppCompatActivity {
         if (extras != null) {
             boolean isNew = extras.getBoolean("typefromalarm", false);
             if (isNew) {
+                //-----------------------------------------
+                requestWindowFeature(Window.FEATURE_NO_TITLE); // hide title
+                Window win = getWindow();
+                WindowManager.LayoutParams winParams = win.getAttributes();
+                winParams.flags |= (WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+                //-----------------------------------------
                 startMedia();// Do something
                 alarmDialog(starter.getStringExtra("typefromalarm"));
             } else {
@@ -353,7 +407,7 @@ public class AppointmnetList extends AppCompatActivity {
 
 
                         } else {
-                            // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+
                         }
                     }
                 });

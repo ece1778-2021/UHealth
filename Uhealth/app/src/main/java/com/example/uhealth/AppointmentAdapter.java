@@ -177,7 +177,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 mUpdateAppointmentDialog = alertBuilder.create();
 
                 try{
-                    SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                     Date date_time = mdateformat.parse(mAppointment.getDate());;
                     final Date currentDate = new Date();
 

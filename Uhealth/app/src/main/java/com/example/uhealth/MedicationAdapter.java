@@ -139,7 +139,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
 
                                                 Calendar medicationcalendar =Calendar.getInstance();
                                                 int interval = 4;
-                                                SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                                SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                                                 try{//ANIMPORTANTNOTE
                                                     interval = Integer.valueOf(delDocument.get("interval").toString());
                                                     Date last_time = mdateformat.parse(delDocument.get("nextupdate").toString());
@@ -167,7 +167,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                 });
                         mUpdateMedicationDialog.dismiss();
                         try{
-                            SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                             Date date_time = mdateformat.parse(mMedication.getNextUpdate());
                             final Date currentDate = new Date();
 

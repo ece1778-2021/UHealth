@@ -46,7 +46,7 @@ public class MedicationList extends AppCompatActivity {
 
     public void bubble(Medication newinstance){
         final Date currentDate = new Date();
-        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         String init_time = newinstance.getInitDate();
         Long newtime =new  Long(0);
         Long oldtime =new Long(0);

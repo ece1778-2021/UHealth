@@ -51,7 +51,7 @@ public class AppointmentAdder extends AppCompatActivity {
 
     public void appointmentListener(){
        final Date currentDate = new Date();
-       SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+       SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
        String appointment_time = timeboard.getText().toString();
        //String current_time_text = mdateformat.format(currentDate);
        String physician_name = doctornameview.getText().toString();

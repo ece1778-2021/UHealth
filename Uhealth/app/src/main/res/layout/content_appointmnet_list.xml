@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/btnDelAppointment"
-        android:text="@string/add_medication"
+        android:text="ADD AN APPOINTMENT"
         />
     <Button
         android:id="@+id/btnDelAppointment"
