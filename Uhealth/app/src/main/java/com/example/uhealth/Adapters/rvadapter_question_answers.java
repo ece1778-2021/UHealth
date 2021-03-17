@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.uhealth.DataStructures.CachedThreadPool;
 import com.example.uhealth.Fragments.Frag_question;
 import com.example.uhealth.R;
+import com.google.firebase.firestore.CollectionReference;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -56,10 +58,10 @@ public class rvadapter_question_answers extends RecyclerView.Adapter<rvadapter_q
         holder.mBT.setText(text);
 
         if (weight == fragmentCallback.getValue(pos)){
-            holder.mBT.setBackgroundColor(Color.rgb(226,11,11));
+            holder.mCard.setBackgroundResource(R.color.orangeLight);
             lastpos = position;
         }else{
-            holder.mBT.setBackgroundColor(Color.rgb(11,11,226));
+            holder.mCard.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
@@ -70,10 +72,12 @@ public class rvadapter_question_answers extends RecyclerView.Adapter<rvadapter_q
 
     public class answers extends RecyclerView.ViewHolder implements View.OnClickListener{
         Button mBT;
+        CardView mCard;
 
         public answers(@NonNull View itemView) {
             super(itemView);
             mBT = itemView.findViewById(R.id.rv_question_answer);
+            mCard = itemView.findViewById(R.id.anscard);
             mBT.setOnClickListener(this);
         }
 

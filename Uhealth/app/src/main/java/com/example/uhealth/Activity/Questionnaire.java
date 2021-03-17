@@ -21,7 +21,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Questionnaire extends AppCompatActivity {
     public static final String TAG = Questionnaire.class.getSimpleName();
@@ -33,7 +35,7 @@ public class Questionnaire extends AppCompatActivity {
     private Button mStartButton;
     private RelativeLayout mStartLayout;
 
-    private String qs_idHolder= "", qs_textHolder="";
+    private String qs_idHolder= "", qs_textHolder="", qs_descripHolder="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,7 @@ public class Questionnaire extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         qs_idHolder = savedInstanceState.getString("QS_ID");
         qs_textHolder = savedInstanceState.getString("QS_TEXT");
+        qs_descripHolder = savedInstanceState.getString("QS_DES");
         mStartLayout.setVisibility(savedInstanceState.getInt("START"));
     }
 
@@ -80,6 +83,7 @@ public class Questionnaire extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString("QS_ID", qs_idHolder);
         outState.putString("QS_TEXT", qs_textHolder);
+        outState.putString("QS_DES", qs_descripHolder);
         outState.putInt("START", mStartLayout.getVisibility());
         super.onSaveInstanceState(outState);
     }
@@ -90,17 +94,22 @@ public class Questionnaire extends AppCompatActivity {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         int total = queryDocumentSnapshots.size();
-                        LinkedHashMap<String, String> mp = new LinkedHashMap<String,String>(total);
+                        LinkedHashMap<String, Map<String, String>> mp = new LinkedHashMap<>(total);
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()){
-                            String value = document.getData().get("name").toString();
+                            String mp_name = document.getData().get("name").toString();
+                            String mp_des = document.getData().get("description").toString();
                             String key = document.getId();
-                            mp.put(key, value);
+                            Map<String,String> v_mp = new HashMap<>();
+                            v_mp.put("name", mp_name);
+                            v_mp.put("des", mp_des);
+                            mp.put(key, v_mp);
                         }
                         mADquestionsets = new rvadapter_questionnaire_questions(mp, new rvadapter_questionnaire_questions.onQSClickListener() {
                             @Override
-                            public void onQSClick(String qs_id, String qs_text) {
+                            public void onQSClick(String qs_id, String qs_text, String qs_des) {
                                 Questionnaire.this.qs_idHolder = qs_id;
                                 Questionnaire.this.qs_textHolder = qs_text;
+                                Questionnaire.this.qs_descripHolder = qs_des;
                                 mStartLayout.setVisibility(View.VISIBLE);
                             }
                         });

@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,13 +34,13 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvadapter_questionnaire_questions.questionset> {
-    private LinkedHashMap<String, String> listmap;
+    private LinkedHashMap<String, Map<String, String>> listmap;
     private onQSClickListener listener;
     private String[] keyarray;
     private FireBaseInfo mFirebaseInfo;
     private int lastpos = -1;
 
-    public rvadapter_questionnaire_questions(LinkedHashMap<String, String> input, onQSClickListener clickListener){
+    public rvadapter_questionnaire_questions(LinkedHashMap<String, Map<String, String>> input, onQSClickListener clickListener){
         this.listener = clickListener;
         this.listmap = input;
         Set<String> keySet = input.keySet();
@@ -60,8 +62,11 @@ public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvad
     @Override
     public void onBindViewHolder(@NonNull questionset holder, int position) {
         String key = this.keyarray[position];
-        String text = this.listmap.get(key);
-        holder.mBT.setText(text);
+        Map<String, String> v_mp = this.listmap.get(key);
+        String text = v_mp.get("name");
+        String des = v_mp.get("des");
+        holder.mQuestiontext.setText(text);
+        holder.mQuestiondes.setText(des);
         if (lastpos == position){
             holder.chartLayout.setVisibility(View.VISIBLE);
         }else{
@@ -75,32 +80,35 @@ public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvad
     }
 
     public class questionset extends RecyclerView.ViewHolder implements View.OnClickListener{
-        Button mBT;
+        RelativeLayout mRLclick;
+        TextView mQuestiontext, mQuestiondes;
         onQSClickListener mlistener;
         FrameLayout chartLayout;
         LineChart lineChart;
 
         public questionset(@NonNull View itemView, onQSClickListener listener) {
             super(itemView);
-            mBT = itemView.findViewById(R.id.rv_questionnaires_questionnaires);
+            mRLclick = itemView.findViewById(R.id.rv_questionnaire_clickable);
+            mQuestiontext = itemView.findViewById(R.id.rv_questionnaires_questiontext);
+            mQuestiondes = itemView.findViewById(R.id.rv_questionnaires_questiondescrip);
             mlistener = listener;
             lineChart = itemView.findViewById(R.id.linechart);
             chartLayout = itemView.findViewById(R.id.graphlayout);
             lineChart.setTouchEnabled(true);
             lineChart.setPinchZoom(true);
-            mBT.setOnClickListener(this);
+            mRLclick.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == mBT.getId()){
+            if (v.getId() == mRLclick.getId()){
                 int posi = getAdapterPosition();
                 String key = rvadapter_questionnaire_questions.this.keyarray[posi];
-                String text = listmap.get(key);
-                mlistener.onQSClick(key, text);
+                Map<String, String> v_map = listmap.get(key);
+                String text = v_map.get("name");
+                String des = v_map.get("des");
+                mlistener.onQSClick(key, text, des);
                 chartLayout.setVisibility(View.VISIBLE);
-
-
                 int temp_last = lastpos;
                 lastpos = posi;
                 if (posi != temp_last){
@@ -134,7 +142,7 @@ public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvad
                             }
                         }
 
-                        LineDataSet lineDataSet = new LineDataSet(values, "data set1");
+                        LineDataSet lineDataSet = new LineDataSet(values, "Past Results");
                         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
                         dataSets.add(lineDataSet);
 
@@ -155,7 +163,7 @@ public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvad
 
 
     public interface onQSClickListener{
-        void onQSClick(String qs_id, String qs_text);
+        void onQSClick(String qs_id, String qs_text, String qs_des);
     }
 
 }
