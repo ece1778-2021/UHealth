@@ -176,6 +176,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                     final Date currentDate = new Date();
 
                     if(currentDate.getTime() - date_time.getTime() > 0){
+                        mUpdateMedicationDialog = alertBuilder.create();
                         mUpdateMedicationDialog.show();
                     }else{
                         // nothing happened
