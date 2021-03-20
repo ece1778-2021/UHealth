@@ -75,11 +75,11 @@ public class AppointmnetList extends AppCompatActivity {
 
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
   //      manager.setExact(AlarmManager.RTC_WAKEUP, appointment_calendar.getTimeInMillis(), sender);
-        manager.set(AlarmManager.RTC_WAKEUP, cur.getTime()+20*1000, sender);
+        manager.set(AlarmManager.RTC_WAKEUP, cur.getTime()+12*1000, sender);
     }
     public void bubble(Appointment newinstance){
         final Date currentDate = new Date();
-        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         String appointment_time = newinstance.getDate();
         Long newtime =new  Long(0);
         Long oldtime =new Long(0);

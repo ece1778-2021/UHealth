@@ -80,7 +80,7 @@ public class MedicationAdder extends AppCompatActivity {
         // intent.putExtra("data_return", resMap);
         intent.putExtra("username",username);
         intent.putExtra("uid",userid );
-        //intent.putExtra("initdate",current_time_text);
+        intent.putExtra("initdate",current_time_text);
         intent.putExtra("lastupdate",current_time_text);
         intent.putExtra("nextupdate",next_time_text);
         intent.putExtra("medicine",medicine );

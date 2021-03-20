@@ -2,11 +2,13 @@ package com.example.uhealth;
 
 import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +31,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
     private FireBaseInfo mFireBaseInfo;
     private AlertDialog mUpdateMedicationDialog;
     private AlertDialog mShowMedicationDialog;
-    private List<String> mListStack = new ArrayList<String>();
+    private List<String> mListStack = new ArrayList<String>()
 
     @NonNull
     @Override
@@ -91,8 +93,93 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                 mShowMedicationDialog.show();
             }
         });
+        holder.medicationUpdater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] items ={"Finished","Missed"};
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+                alertBuilder.setTitle("Select your medication condition");
+                alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       // mListStack.add(0, items[which]);
+                    }
+                });
+                alertBuilder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mUpdateMedicationDialog.dismiss();
+                    }
+                });
+                alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListStack.add("Finished");
+                       String selectedUpdate = mListStack.get(0);
+
+                        mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("uid",mMedication.getUid())
+                                .whereEqualTo("medicine",mMedication.getMedicine())//.whereEqualTo("initdate",mMedication.getInitDate())
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            QuerySnapshot query_res = task.getResult();
+                                            List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                                            DocumentSnapshot delDocument = documents.get(0);
+                                            if(delDocument!=null){
+                                                DocumentReference delDocumentRef = delDocument.getReference();
+
+                                                Calendar medicationcalendar =Calendar.getInstance();
+                                                int interval = 4;
+                                                SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                                                try{//ANIMPORTANTNOTE
+                                                    interval = Integer.valueOf(delDocument.get("interval").toString());
+                                                    Date last_time = mdateformat.parse(delDocument.get("nextupdate").toString());
+                                                    String last_time_text = delDocument.get("nextupdate").toString();
+                                                    Date next_time = mdateformat.parse(last_time_text);;
+                                                    medicationcalendar.setTime(next_time);
+                                                    medicationcalendar.add(medicationcalendar.HOUR_OF_DAY,interval);
+                                                    String next_update_text = mdateformat.format(medicationcalendar.getTime());
+                                                    Log.d("AAASSSAAASSS",last_time_text+next_update_text);
+                                                    delDocumentRef.update("lastupdate", last_time_text);
+                                                    delDocumentRef.update("nextupdate", next_update_text);
+                                                    //mMedication.setNextUpdate(next_update_text);
+                                                    //try this one:
 
 
+                                                }catch(ParseException e){
+                                                    e.printStackTrace();
+                                                };
+                                            }
+                                            else{
+                                                Log.d("AAASSSAAASSS","AAASSSAAASSS");
+                                            }
+                                        }
+                                        else{
+                                            Log.d("SSSSAAAASSSSAAAA","SSSSAAAASSSSAAAA");
+                                        }
+
+                                    }
+
+
+                    });
+                    }
+                });
+                //alertBuilder.setPositiveButton(OK)
+                //---------------------
+                mUpdateMedicationDialog = alertBuilder.create();
+
+                mUpdateMedicationDialog.show();
+
+                //---------------------
+
+
+            }
+        });
+        /*
         holder.medicationUpdater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +211,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                         String selectedUpdate = mListStack.get(0);
 
                         mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("medicine", mMedication.getMedicine())
-                                .whereEqualTo("uid", mMedication.getUid()).whereEqualTo("initdate", mMedication.getInitDate()).get()
+                                .whereEqualTo("uid", mMedication.getUid()).get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -143,12 +230,16 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                                 try{//ANIMPORTANTNOTE
                                                     interval = Integer.valueOf(delDocument.get("interval").toString());
                                                     Date last_time = mdateformat.parse(delDocument.get("nextupdate").toString());
+                                                    String last_time_text = delDocument.get("nextupdate").toString();
                                                     Date next_time = mdateformat.parse(delDocument.get("nextupdate").toString());;
                                                     medicationcalendar.setTime(next_time);
                                                     medicationcalendar.add(medicationcalendar.HOUR_OF_DAY,interval);
                                                     String next_update_text = mdateformat.format(medicationcalendar.getTime());
-                                                    delDocumentRef.update("lastupdate", last_time);
-                                                    delDocumentRef.update("lastupdate", next_update_text);
+                                                    delDocumentRef.update("lastupdate", last_time_text);
+                                                    delDocumentRef.update("nextupdate", next_update_text);
+                                                    mMedication.setNextUpdate(next_update_text);
+                                                    //try this one:
+
 
                                                 }catch(ParseException e){
                                                     e.printStackTrace();
@@ -173,19 +264,21 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                 try{
                     SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                     Date date_time = mdateformat.parse(mMedication.getNextUpdate());
+                    //Toast.makeText(v.getContext(),mMedication.getNextUpdate(),Toast.LENGTH_LONG).show();
+                    Log.d("ZZZXXXZZZXXX",mMedication.getNextUpdate());
                     final Date currentDate = new Date();
 
-                    if(currentDate.getTime() - date_time.getTime() > 0){
+                    //if(currentDate.getTime() - date_time.getTime() > 0){
                         mUpdateMedicationDialog = alertBuilder.create();
                         mUpdateMedicationDialog.show();
-                    }else{
+                  //  }else{
                         // nothing happened
-                    }
+                    //}
                 }catch(java.text.ParseException e){
                     e.printStackTrace();
                 }
 
-            }});
+            }});*/
     }
 
 

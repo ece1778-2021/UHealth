@@ -55,7 +55,7 @@ public class MedicationList extends AppCompatActivity {
         intent.putExtra("medicine",medicine);
         PendingIntent pi = PendingIntent.getBroadcast(MedicationList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        manager.set(AlarmManager.RTC_WAKEUP,time+30*1000,pi);
+        manager.set(AlarmManager.RTC_WAKEUP,time+12*1000,pi);
         // Toast.makeText(AppointmnetList.this,"What is this"+mFormat.format(time+5*1000),Toast.LENGTH_SHORT).show();
 
     }
@@ -118,7 +118,12 @@ public class MedicationList extends AppCompatActivity {
 
 
                     Medication mmedication = new Medication(resMap);
-                    bubble(mmedication );
+                    if("Canceled".equals(mmedication.getStatus())){
+
+                    }else{
+                        bubble(mmedication );
+                    }
+
                 }
                 medicationAdapter.notifyDataSetChanged();
 
@@ -281,7 +286,7 @@ public class MedicationList extends AppCompatActivity {
                     Medication InstToDel = MedicationList.get(selectedInd);
                     //remote remove
                     remoteDelMedication(InstToDel);
-                    remoteDelMedication(InstToDel);
+
                     //locally remove
                     MedicationList.remove(selectedInd);
                     medicationAdapter.notifyDataSetChanged();
@@ -305,7 +310,7 @@ public class MedicationList extends AppCompatActivity {
     }
     public void remoteDelMedication(Medication instance){
         FireBaseInfo mFireBaseInfo = new FireBaseInfo();
-        mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("uid",instance.getUid()).whereEqualTo("initdate",instance.getInitDate()).whereEqualTo("lastupdate",instance.getLastUpdate()).get()
+        mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("uid",instance.getUid()).whereEqualTo("initdate",instance.getInitDate()).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

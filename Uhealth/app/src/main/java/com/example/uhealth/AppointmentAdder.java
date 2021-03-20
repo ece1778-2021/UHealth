@@ -116,7 +116,7 @@ public class AppointmentAdder extends AppCompatActivity {
        finish();
 
 
-       // SimpleDateFormat mdateformat=getDateTimeInstance("yyyy-MM-dd HH:mm")
+       // SimpleDateFormat mdateformat=getDateTimeInstance("yyyy-MM-dd-HH:mm")
         //"1970-01-01-23:59";
     }
     public void startTimePicker(){

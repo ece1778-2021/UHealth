@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" android:layout_height="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
     <!---add a button or not?-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        card_view:cardCornerRadius="20dp"
+        card_view:cardElevation="18dp"
+
+        card_view:cardBackgroundColor="@color/yellowLight">
     <TextView
         android:id="@+id/appointmnet_text_unit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/default_str"
-        android:layout_marginLeft ="20dp"
-        android:layout_marginTop="20dp"
-        android:textSize="12sp"
+        android:layout_marginTop="0dp"
+        android:textSize="20sp"
         android:layout_alignParentStart="true"/>
     <Button
         android:id="@+id/btnAppointmentUpdater"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appointmnet_text_unit"
+
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_toLeftOf ="@+id/btnAppointmentChecker"
+        android:layout_toLeftOf ="@+id/appointmnet_text_unit"
         android:text="UPDATE"
         />
     <Button
@@ -26,12 +37,15 @@
         android:layout_below="@+id/appointmnet_text_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="100dp"
+        android:layout_toRightOf ="@+id/btnAppointmentUpdater"
+
         android:text="CHECK"
         />
-
+    </androidx.cardview.widget.CardView>
 
     <!-- android:layout_above=-->
     <!-- android:layout_toRightOf=-->
