@@ -4,6 +4,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,6 +42,25 @@ public class MedicationList extends AppCompatActivity {
     private AlertDialog mRemoveMedicationDialog;
     private AlertDialog mAlarmMedicationDialog;
     final static int REQUEST_ADD_A_MEDICATION = 200;
+    private MediaPlayer mp = new MediaPlayer();
+    private void startMedia() {
+        try {
+            mp.setDataSource(this,
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+            mp.prepare();
+            mp.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void tuning(){
+        if(mp.isPlaying()){
+            mp.pause();
+        }else{
+            //mp.start();
+        }
+
+    }
     public void start_adder(){
         Intent addMedIntent = new Intent(this,MedicationAdder.class);
         startActivityForResult(addMedIntent, REQUEST_ADD_A_MEDICATION);
@@ -55,7 +76,7 @@ public class MedicationList extends AppCompatActivity {
         intent.putExtra("medicine",medicine);
         PendingIntent pi = PendingIntent.getBroadcast(MedicationList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        manager.set(AlarmManager.RTC_WAKEUP,time+12*1000,pi);
+        manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
         // Toast.makeText(AppointmnetList.this,"What is this"+mFormat.format(time+5*1000),Toast.LENGTH_SHORT).show();
 
     }
@@ -104,7 +125,7 @@ public class MedicationList extends AppCompatActivity {
     }
     public void download_medication_list(){
         String uid = mFireBaseInfo.mUser.getUid();
-        mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("uid",uid).get()
+        mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid",uid).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
         @Override
         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -118,7 +139,7 @@ public class MedicationList extends AppCompatActivity {
 
 
                     Medication mmedication = new Medication(resMap);
-                    if("Canceled".equals(mmedication.getStatus())){
+                    if("past".equals(mmedication.getStatus())){
 
                     }else{
                         bubble(mmedication );
@@ -139,7 +160,7 @@ public class MedicationList extends AppCompatActivity {
 
     }
     public void upload_medication_instance(HashMap<String,Object> resMap){
-        mFireBaseInfo.mFirestore.collection("Medication").add(resMap) .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        mFireBaseInfo.mFirestore.collection("MMedication").add(resMap) .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 //Toast.makeText(RegisterActivity.this, "Congratulation!!!", Toast.LENGTH_LONG).show();
@@ -160,6 +181,7 @@ public class MedicationList extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         int istorage=20;
+        int icstorage = 20;
         int iinterval = 12;
         int irepeatcounts = 3;
         int dosis = 1;
@@ -173,6 +195,12 @@ public class MedicationList extends AppCompatActivity {
                     resMap.put("uid",data.getStringExtra("uid"));
                     resMap.put("medicine",data.getStringExtra("medicine"));
                     resMap.put("initdate",data.getStringExtra("initdate"));
+                    //---
+                    resMap.put("enddate",data.getStringExtra("enddate"));
+                    resMap.put("type",data.getStringExtra("type"));
+
+
+                    //---
                     resMap.put("status",data.getStringExtra("status"));
                     resMap.put("lastupdate",data.getStringExtra("lastupdate"));
                     resMap.put("nextupdate",data.getStringExtra("nextupdate"));
@@ -183,14 +211,13 @@ public class MedicationList extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     try{
-                        iinterval=Integer.parseInt(data.getStringExtra("interval"));
+                        icstorage=Integer.parseInt(data.getStringExtra("currentstorage"));
 
                     }catch(NumberFormatException e){
                         e.printStackTrace();
                     }
-
                     try{
-                        irepeatcounts =Integer.parseInt(data.getStringExtra("repeats"));
+                        iinterval=Integer.parseInt(data.getStringExtra("interval"));
 
                     }catch(NumberFormatException e){
                         e.printStackTrace();
@@ -204,12 +231,13 @@ public class MedicationList extends AppCompatActivity {
                     }
                     resMap.put("dosis",dosis);
                     resMap.put("initstorage",istorage);
+                    resMap.put("currentstorage",icstorage);
                     resMap.put("interval",iinterval);
-                    resMap.put("repeats",irepeatcounts);
+
 
                     upload_medication_instance(resMap);
-                    Medication temp_appointment = new Medication(resMap);
-                    bubble(temp_appointment);
+                    Medication temp_medication = new Medication(resMap);
+                    bubble(temp_medication);
                     medicationAdapter.notifyDataSetChanged();
                     try{
 
@@ -217,13 +245,20 @@ public class MedicationList extends AppCompatActivity {
                         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                         Date date_time = mdateformat.parse(resMap.get("nextupdate").toString());;
                         final Date currentDate = new Date();
+                        if("ongoing".equals(temp_medication.getStatus())){
+                            if( date_time.getTime() -currentDate.getTime()> 0) {
 
-                        if( date_time.getTime() -currentDate.getTime()> 0) {
 
+                                //setAlarm(date_time,resMap.get("type").toString());
+                                finalDemo(date_time,resMap.get("medicine").toString());
+                            }else{
 
-                            //setAlarm(date_time,resMap.get("type").toString());
-                            finalDemo(date_time,resMap.get("medicine").toString());
+                            }
+
+                        }else{
+
                         }
+
 
 
                     }catch(java.text.ParseException e){
@@ -310,7 +345,7 @@ public class MedicationList extends AppCompatActivity {
     }
     public void remoteDelMedication(Medication instance){
         FireBaseInfo mFireBaseInfo = new FireBaseInfo();
-        mFireBaseInfo.mFirestore.collection("Medication").whereEqualTo("uid",instance.getUid()).whereEqualTo("initdate",instance.getInitDate()).get()
+        mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid",instance.getUid()).whereEqualTo("initdate",instance.getInitDate()).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -322,7 +357,7 @@ public class MedicationList extends AppCompatActivity {
                             DocumentSnapshot delDocument = documents.get(0);
                             if(delDocument!=null ){
                                 DocumentReference delDocumentRef = delDocument.getReference();
-                                delDocumentRef.update("status","Canceled");
+                                delDocumentRef.update("status","past");
 
                             }else{
 
@@ -352,6 +387,39 @@ public class MedicationList extends AppCompatActivity {
                 start_adder();
             }
         });
+    }
+    public void medicationReminderDialog(String medicine){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        final  String Title = "Medication reminder" ;
+        final String[] item ={"Time to take the "+medicine,};
+        alertBuilder.setTitle(Title);
+        alertBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mp.stop();
+                mAlarmMedicationDialog.dismiss();
+            }
+        });
+        mAlarmMedicationDialog = alertBuilder.create();
+        mAlarmMedicationDialog.show();
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Intent starter = getIntent();
+        Bundle extras = starter.getExtras();
+        if (extras != null) {
+            boolean isMedication = extras.getBoolean("isMedication", false);
+            if (isMedication) {
+                //-----------------------------------------
+
+                //-----------------------------------------
+                startMedia();// Do something
+                medicationReminderDialog(starter.getStringExtra("medicine"));
+            } else {
+                //Do nothing
+            }
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
