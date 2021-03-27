@@ -197,21 +197,12 @@ public class AppointmentAdder extends AppCompatActivity {
 
 
     }
-    @Override
-    protected void onStart(){
-        super.onStart();
-    }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_appointment_adder);
-        mFireBaseInfo =new FireBaseInfo();
-
-         m_adder =findViewById(R.id.btnAddAppointmnet);
-         time_option =findViewById(R.id.btnPickTime);
-         timeboard = findViewById(R.id.selectedTime);
+    public void initListener(){
+        m_adder =findViewById(R.id.btnAddAppointmnet);
+        time_option =findViewById(R.id.btnPickTime);
+        timeboard = findViewById(R.id.selectedTime);
         doctornameview = findViewById(R.id.appointment_physcian_name);
-         locationview = findViewById(R.id.appointment_location);
+        locationview = findViewById(R.id.appointment_location);
 
         btnSelectType = findViewById(R.id.btnPickType);
         selectedtype = findViewById(R.id.selectedType);
@@ -241,6 +232,18 @@ public class AppointmentAdder extends AppCompatActivity {
                 appointmentListener();
             }
         });
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_appointment_adder);
+        mFireBaseInfo =new FireBaseInfo();
+        initListener();
+
     }
         /*
         Toolbar toolbar = findViewById(R.id.toolbar);

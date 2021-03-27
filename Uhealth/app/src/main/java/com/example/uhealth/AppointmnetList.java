@@ -35,6 +35,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -140,6 +142,7 @@ public class AppointmnetList extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
                         if (task.isSuccessful()) {
 
                             QuerySnapshot query_res =  task.getResult();
@@ -148,10 +151,23 @@ public class AppointmnetList extends AppCompatActivity {
                                 DocumentSnapshot instance = documents.get(i);
 
                                 HashMap<String,Object> resMap = (HashMap)instance.getData();
+                                //
+                                Date t_date = new Date();
+                                try{
+                                    t_date.setTime(1000*Integer.valueOf(resMap.get("date").toString()));
+                                    resMap.put("date",mdateformat.format(t_date));
+
+                                }catch (NullPointerException e){
+                                    e.printStackTrace();
+                                }
+                                //
                                 String status = resMap.get("status").toString();
                                 switch(status){
                                     case "Scheduled":{
                                         Appointment mmedication = new Appointment(resMap);
+
+
+
                                         bubble(mmedication );
                                         break;
                                     }
@@ -175,22 +191,35 @@ public class AppointmnetList extends AppCompatActivity {
 
     }
     public void upload_appointment_instance(HashMap<String,Object> resMap){
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        try {
 
-        mFireBaseInfo.mFirestore.collection("Appointment").add(resMap) .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
 
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //  Toast.makeText(RegisterActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+            final Date t_date = new Date();
+            final String old_date = resMap.get("date").toString();
+            t_date.setTime(mdateformat.parse(old_date).getTime());
+            final int int_date = (int) (t_date.getTime() / 1000);
+            resMap.put("date", int_date);
 
-                    }
+            mFireBaseInfo.mFirestore.collection("Appointment").add(resMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
 
-                    ;
-                });
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            //  Toast.makeText(RegisterActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+
+                        }
+
+                        ;
+                    });
+            resMap.put("date", old_date);
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
 
     }
     @Override
@@ -375,7 +404,7 @@ public class AppointmnetList extends AppCompatActivity {
                         Appointment InstToDel = AppointmentList.get(selectedInd);
                         //remote remove
                        remoteDelAppointment(InstToDel);
-                        remoteDelAppointment(InstToDel);
+
                         //locally remove
                         AppointmentList.remove(selectedInd);
                         appointmentAdapter.notifyDataSetChanged();
@@ -399,7 +428,19 @@ public class AppointmnetList extends AppCompatActivity {
     }
     public void remoteDelAppointment(Appointment instance){
         FireBaseInfo mFireBaseInfo = new FireBaseInfo();
-        mFireBaseInfo.mFirestore.collection("Appointment").whereEqualTo("patientid",instance.getPatientID()).whereEqualTo("date",instance.getDate()).get()
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        Date d_instance_date = new Date();
+        int i_initdate = 0;
+        try{
+            d_instance_date = mdateformat.parse(instance.getDate());
+            i_initdate = (int)(d_instance_date.getTime()/1000);
+        }catch (ParseException e){
+            e.printStackTrace();
+
+        }
+
+
+        mFireBaseInfo.mFirestore.collection("AAppointment").whereEqualTo("patientid",instance.getPatientID()).whereEqualTo("date",i_initdate).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

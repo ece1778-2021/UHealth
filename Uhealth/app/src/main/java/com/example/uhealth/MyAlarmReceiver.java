@@ -15,10 +15,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //String AppointmentType = intent.getStringExtra("type");
-      // Intent ListIntent = new Intent(context, AppointmnetList.class);
-      // ListIntent.putExtra("typefromalarm","AppointmentReminder");
-      //// Toast.makeText(context, "Don't forget your appointment tomorrow!", Toast.LENGTH_LONG).show();
-       // context.startActivity(ListIntent);
+
         Intent starter = intent;
         Bundle extras = starter.getExtras();
         if (extras != null) {
@@ -26,7 +23,10 @@ public class MyAlarmReceiver extends BroadcastReceiver {
             boolean isMedication= extras.getBoolean("isMedication", false);
             if (isAppointment) {
                 //-----------------------------------------
-                Toast.makeText(context, "Don't forget your" + extras.getString("apttype")+"at"+extras.getString("apttime"), Toast.LENGTH_LONG).show();
+                Intent ListIntent = new Intent(context, AppointmnetList.class);
+                ListIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ListIntent.putExtra("typefromalarm","AppointmentReminder");
+                context.startActivity(ListIntent);
 
 
             } else {
@@ -35,7 +35,10 @@ public class MyAlarmReceiver extends BroadcastReceiver {
             }
 
             if(isMedication){
-                Toast.makeText(context, "Don't forget to take your" + extras.getString("medicine")+"at"+extras.getString("medtime"), Toast.LENGTH_LONG).show();
+                Intent MedIntent = new Intent(context, AppointmnetList.class);
+                MedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                MedIntent.putExtra("medicine",starter.getStringExtra("medicine"));//medicine
+                context.startActivity(MedIntent);
 
             }else{
 

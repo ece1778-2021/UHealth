@@ -137,8 +137,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        //
                         String selectedUpdate  = mListStack.get(0);
-                        mFireBaseInfo.mFirestore.collection("Appointment").whereEqualTo("date",mAppointment.getDate())
+                        mFireBaseInfo.mFirestore.collection("AAppointment").whereEqualTo("date",mAppointment.getDate())
                                 .whereEqualTo("patientid",mAppointment.getPatientID()).get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override

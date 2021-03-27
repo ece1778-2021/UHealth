@@ -2,6 +2,7 @@ package com.example.uhealth;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -32,10 +33,13 @@ public class MedicationAdder extends AppCompatActivity {
    EditText storageview;// = findViewById(R.id.medication_storage);
      EditText intervalview;// = findViewById(R.id.medication_interval);
      EditText medicineview ;//= findViewById(R.id.medicine_name);
-    EditText repeats_counter ;//= findViewById(R.id.repeatscount);
+   // EditText repeats_counter ;//= findViewById(R.id.repeatscount);
     TextView start_repeat ;//= findViewById(R.id.startofRepeat);
+    Button btnSelectType; // = findViewById(R.id.selectedType);
+    TextView selectedtype;// = findViewById(R.id.btnPickType;
     Button btnInitTime;//findViewById(R.id.btnPickInitTime);
     EditText dosisview;//=findViewById(R.id.dosis);
+    AlertDialog  mtypeSelectionDialog;
 
     private FireBaseInfo mFireBaseInfo;
 
@@ -50,11 +54,17 @@ public class MedicationAdder extends AppCompatActivity {
         String interval = intervalview.getText().toString();
         String storage	= storageview.getText().toString();
         String dosis = dosisview.getText().toString();
+        //-----
+        String medication_type = selectedtype.getText().toString();
+        String currentstorage;
+        String enddate;
+        //----
         //----re adding username/uid to medication list
         String username = "Default Name";
         String userid = mFireBaseInfo.mUser.getUid();
         String init_of_repeat = start_repeat.getText().toString();
-        String repeat_counts = repeats_counter.getText().toString();//actually inieger
+
+
         Calendar medication_calendar  =Calendar.getInstance();
         medication_calendar.setTime(currentDate);
         String next_time_text =new String(current_time_text);
@@ -66,32 +76,80 @@ public class MedicationAdder extends AppCompatActivity {
             e.printStackTrace();
         }
         medication_calendar.add(medication_calendar.HOUR_OF_DAY,-1);
-	/*
-        HashMap<String,Object> resMap = new HashMap<String,Object>();
-        resMap.put("date",appointment_time);
-        resMap.put("physicainname",physician_name);
-        resMap.put("patientid",userid);
-        resMap.put("patientname",username);
-        resMap.put("location",mLocation );
-	*/
+
 
         Intent intent = new Intent();
 
-        // intent.putExtra("data_return", resMap);
+
         intent.putExtra("username",username);
         intent.putExtra("uid",userid );
-        intent.putExtra("initdate",current_time_text);
-        intent.putExtra("lastupdate",current_time_text);
-        intent.putExtra("nextupdate",next_time_text);
+
         intent.putExtra("medicine",medicine );
-        intent.putExtra("status","Scheduled" );
-        intent.putExtra("initstorage",storage);
-        intent.putExtra("interval",interval );
+
+       // intent.putExtra("status","Scheduled" );
+        intent.putExtra("type",medication_type);
+
+        if(medication_type.equals("once")){
+            intent.putExtra("status","past");
+            intent.putExtra("enddate",init_of_repeat);
+            intent.putExtra("interval","0");
+            intent.putExtra("initstorage",dosis);
+            intent.putExtra("lastupdate",init_of_repeat);
+            intent.putExtra("nextupdate",init_of_repeat);
+
+        }else{//periodical
+            intent.putExtra("status","ongoing");
+            intent.putExtra("enddate",current_time_text);
+            intent.putExtra("interval",interval );
+            intent.putExtra("initstorage",storage);
+            intent.putExtra("lastupdate",current_time_text);
+            intent.putExtra("nextupdate",next_time_text);
+
+        }
+
+
         intent.putExtra("intidate",init_of_repeat);
-        intent.putExtra("repeates",repeat_counts );
+
         intent.putExtra("dosis",dosis );
         setResult(RESULT_OK, intent);
         finish();
+
+
+
+    }
+
+
+    public void typeSelectionDialogue(){
+        final String[] items = {"once","periodical"};
+
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Select your medication type.");
+        alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                selectedtype.setText(items[i]);
+                //Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mtypeSelectionDialog.dismiss();
+            }
+        });
+
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mtypeSelectionDialog.dismiss();
+            }
+        });
+        mtypeSelectionDialog = alertBuilder.create();
+        mtypeSelectionDialog.show();
+
 
 
 
@@ -141,13 +199,15 @@ public class MedicationAdder extends AppCompatActivity {
     }
     public void init_views(){
         m_adder= findViewById(R.id.btnAddMedication);
-
+       btnSelectType = findViewById(R.id.btnPickType);
+         selectedtype = findViewById(R.id.selectedType);
 
         storageview= findViewById(R.id.medication_storage);
         intervalview = findViewById(R.id.medication_interval);
         medicineview = findViewById(R.id.medicine_name);
-        repeats_counter = findViewById(R.id.repeatscount);
+        //repeats_counter = findViewById(R.id.repeatscount);
        start_repeat = findViewById(R.id.startofRepeat);
+
        btnInitTime=findViewById(R.id.btnPickInitTime);
         dosisview=findViewById(R.id.dosis);
         btnInitTime.setOnClickListener(new View.OnClickListener(){
@@ -161,6 +221,13 @@ public class MedicationAdder extends AppCompatActivity {
             public void onClick(View v) {
 
                 medicationListener();
+            }
+        });
+        btnSelectType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                typeSelectionDialogue();
+
             }
         });
 
