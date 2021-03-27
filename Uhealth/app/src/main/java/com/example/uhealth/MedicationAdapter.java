@@ -36,7 +36,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
     private AlertDialog mAlarmStorageDialog;
     private AlertDialog mShowMedicationDialog;
     private List<String> mListStack = new ArrayList<String>();
-    //private MediaPlayer mp = new MediaPlayer();
+
 
     @NonNull
     @Override
@@ -196,7 +196,9 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                              newStorage = OriginalStorage;
                         }
                         final long NewStorage = newStorage;
+
                         final long threshhold = Math.max(OriginalStorage,12*mMedication.getDosis());
+
 
 
                         mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid",mMedication.getUid())

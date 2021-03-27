@@ -2,18 +2,22 @@ package com.example.uhealth;
 
 import android.content.Intent;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.HashMap;
 import java.util.Date;
 
 public class Medication {
+
 
         private String Status;//Past / Ongoing /
         private String Medicine;
         private int InitDate;
         //--
         private int EndDate;
+
         private int CurrentStorage;
         private String Type;
         //--
@@ -23,6 +27,7 @@ public class Medication {
         private long Dosis;
         private String Username;
         private String Uid;
+
         private int LastUpdate;//time
         private int NextUpdate;//to be updated
         //resmap reset/ ege
@@ -42,6 +47,7 @@ public class Medication {
                 e.printStackTrace();
             }
             //transformation before uploading and after downloading
+
            this.Status  =Initializer.get("status").toString();
             this.Dosis = Long.valueOf(Initializer.get("dosis").toString());
 ;            this.Medicine = Initializer.get("medicine").toString();
@@ -57,6 +63,7 @@ public class Medication {
         }
     //----Get-------------
         public String getType(){return Type;}
+
         public String getEndDate(){
             SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
             Date d_EndDate = new Date();
@@ -78,6 +85,7 @@ public class Medication {
             Date d_EndDate = new Date();
             d_EndDate.setTime(this.InitDate*1000);
             return  mdateformat.format(d_EndDate);}
+
         public int getCurrentStorage(){return CurrentStorage;}
         public String getStatus(){return Status;}
       //  public long getRepeats(){return Repeats;}
@@ -92,6 +100,7 @@ public class Medication {
        // public int getCurrentStorage(){return CurrentStorage;}
         //--Set-----------
         public void setType(String Type){this.Type = Type;}
+
         public void setEndDate(String EndDate){
             SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
             try{
@@ -127,6 +136,7 @@ public class Medication {
             e.printStackTrace();
         }
         }
+
         public void setCurrentStorage(int CurrentStorage){this.CurrentStorage = CurrentStorage;}
 
         public void setStatus(String Status){this.Status = Status;}

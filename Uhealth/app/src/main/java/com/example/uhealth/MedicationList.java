@@ -79,6 +79,7 @@ public class MedicationList extends AppCompatActivity {
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
         manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
 
+
     }
     public void bubble(Medication newinstance){
         final Date currentDate = new Date();
@@ -177,6 +178,7 @@ public class MedicationList extends AppCompatActivity {
 
     }
     public void upload_medication_instance(HashMap<String,Object> resMap){
+
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
 
 
@@ -225,6 +227,7 @@ public class MedicationList extends AppCompatActivity {
         }catch(ParseException e){
             e.printStackTrace();
         }
+
 
 
 
@@ -300,6 +303,7 @@ public class MedicationList extends AppCompatActivity {
                         final Date currentDate = new Date();
                         if("ongoing".equals(temp_medication.getStatus())){
                             if( date_time.getTime() -currentDate.getTime()> 0) {
+
 
 
                                 //setAlarm(date_time,resMap.get("type").toString());
@@ -398,6 +402,7 @@ public class MedicationList extends AppCompatActivity {
     }
     public void remoteDelMedication(Medication instance){
         FireBaseInfo mFireBaseInfo = new FireBaseInfo();
+
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         Date d_instance_date = new Date();
         int i_initdate = 0;
@@ -410,6 +415,7 @@ public class MedicationList extends AppCompatActivity {
         }
 
         mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid",instance.getUid()).whereEqualTo("initdate",i_initdate).get()
+
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -460,7 +466,9 @@ public class MedicationList extends AppCompatActivity {
         alertBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
                 tuning();
+
                 mAlarmMedicationDialog.dismiss();
             }
         });
