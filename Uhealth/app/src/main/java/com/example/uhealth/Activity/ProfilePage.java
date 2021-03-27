@@ -6,37 +6,29 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.uhealth.AppointmnetList;
-import com.example.uhealth.DataStructures.CachedThreadPool;
-import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.MedicationList;
 import com.example.uhealth.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ProfilePage extends AppCompatActivity {
     private FireBaseInfo mFireBaseInfo;
     private Toolbar toolbar;
     private TextView mUsername;
 
-    private RelativeLayout mPlaceHolderInitReg, mPlaceHolderapp, mPlaceHoldermed, mPlaceHolderQuestionnaire;
+    private RelativeLayout mPlaceHolderInitReg, mPlaceHolderapp, mPlaceHoldermed, mPlaceHolderQuestionnaire,
+            mPlaceHolderTimeline;
 
 
     @Override
@@ -58,6 +50,8 @@ public class ProfilePage extends AppCompatActivity {
         mPlaceHolderapp = findViewById(R.id.appointmentSection);
 
         mPlaceHoldermed = findViewById(R.id.medicationSection);
+
+        mPlaceHolderTimeline = findViewById(R.id.TimeLineSection);
 
 
     }
@@ -91,6 +85,14 @@ public class ProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, MedicationList.class);
+                startActivity(intent);
+            }
+        });
+        mPlaceHolderTimeline.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilePage.this, Timeline.class);
                 startActivity(intent);
             }
         });

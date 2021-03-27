@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.example.uhealth.Activity.Do_questions;
 import com.example.uhealth.Adapters.rvadp_qs_ans_multistr;
-import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.R;
 import com.example.uhealth.Adapters.rvadapter_question_answers;
 import com.google.android.gms.tasks.OnFailureListener;

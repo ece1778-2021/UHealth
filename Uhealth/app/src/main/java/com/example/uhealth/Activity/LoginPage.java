@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.uhealth.DataStructures.CachedThreadPool;
-import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.utils.CachedThreadPool;
+import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

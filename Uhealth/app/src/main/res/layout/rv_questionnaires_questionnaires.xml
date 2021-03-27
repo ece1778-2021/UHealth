@@ -73,13 +73,6 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!--    <Button-->
-    <!--        android:id="@+id/rv_questionnaires_questionnaires"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:background="@android:color/darker_gray"-->
-    <!--        android:text="Placeholder" >-->
-    <!--    </Button>-->
 
 
 

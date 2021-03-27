@@ -1,4 +1,4 @@
-package com.example.uhealth.DataStructures;
+package com.example.uhealth.utils;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

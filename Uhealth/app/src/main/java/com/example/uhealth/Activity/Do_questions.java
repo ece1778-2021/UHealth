@@ -10,14 +10,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.uhealth.DataStructures.CachedThreadPool;
-import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.utils.CachedThreadPool;
+import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.Adapters.Fspadapter_question;
 import com.example.uhealth.R;
 import com.google.android.gms.tasks.OnCompleteListener;

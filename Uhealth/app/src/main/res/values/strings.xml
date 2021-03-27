@@ -27,6 +27,15 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
         <item>Female</item>
         <item>Other</item>
     </string-array>
+
+    <string-array name="Appointment_types">
+        <item>Type 1</item>
+        <item>Type 2</item>
+        <item>Type 3</item>
+        <item>Type 4</item>
+        <item>Type 5</item>
+    </string-array>
+
     <string name="default_str">a</string>
     <string name="title_activity_appointmnet_list">AppointmnetList</string>
     <string name="title_activity_medication_list">MedicationList</string>

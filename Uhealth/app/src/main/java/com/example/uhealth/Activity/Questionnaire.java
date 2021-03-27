@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.R;
 import com.example.uhealth.Adapters.rvadapter_questionnaire_questions;
 import com.google.android.gms.tasks.OnFailureListener;

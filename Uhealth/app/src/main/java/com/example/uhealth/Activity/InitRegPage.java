@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -31,8 +30,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.uhealth.DataStructures.CachedThreadPool;
-import com.example.uhealth.DataStructures.FireBaseInfo;
+import com.example.uhealth.utils.CachedThreadPool;
+import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.R;
 import com.example.uhealth.Adapters.rvadapter_initreg_dialog1;
 
