@@ -2,6 +2,7 @@ package com.example.uhealth;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,25 @@ public class Appointment {
     private String Note;
     private List<String> ImagePaths;
     //-----------------------
+    public String getNote(){
+        return this.Note;
+    }
+    public void setNote(String Note){
+        this.Note = Note;
+    }
+    public List<String> getList(){
+
+        return this.ImagePaths;
+    }
+    public String getPath(int i){
+        return ImagePaths.get(i);
+
+    }
+    public void addPath(String path){
+        ImagePaths.add(path);
+    }
     public Appointment(HashMap<String,Object> Initializer){
+        this.ImagePaths = new ArrayList<String>();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         this.Status = Initializer.get("status").toString();
         this.AppointmentType = Initializer.get("type").toString();
@@ -46,7 +65,7 @@ public class Appointment {
     public String getDate(){
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         Date d_Date = new Date();
-        d_Date.setTime(this.ApptDate*1000);
+        d_Date.setTime((long)this.ApptDate*1000);
         return  mdateformat.format( d_Date);
         //return ApptDate;
     }

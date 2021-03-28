@@ -142,13 +142,13 @@ public class MedicationList extends AppCompatActivity {
 
                     Date t_date = new Date();
                     try{
-                        t_date.setTime(1000*Integer.valueOf(resMap.get("initdate").toString()));
+                        t_date.setTime(1000*Long.valueOf(resMap.get("initdate").toString()));
                         resMap.put("initdate",mdateformat.format(t_date));
-                        t_date.setTime(1000*Integer.valueOf(resMap.get("enddate").toString()));
+                        t_date.setTime(1000*Long.valueOf(resMap.get("enddate").toString()));
                         resMap.put("enddate",mdateformat.format(t_date));
-                        t_date.setTime(1000*Integer.valueOf(resMap.get("lastupdate").toString()));
+                        t_date.setTime(1000*Long.valueOf(resMap.get("lastupdate").toString()));
                         resMap.put("lastupdate",mdateformat.format(t_date));
-                        t_date.setTime(1000*Integer.valueOf(resMap.get("nextupdate").toString()));
+                        t_date.setTime(1000*Long.valueOf(resMap.get("nextupdate").toString()));
                         resMap.put("nextupdate",mdateformat.format(t_date));
                     }catch (NullPointerException e){
                         e.printStackTrace();

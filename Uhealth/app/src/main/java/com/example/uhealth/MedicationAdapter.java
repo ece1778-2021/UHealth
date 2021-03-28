@@ -69,6 +69,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         alertBuilder.setTitle("Medicine storage reminder");
         LayoutInflater minflater = LayoutInflater.from(v.getContext());
         View em_view = minflater.inflate(R.layout.storage_updater, null);
+        alertBuilder.setView(em_view);
         EditText StorageAdder = (EditText) em_view.findViewById(R.id.medication_storage_updater);
         StorageAdder.setText("0");
 
@@ -146,6 +147,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                 final String[] items =  Selectedmedication.toArray(new String[Selectedmedication.size()]);
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
                 alertBuilder.setTitle("Check medication");
+                Toast.makeText(v.getContext(),mMedication.getrInitDate(),Toast.LENGTH_SHORT).show();
                 alertBuilder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

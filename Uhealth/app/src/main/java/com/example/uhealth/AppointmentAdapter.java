@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +33,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     private AlertDialog mShowAppointmentDialog;
     private AlertDialog mRemoveAppointmentDialog;
     private AlertDialog mUpdateAppointmentDialog;
+    private AlertDialog mFurtherUpdateDialog;
 
     @NonNull
     @Override
@@ -51,6 +54,83 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         InfoList.add(2, "Location:      "+mAppointment.getApptLocation());
         InfoList.add(3, "Uid:       "+mAppointment.getPatientID());
         return InfoList;
+
+    }
+    public void furtherUpdate(View v,Appointment mAppointment){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+
+        LayoutInflater minflater = LayoutInflater.from(v.getContext());
+        View em_view = minflater.inflate(R.layout.appointment_update_dialog, null);
+        EditText EdNote = (EditText) em_view.findViewById(R.id.appointment_note);
+        Button btnPhoto = (Button) em_view.findViewById(R.id.btn_photo_uploader);
+        Button btnAdder =  (Button)em_view.findViewById(R.id.btn_information_adder);
+        TextView PhotoTitle  =(TextView) em_view.findViewById(R.id.current_title);
+        alertBuilder.setView(em_view);
+        btnPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date mdate = new Date();
+                mAppointment.addPath(mdate.getTime()+".jpg");
+                PhotoTitle.setText(mdate.getTime()+".jpg");
+            }
+        });
+        btnAdder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String m_Note =EdNote.getText().toString();
+                SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                Date d_instance_date = new Date();
+                int i_initdate = 0;
+                try{
+                    d_instance_date = mdateformat.parse(mAppointment.getDate());
+                    i_initdate = (int)(d_instance_date.getTime()/1000);
+                }catch (ParseException e){
+                    e.printStackTrace();
+
+                }
+                final List<String> ImagePaths= mAppointment.getList();
+                final String mNote = EdNote.getText().toString();
+                mFireBaseInfo.mFirestore.collection("AAppointment")//.whereEqualTo("patientid",mAppointment.getPatientID())
+                        //.whereEqualTo("type",mAppointment.getAppointmentType()).whereEqualTo("date",i_initdate)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {//////
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {////
+                                if(task.isSuccessful()){
+
+                                    QuerySnapshot query_res = task.getResult();
+                                    List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                                    DocumentSnapshot delDocument = documents.get(0);
+
+
+                                    if(delDocument!=null){
+                                        DocumentReference delDocumentRef = delDocument.getReference();
+                                        delDocumentRef.update("path",ImagePaths);
+                                        delDocumentRef.update("note",mNote);
+
+
+                                    }
+                                    else{
+
+                                    }
+                                }
+                                else{
+
+                                }
+
+                            }////
+
+
+                        });//////
+
+                mFurtherUpdateDialog.dismiss();
+            }
+        });
+
+
+        mFurtherUpdateDialog = alertBuilder.create();
+        mFurtherUpdateDialog.show();
 
     }
     @Override
@@ -138,8 +218,20 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //
+                        final View vv = v;
+                        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                        Date d_instance_date = new Date();
+                        int i_initdate = 0;
+                        try{
+                            d_instance_date = mdateformat.parse(mAppointment.getDate());
+                            i_initdate = (int)(d_instance_date.getTime()/1000);
+                        }catch (ParseException e){
+                            e.printStackTrace();
+
+                        }
+                        mListStack.add("Finished");
                         String selectedUpdate  = mListStack.get(0);
-                        mFireBaseInfo.mFirestore.collection("AAppointment").whereEqualTo("date",mAppointment.getDate())
+                        mFireBaseInfo.mFirestore.collection("AAppointment")//.whereEqualTo("date",i_initdate)
                                 .whereEqualTo("patientid",mAppointment.getPatientID()).get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
@@ -164,6 +256,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                         }
                                     }
                                 });
+                        furtherUpdate(vv,mAppointment);
                         mUpdateAppointmentDialog.dismiss();
                     }
                 });

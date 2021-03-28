@@ -16,7 +16,24 @@
         android:hint="@string/appointment_location"
         android:inputType="text"
         tools:ignore="Autofill" />
-
+    <Button
+        android:id="@+id/btnPickType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below ="@+id/appointment_location"
+        android:layout_marginTop="20dp"
+        android:text="@string/select_appointment_type"
+        />
+    <TextView
+        android:id="@+id/selectedType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below ="@+id/btnPickType"
+        android:text="@string/office_appointment"
+        tools:ignore="Autofill" />
     <Button
         android:id="@+id/btnPickTime"
         android:layout_width="wrap_content"

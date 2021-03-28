@@ -138,7 +138,7 @@ public class AppointmnetList extends AppCompatActivity {
     }
     public void download_medication_list(){
         String uid = mFireBaseInfo.mUser.getUid();
-        mFireBaseInfo.mFirestore.collection("Appointment").whereEqualTo("patientid",uid).get()
+        mFireBaseInfo.mFirestore.collection("AAppointment").whereEqualTo("patientid",uid).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -201,7 +201,7 @@ public class AppointmnetList extends AppCompatActivity {
             final int int_date = (int) (t_date.getTime() / 1000);
             resMap.put("date", int_date);
 
-            mFireBaseInfo.mFirestore.collection("Appointment").add(resMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            mFireBaseInfo.mFirestore.collection("AAppointment").add(resMap).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
 

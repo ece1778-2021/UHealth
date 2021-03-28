@@ -108,7 +108,7 @@ public class MedicationAdder extends AppCompatActivity {
         }
 
 
-        intent.putExtra("intidate",init_of_repeat);
+        intent.putExtra("initdate",init_of_repeat);
 
         intent.putExtra("dosis",dosis );
         setResult(RESULT_OK, intent);

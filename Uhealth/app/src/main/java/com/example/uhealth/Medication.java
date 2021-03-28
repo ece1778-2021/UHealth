@@ -67,23 +67,26 @@ public class Medication {
         public String getEndDate(){
             SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
             Date d_EndDate = new Date();
-            d_EndDate.setTime(EndDate*1000);
+            d_EndDate.setTime((long)EndDate*1000);
             return  mdateformat.format(d_EndDate);
         }
          public String getLastUpdate(){
             SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
              Date d_EndDate = new Date();
-             d_EndDate.setTime(this.LastUpdate*1000);
+             d_EndDate.setTime((long)this.LastUpdate*1000);
              return  mdateformat.format(d_EndDate);}
          public String getNextUpdate(){
              SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
              Date d_EndDate = new Date();
-             d_EndDate.setTime(this.NextUpdate*1000);
+             d_EndDate.setTime((long)this.NextUpdate*1000);
              return  mdateformat.format(d_EndDate);}
+        public String getrInitDate(){
+            return this.InitDate+"";
+        }
         public String getInitDate(){
             SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
             Date d_EndDate = new Date();
-            d_EndDate.setTime(this.InitDate*1000);
+            d_EndDate.setTime((long)this.InitDate*1000);
             return  mdateformat.format(d_EndDate);}
 
         public int getCurrentStorage(){return CurrentStorage;}
