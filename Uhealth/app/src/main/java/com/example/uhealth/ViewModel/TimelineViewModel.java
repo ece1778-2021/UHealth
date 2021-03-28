@@ -34,6 +34,7 @@ public class TimelineViewModel extends ViewModel {
             return;
         }
 
+        in_listener.onBeforeLoaded();
         datarepo = timeline_repo.getInstance(listener);
         timelinedata = datarepo.getItems();
     }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -29,6 +30,8 @@ public class Timeline extends AppCompatActivity{
 
     private TimelineViewModel timelineViewModel;
 
+    private ProgressDialog progressDialog;
+
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter mAdapter;
@@ -42,6 +45,8 @@ public class Timeline extends AppCompatActivity{
 
         initViews();
 
+
+//        todo add progress dialog
         String[] filterlist = getResources().getStringArray(R.array.Appointment_types);
         TimelineViewModelFactory factory = new TimelineViewModelFactory(filterlist, new DataloadedListener() {
             @Override
@@ -51,8 +56,19 @@ public class Timeline extends AppCompatActivity{
                     public void onChanged(List<timeline_item> timeline_items) {
                         Log.d(TAG, "Loaded from repo, notifyDatasetChange");
                         mAdapter.notifyDataSetChanged();
+                        progressDialog.dismiss();
+//                        todo disable progress dialog
                     }
                 });
+            }
+
+            @Override
+            public void onBeforeLoaded() {
+                progressDialog = new ProgressDialog(Timeline.this);
+                progressDialog.show();
+                progressDialog.setCancelable(false);
+                progressDialog.setContentView(R.layout.progressdialog);
+                progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
         });
         timelineViewModel = new ViewModelProvider(this, factory).get(TimelineViewModel.class);

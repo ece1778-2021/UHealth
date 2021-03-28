@@ -1,6 +1,7 @@
 package com.example.uhealth.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.uhealth.Activity.DisplayFullImage;
 import com.example.uhealth.R;
 import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.utils.GlideApp;
@@ -63,6 +65,16 @@ public class NestedRVAdp_photos extends RecyclerView.Adapter<NestedRVAdp_photos.
         public VH_Nestedrv_photos(@NonNull View itemView) {
             super(itemView);
             mPhoto = itemView.findViewById(R.id.photoThumbnail);
+
+            mPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent openimage = new Intent(mContext, DisplayFullImage.class);
+                    String path = pathlist.get(getAdapterPosition());
+                    openimage.putExtra("IMAGE_PATH", path);
+                    mContext.startActivity(openimage);
+                }
+            });
         }
     }
 

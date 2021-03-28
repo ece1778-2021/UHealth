@@ -29,14 +29,17 @@ public class viewholder_timeline extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 int pos = getAdapterPosition();
-                clickerlistener.CurrentClick(pos);
-                int cur_vis = mDots.getVisibility();
-                if (cur_vis == View.VISIBLE){
-                    mDots.setVisibility(View.GONE);
-                    mAdditional.setVisibility(View.VISIBLE);
-                }else{
-                    mDots.setVisibility(View.VISIBLE);
-                    mAdditional.setVisibility(View.GONE);
+                int lastpos = clickListener.getLastClcick();
+                if (lastpos!=pos){
+                    clickerlistener.CurrentClick(pos);
+                    int cur_vis = mDots.getVisibility();
+                    if (cur_vis == View.VISIBLE){
+                        mDots.setVisibility(View.GONE);
+                        mAdditional.setVisibility(View.VISIBLE);
+                    }else{
+                        mDots.setVisibility(View.VISIBLE);
+                        mAdditional.setVisibility(View.GONE);
+                    }
                 }
             }
         });

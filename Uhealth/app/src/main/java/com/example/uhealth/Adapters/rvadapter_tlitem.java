@@ -36,6 +36,11 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> 
                 currentpos = pos;
                 notifyItemChanged(lastpos);
             }
+
+            @Override
+            public int getLastClcick() {
+                return currentpos;
+            }
         });
         return tlvh;
     }
@@ -93,6 +98,7 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> 
 
     public interface clickListener{
         void CurrentClick(int pos);
+        int getLastClcick();
     }
 
 }

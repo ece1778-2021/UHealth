@@ -13,15 +13,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UHealth">
-        <activity android:name=".Activity.Timeline"
+        <activity android:name=".Activity.DisplayFullImage"
+            android:parentActivityName=".Activity.Timeline"
+            android:theme="@style/Theme.UHealth.nobar"></activity>
+        <activity
+            android:name=".Activity.Timeline"
             android:parentActivityName=".Activity.ProfilePage" />
-
         <receiver
             android:name=".MyAlarmReceiver"
             android:enabled="true"
             android:exported="true"
             android:process=":remote" />
-
         <activity
             android:name=".Activity.Do_questions"
             android:parentActivityName=".Activity.Questionnaire" />
