@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tl_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -103,18 +104,17 @@
                     android:layout_height="wrap_content"
                     android:text="NOTES" />
 
-                <TextView
-                    android:id="@+id/medications"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/medications_rv"
                     android:layout_below="@id/note"
-                    android:text="MEDICATIONS" />
-
-                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/medications"
-                    android:text="PICTURES" />
+                    android:layout_height="wrap_content"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/photos_rv"
+                    android:layout_below="@id/medications_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </RelativeLayout>
 

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.uhealth.DataModel.timeline_item;
@@ -17,6 +18,7 @@ import java.util.List;
 public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> {
     private List<timeline_item> itemList;
     private Context mContext;
+    private int currentpos = -1;
 
     public rvadapter_tlitem(Context in_Context, List<timeline_item> in_itemlist){
         itemList = in_itemlist;
@@ -27,7 +29,14 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> 
     @Override
     public viewholder_timeline onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_timeline_item, parent, false);
-        viewholder_timeline tlvh = new viewholder_timeline(view);
+        viewholder_timeline tlvh = new viewholder_timeline(view, new clickListener() {
+            @Override
+            public void CurrentClick(int pos) {
+                int lastpos = currentpos;
+                currentpos = pos;
+                notifyItemChanged(lastpos);
+            }
+        });
         return tlvh;
     }
 
@@ -46,11 +55,30 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> 
             sb.append(s);
             sb.append("\t");
         }
-        holder.mMeds.setText(sb.toString());
-//        todo configure filter
-//        todo configure clicked open
-        holder.mDots.setVisibility(View.VISIBLE);
-        holder.mAdditional.setVisibility(View.GONE);
+        if (position == currentpos){
+//            only open one at a time
+            holder.mDots.setVisibility(View.GONE);
+            holder.mAdditional.setVisibility(View.VISIBLE);
+        }else{
+            holder.mDots.setVisibility(View.VISIBLE);
+            holder.mAdditional.setVisibility(View.GONE);
+        }
+
+        List<String> l_meds = item.getmMedls();
+        NestedRVAdp_meds medsAdp = new NestedRVAdp_meds(l_meds);
+        RecyclerView.LayoutManager medsLayoutManager = new GridLayoutManager(mContext, 1);
+        holder.mMeds.setLayoutManager(medsLayoutManager);
+        holder.mMeds.setAdapter(medsAdp);
+        holder.mMeds.setHasFixedSize(true);
+
+        //        todo set up nested adapters images
+        List<String> l_photos = item.getImagePaths();
+        NestedRVAdp_photos photosAdp = new NestedRVAdp_photos(l_photos, mContext);
+        RecyclerView.LayoutManager photosLayoutManager = new GridLayoutManager(mContext, 2);
+        holder.mPhotos.setLayoutManager(photosLayoutManager);
+        holder.mPhotos.setAdapter(photosAdp);
+        holder.mPhotos.setHasFixedSize(true);
+        //        todo configure filter
 
     }
 
@@ -62,4 +90,9 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> 
             return 0;
         }
     }
+
+    public interface clickListener{
+        void CurrentClick(int pos);
+    }
+
 }

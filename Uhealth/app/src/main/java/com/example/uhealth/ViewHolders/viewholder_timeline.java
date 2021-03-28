@@ -1,26 +1,35 @@
 package com.example.uhealth.ViewHolders;
 
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.uhealth.Adapters.rvadapter_tlitem;
 import com.example.uhealth.R;
 
 public class viewholder_timeline extends RecyclerView.ViewHolder {
-    public TextView mDate, mAppointment, mPhysician, mLocation, mNote, mMeds;
+    public TextView mDate, mAppointment, mPhysician, mLocation, mNote;
+    public RecyclerView mMeds, mPhotos;
+
     public ImageView mDots;
     public RelativeLayout mAdditional;
+    private rvadapter_tlitem.clickListener clickerlistener;
 
-    public viewholder_timeline(@NonNull View itemView) {
+    public viewholder_timeline(@NonNull View itemView, rvadapter_tlitem.clickListener clickListener) {
         super(itemView);
+        clickerlistener =clickListener;
         initView();
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int pos = getAdapterPosition();
+                clickerlistener.CurrentClick(pos);
                 int cur_vis = mDots.getVisibility();
                 if (cur_vis == View.VISIBLE){
                     mDots.setVisibility(View.GONE);
@@ -42,6 +51,7 @@ public class viewholder_timeline extends RecyclerView.ViewHolder {
 
         mAdditional = itemView.findViewById(R.id.additional_info);
         mNote = itemView.findViewById(R.id.note);
-        mMeds = itemView.findViewById(R.id.medications);
+        mMeds = itemView.findViewById(R.id.medications_rv);
+        mPhotos = itemView.findViewById(R.id.photos_rv);
     }
 }
