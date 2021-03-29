@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.uhealth.utils.CachedThreadPool;
 import com.example.uhealth.utils.FireBaseInfo;
-import com.example.uhealth.Adapters.Fspadapter_question;
+import com.example.uhealth.Adapters.FSPadapter_question;
 import com.example.uhealth.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,7 +41,7 @@ public class Do_questions extends AppCompatActivity {
     private String mqs_text;
 
     private ViewPager mVPquestion;
-    private Fspadapter_question mQadapter;
+    private FSPadapter_question mQadapter;
 
     private ArrayList<String> qidlist;
 
@@ -117,7 +117,7 @@ public class Do_questions extends AppCompatActivity {
 
                         Do_questions.this.slider.setValueTo((float)qidlist.size());
 
-                        mQadapter = new Fspadapter_question(getSupportFragmentManager(),
+                        mQadapter = new FSPadapter_question(getSupportFragmentManager(),
                                 FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
                                 qidlist,
                                 mqs_id

@@ -28,7 +28,7 @@ public class ProfilePage extends AppCompatActivity {
     private TextView mUsername;
 
     private RelativeLayout mPlaceHolderInitReg, mPlaceHolderapp, mPlaceHoldermed, mPlaceHolderQuestionnaire,
-            mPlaceHolderTimeline;
+            mPlaceHolderTimeline, mPlaceHolderShare;
 
 
     @Override
@@ -52,6 +52,8 @@ public class ProfilePage extends AppCompatActivity {
         mPlaceHoldermed = findViewById(R.id.medicationSection);
 
         mPlaceHolderTimeline = findViewById(R.id.TimeLineSection);
+
+        mPlaceHolderShare = findViewById(R.id.ShareSection);
 
 
     }
@@ -96,6 +98,14 @@ public class ProfilePage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        mPlaceHolderShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilePage.this, ShareFeature.class);
+                startActivity(intent);
+            }
+        });
+
         mFireBaseInfo.mFirestore.collection("users").document(mFireBaseInfo.mUser.getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
