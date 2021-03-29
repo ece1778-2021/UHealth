@@ -14,5 +14,13 @@
     <color name="yellowDark">#ffeb3b</color>
     <color name="grayLight">#eeeeee</color>
     <color name="grayDark">#9e9e9e</color>
+    
+    <color name="lightpink">#ffb3ff</color>
+    <color name="lightviolet">#b3b3ff</color>
+    <color name="lightteal">#b3ffff</color>
+    <color name="lightgreen">#b3ffb3</color>
+    <color name="lightyellow">#ffffb3</color>
+
+
 
 </resources>

@@ -1,6 +1,7 @@
 package com.example.uhealth.Adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,6 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
     private int currentpos = -1;
 
     public rvadapter_tlitem(Context in_Context, Timeline.passVMtoRV inlistener, List<timeline_item> in_itemlist){
-//        initially filtered = full
         itemList = in_itemlist;
         listener = inlistener;
         mContext = in_Context;
@@ -105,6 +105,37 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
             params.height = 0;
             holder.itemView.setLayoutParams(params);
         }
+
+        String type = item.getAppointmentType();
+        int color;
+        switch (type){
+            case "office appointment":{
+                color = mContext.getResources().getColor(R.color.lightgreen);
+                break;
+            }
+            case "chemotherapy":{
+                color = mContext.getResources().getColor(R.color.lightpink);
+                break;
+            }
+            case "surgery or procedure appointment" :{
+                color = mContext.getResources().getColor(R.color.lightteal);
+                break;
+            }
+            case "radiation session":{
+                color = mContext.getResources().getColor(R.color.lightviolet);
+                break;
+            }
+            case "imaging appointment":{
+                color = mContext.getResources().getColor(R.color.lightyellow);
+                break;
+            }
+            default:
+                color = mContext.getResources().getColor(R.color.orangeDark);
+                break;
+        }
+        holder.mPhysician.setBackgroundColor(color);
+        holder.mAppointment.setBackgroundColor(color);
+
     }
 
     @Override
