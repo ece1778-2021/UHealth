@@ -61,7 +61,7 @@
                 android:id="@+id/appointment_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/orangeDark"
+                android:background="@color/white"
                 android:text="Appointment Type"
                 android:textSize="10sp" />
 
@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/appointment_type"
-                android:background="@color/orangeDark"
+                android:background="@color/white"
                 android:text="Physician"
                 android:textSize="5sp" />
 

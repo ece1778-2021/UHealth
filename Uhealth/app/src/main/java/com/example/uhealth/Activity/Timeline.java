@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.uhealth.Adapters.rvadapter_tlitem;
 import com.example.uhealth.DataModel.timeline_item;
@@ -21,14 +23,18 @@ import com.example.uhealth.Interfaces.DataloadedListener;
 import com.example.uhealth.ViewModel.TimelineViewModel;
 import com.example.uhealth.ViewModel.TimelineViewModelFactory;
 import com.example.uhealth.R;
+import com.example.uhealth.utils.CachedThreadPool;
 import com.example.uhealth.utils.GenerateFakeData;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Timeline extends AppCompatActivity{
     public static final String TAG = Timeline.class.getSimpleName();
 
     private TimelineViewModel timelineViewModel;
+    private CachedThreadPool threadPool;
 
     private ProgressDialog progressDialog;
 
@@ -43,10 +49,11 @@ public class Timeline extends AppCompatActivity{
 
         getSupportActionBar().setTitle("Timeline");
 
+        threadPool = CachedThreadPool.getInstance();
+
         initViews();
 
 
-//        todo add progress dialog
         String[] filterlist = getResources().getStringArray(R.array.Appointment_types);
         TimelineViewModelFactory factory = new TimelineViewModelFactory(filterlist, new DataloadedListener() {
             @Override
@@ -57,7 +64,6 @@ public class Timeline extends AppCompatActivity{
                         Log.d(TAG, "Loaded from repo, notifyDatasetChange");
                         mAdapter.notifyDataSetChanged();
                         progressDialog.dismiss();
-//                        todo disable progress dialog
                     }
                 });
             }
@@ -78,7 +84,12 @@ public class Timeline extends AppCompatActivity{
     private void initRecyclerView() {
         layoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new rvadapter_tlitem(this, timelineViewModel.getTl_items().getValue());
+        mAdapter = new rvadapter_tlitem(this, new passVMtoRV() {
+            @Override
+            public List<String> getfiltertypes() {
+                return timelineViewModel.getTypeFilter();
+            }
+        }, timelineViewModel.getTl_items().getValue());
         recyclerView.setAdapter(mAdapter);
         recyclerView.setHasFixedSize(true);
     }
@@ -102,6 +113,7 @@ public class Timeline extends AppCompatActivity{
         int v_id = item.getItemId();
         if (v_id==R.id.tl_tb_clear){
             timelineViewModel.clearall();
+            mAdapter.notifyDataSetChanged();
             return true;
         }else if (v_id == R.id.tl_tb_filter){
             openFilterDialog();
@@ -112,7 +124,59 @@ public class Timeline extends AppCompatActivity{
     }
 
     private void openFilterDialog() {
-        DialogFragment timelinefilter = TimelineFilter.newInstance();
+        DialogFragment timelinefilter = TimelineFilter.newInstance(new dialogListener() {
+            @Override
+            public void jumppagelistener() {
+                int range = timelineViewModel.get_date();
+                if (range<0){
+//                    no years selected
+                }else{
+                    Runnable r = () -> runOnUiThread(() -> {
+                        List<timeline_item> datalist = timelineViewModel.getTl_items().getValue();
+                        String year_s = String.valueOf(timelineViewModel.get_date());
+
+                        SimpleDateFormat dateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                        try {
+                            int timestamp = (int)(dateformat.parse(year_s+"-01-01-01:01").getTime()/1000);
+                            int index = bisection(datalist, timestamp);
+                            recyclerView.scrollToPosition(index);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    });
+                    threadPool.add_run(r);
+                }
+            }
+
+            @Override
+            public void filterlistener() {
+//                onbind logic to deal with selected type
+                mAdapter.notifyDataSetChanged();
+            }
+        });
         timelinefilter.show(getSupportFragmentManager(), "tag");
+    }
+
+    private int bisection(List<timeline_item> datalist, int dateGoal) {
+        int total_length = datalist.size();
+        if (total_length==1){
+            return timelineViewModel.getTl_items().getValue().indexOf(datalist.get(0));
+        }
+        int mid_index = (int)(total_length/2);
+        int mid_date = datalist.get(mid_index).getDate();
+        if (dateGoal>mid_date){
+            return bisection(datalist.subList(0, mid_index), dateGoal);
+        }else{
+            return bisection(datalist.subList(mid_index, total_length), dateGoal);
+        }
+    }
+
+    public interface dialogListener{
+        void jumppagelistener();
+        void filterlistener();
+    }
+
+    public interface passVMtoRV{
+        List<String> getfiltertypes();
     }
 }

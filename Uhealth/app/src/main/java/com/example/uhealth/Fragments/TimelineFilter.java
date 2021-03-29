@@ -1,9 +1,11 @@
 package com.example.uhealth.Fragments;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,6 +19,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.example.uhealth.Activity.Timeline;
 import com.example.uhealth.Adapters.rvadapter_tlfiltertype;
 import com.example.uhealth.ViewModel.TimelineViewModel;
 import com.example.uhealth.R;
@@ -24,13 +27,15 @@ import com.example.uhealth.R;
 import java.util.Calendar;
 
 public class TimelineFilter extends DialogFragment {
+    private Timeline.dialogListener listener;
 
-    public TimelineFilter() {
+    public TimelineFilter(Timeline.dialogListener in_listener) {
         // Required empty public constructor
+        listener = in_listener;
     }
 
-    public static TimelineFilter newInstance() {
-        TimelineFilter fragment = new TimelineFilter();
+    public static TimelineFilter newInstance(Timeline.dialogListener in_listener) {
+        TimelineFilter fragment = new TimelineFilter(in_listener);
         return fragment;
     }
 
@@ -112,6 +117,13 @@ public class TimelineFilter extends DialogFragment {
         rv.setAdapter(mAdapter);
         rv.setHasFixedSize(true);
         return view;
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        listener.filterlistener();
+        listener.jumppagelistener();
     }
 
     public interface filtercallback{

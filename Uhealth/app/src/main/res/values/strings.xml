@@ -29,11 +29,11 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
     </string-array>
 
     <string-array name="Appointment_types">
-        <item>Type 1</item>
-        <item>Type 2</item>
-        <item>Type 3</item>
-        <item>Type 4</item>
-        <item>Type 5</item>
+        <item>office appointment</item>
+        <item>chemotherapy</item>
+        <item>surgery or procedure appointment</item>
+        <item>radiation session</item>
+        <item>imaging appointment</item>
     </string-array>
 
     <string name="default_str">a</string>

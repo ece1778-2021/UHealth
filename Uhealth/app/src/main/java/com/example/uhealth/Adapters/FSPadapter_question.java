@@ -14,12 +14,12 @@ import com.example.uhealth.Fragments.Frag_submit;
 
 import java.util.ArrayList;
 
-public class Fspadapter_question extends FragmentStatePagerAdapter {
+public class FSPadapter_question extends FragmentStatePagerAdapter {
     private ArrayList<String> list;
     private String qs_id;
     private Context mContext;
 
-    public Fspadapter_question(@NonNull FragmentManager fm, int behavior,
+    public FSPadapter_question(@NonNull FragmentManager fm, int behavior,
                                ArrayList<String> input,
                                String qs_id) {
         super(fm, behavior);

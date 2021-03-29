@@ -46,6 +46,13 @@ public class TimelineViewModel extends ViewModel {
     public ArrayList<String> getTypeFilter() {
         return typeFilter;
     }
+    public String getStringTypeFilter(){
+        StringBuilder sb = new StringBuilder();
+        for (String s: typeFilter){
+            sb.append(s);
+        }
+        return sb.toString();
+    }
     public int getDateFilterInstance() {
         return dateFilterInstance;
     }
