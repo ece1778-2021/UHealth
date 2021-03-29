@@ -25,7 +25,10 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 //-----------------------------------------
                 Intent ListIntent = new Intent(context, AppointmnetList.class);
                 ListIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ListIntent.putExtra("isAppointment",true);
                 ListIntent.putExtra("typefromalarm","AppointmentReminder");
+                ListIntent.putExtra("apttype",extras.getString("apttype"));
+                ListIntent.putExtra("apttime",extras.getString("apttime"));
                 context.startActivity(ListIntent);
 
 
@@ -35,8 +38,9 @@ public class MyAlarmReceiver extends BroadcastReceiver {
             }
 
             if(isMedication){
-                Intent MedIntent = new Intent(context, AppointmnetList.class);
+                Intent MedIntent = new Intent(context, MedicationList.class);
                 MedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                MedIntent.putExtra("isMedication",true);
                 MedIntent.putExtra("medicine",starter.getStringExtra("medicine"));//medicine
                 context.startActivity(MedIntent);
 

@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class timeline_repo {
-    private static final String APPOINTMENTS = "appointment_testing_alan";
-    private static final String MEDICATIONS = "medication_testing_alan";
+    private static final String APPOINTMENTS ="appointment_testing_alan";//"AAppointment";//
+    private static final String MEDICATIONS = "medication_testing_alan";//"MMedication";//
     private static timeline_repo Instance;
     private FireBaseInfo mFirebaseInfo;
     private List<Medication_mock_alan> med_list = new ArrayList<>();
@@ -104,6 +104,7 @@ public class timeline_repo {
                                 String status = resMap.get("status").toString();
                                 switch(status){
                                     case "Complete":{
+                                    //case "Finished":{
                                         timeline_item apps = new timeline_item(resMap);
 //                                        add to medlist for one applicable
                                         for (int i=g_index; i<med_list.size(); i++){

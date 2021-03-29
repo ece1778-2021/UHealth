@@ -77,8 +77,8 @@ public class MedicationList extends AppCompatActivity {
         intent.putExtra("medicine",medicine);
         PendingIntent pi = PendingIntent.getBroadcast(MedicationList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
-
+        //manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
+        manager.set(AlarmManager.RTC_WAKEUP,time+12*1000 ,pi);
 
     }
     public void bubble(Medication newinstance){
@@ -87,13 +87,13 @@ public class MedicationList extends AppCompatActivity {
         String init_time = newinstance.getInitDate();
         Long newtime =new  Long(0);
         Long oldtime =new Long(0);
-
-        if(MedicationList.size()<=0){
+        final int count = MedicationList.size();
+        if(count<=0){
             MedicationList.add(newinstance);
         }
         else{
-            for(int i =0; i <= MedicationList.size();i++){
-                if(i==MedicationList.size())
+            for(int i =0; i <=count;i++){
+                if(i==count)
                 {
                     MedicationList.add(i,newinstance);
                 }else{
@@ -460,9 +460,10 @@ public class MedicationList extends AppCompatActivity {
     }
     public void medicationReminderDialog(String medicine){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-        final  String Title = "Medication reminder" ;
-        final String[] item ={"Time to take the "+medicine,};
+        final  String Title = "Medication reminder " ;
+        final String[] item ={"Time to take the  "+medicine,};
         alertBuilder.setTitle(Title);
+        alertBuilder.setMessage("Time to take the  "+medicine);
         alertBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

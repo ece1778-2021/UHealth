@@ -85,13 +85,13 @@ public class AppointmnetList extends AppCompatActivity {
         String appointment_time = newinstance.getDate();
         Long newtime =new  Long(0);
         Long oldtime =new Long(0);
-
-        if(AppointmentList.size()<=0){
+        final int count = AppointmentList.size();
+        if(count <=0){
             AppointmentList.add(newinstance);
         }
         else{
-            for(int i =0; i <= AppointmentList.size();i++){
-                if(i==AppointmentList.size())
+            for(int i =0; i <= count ;i++){
+                if(i==count )
                 {
                     AppointmentList.add(i,newinstance);
                 }else{
@@ -294,9 +294,10 @@ public class AppointmnetList extends AppCompatActivity {
     }
     public void alarmDialog(String AppointmentType,String apttime){
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
-        final  String Title = "Notification of a/an"+AppointmentType ;
-        final String[] item ={"Don't forget your" + AppointmentType+"at"+apttime,};
+        final  String Title = "Notification of the "+AppointmentType ;
+        final String[] item ={"Don't forget your " + AppointmentType+" at "+apttime,};
         alertBuilder.setTitle(Title);
+        alertBuilder.setMessage("Don't forget your " + AppointmentType+"at"+apttime);
         alertBuilder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -350,6 +351,7 @@ public class AppointmnetList extends AppCompatActivity {
                 //-----------------------------------------
 
                 //-----------------------------------------
+                //Toast.makeText(AppointmnetList.this,"Welcomeback",Toast.LENGTH_LONG).show();
                 startMedia();// Do something
                 alarmDialog(starter.getStringExtra("apttype"),starter.getStringExtra("apttime"));
             } else {

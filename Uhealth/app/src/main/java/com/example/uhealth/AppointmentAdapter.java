@@ -70,7 +70,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             @Override
             public void onClick(View v) {
                 Date mdate = new Date();
-                mAppointment.addPath(mdate.getTime()+".jpg");
+                mAppointment.addPath("images/"+mdate.getTime()+".jpg");
                 PhotoTitle.setText(mdate.getTime()+".jpg");
             }
         });
@@ -244,7 +244,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                             DocumentSnapshot delDocument = documents.get(0);
                                             if(delDocument!=null ){
                                                 DocumentReference delDocumentRef = delDocument.getReference();
-                                                delDocumentRef.update("stauts",selectedUpdate );
+                                                delDocumentRef.update("status",selectedUpdate );
 
                                             }else{
 

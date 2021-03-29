@@ -1,7 +1,11 @@
 package com.example.uhealth;
 
 import androidx.appcompat.app.AlertDialog;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.util.Log;
@@ -129,6 +133,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         mAlarmStorageDialog = alertBuilder.create();
         mAlarmStorageDialog.show();
     }
+
     @Override
     public void onBindViewHolder(@NonNull MedicationAdapter.ViewHolder holder, int position) {
 
@@ -200,6 +205,8 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                         final long NewStorage = newStorage;
 
                         final long threshhold = Math.max(OriginalStorage,12*mMedication.getDosis());
+
+
 
 
 
