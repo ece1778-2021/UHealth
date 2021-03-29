@@ -34,6 +34,10 @@ import java.util.List;
 public class timeline_repo {
     private static final String APPOINTMENTS = "appointment_testing_alan";
     private static final String MEDICATIONS = "medication_testing_alan";
+
+//    private static final String APPOINTMENTS = "AApointment";
+//    private static final String MEDICATIONS = "MMedication";
+
     private static timeline_repo Instance;
     private FireBaseInfo mFirebaseInfo;
     private List<Medication_mock_alan> med_list = new ArrayList<>();
@@ -86,64 +90,64 @@ public class timeline_repo {
                                 Log.d(Timeline.TAG, "Least one task failed in repo");
                                 return;
                             }
-                            Log.d(Timeline.TAG, "All tasks successful in repo");
-                            QuerySnapshot q_app = (QuerySnapshot) tasks.get(0).getResult();
-                            QuerySnapshot q_med = (QuerySnapshot) tasks.get(1).getResult();
+                        }
+                        Log.d(Timeline.TAG, "All tasks successful in repo");
+                        QuerySnapshot q_app = (QuerySnapshot) tasks.get(0).getResult();
+                        QuerySnapshot q_med = (QuerySnapshot) tasks.get(1).getResult();
 
 //                            global index to add meds to apps
-                            int g_index = 0;
+                        int g_index = 0;
 
-                            for (QueryDocumentSnapshot documentSnapshot: q_med){
-                                HashMap<String,Object> resMap = (HashMap)documentSnapshot.getData();
+                        for (QueryDocumentSnapshot documentSnapshot: q_med){
+                            HashMap<String,Object> resMap = (HashMap)documentSnapshot.getData();
                                 Medication_mock_alan medication = new Medication_mock_alan(resMap);
                                 med_list.add(medication);
                             }
-                            for (QueryDocumentSnapshot documentSnapshot: q_app){
-                                HashMap<String,Object> resMap = (HashMap)documentSnapshot.getData();
+                        for (QueryDocumentSnapshot documentSnapshot: q_app){
+                            HashMap<String,Object> resMap = (HashMap)documentSnapshot.getData();
 
-                                String status = resMap.get("status").toString();
-                                switch(status){
-                                    case "Complete":{
-                                        timeline_item apps = new timeline_item(resMap);
+                            String status = resMap.get("status").toString();
+                            switch(status){
+                                case "Complete":{
+                                    timeline_item apps = new timeline_item(resMap);
 //                                        add to medlist for one applicable
-                                        for (int i=g_index; i<med_list.size(); i++){
-                                            Medication_mock_alan cur_med = med_list.get(i);
+                                    for (int i=g_index; i<med_list.size(); i++){
+                                        Medication_mock_alan cur_med = med_list.get(i);
 
-                                            int start_date = cur_med.getInitDate();
-                                            int end_date;
-                                            if (cur_med.getStatus().equals("complete")){
-                                                end_date = cur_med.getEndDate();
-                                            }else{
-                                                end_date = (int) (System.currentTimeMillis()/1000);
-                                            }
+                                        int start_date = cur_med.getInitDate();
+                                        int end_date;
+                                        if (cur_med.getStatus().equals("complete")){
+                                            end_date = cur_med.getEndDate();
+                                        }else{
+                                            end_date = (int) (System.currentTimeMillis()/1000);
+                                        }
 
-                                            if (start_date > apps.getDate()){
+                                        if (start_date > apps.getDate()){
 //                                                start date after most recent app
-                                                g_index++;
-                                            }else{
-                                                if (end_date >= apps.getDate()){
+                                            g_index++;
+                                        }else{
+                                            if (end_date >= apps.getDate()){
 //                                                    end after or equal to date
 //                                                    on medication
-                                                    apps.addMeds(cur_med.getMedicine());
-                                                }else{
+                                                apps.addMeds(cur_med.getMedicine());
+                                            }else{
 //                                                    end before date
 //                                                    do nothing
                                                     ;
-                                                }
                                             }
                                         }
+                                    }
 
 //                                         add to app_list;
-                                        tl_list.add(apps);
-                                        break;
-                                    }
-                                    default:{
-                                        break;
-                                    }
+                                    tl_list.add(apps);
+                                    break;
+                                }
+                                default:{
+                                    break;
                                 }
                             }
-                            dataloadedListener.onDataLoaded();
                         }
+                        dataloadedListener.onDataLoaded();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

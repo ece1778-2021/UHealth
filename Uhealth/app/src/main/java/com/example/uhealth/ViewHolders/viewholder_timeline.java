@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +15,7 @@ import com.example.uhealth.Adapters.rvadapter_tlitem;
 import com.example.uhealth.R;
 
 public class viewholder_timeline extends RecyclerView.ViewHolder {
+    public ConstraintLayout mTotalLayout;
     public TextView mDate, mAppointment, mPhysician, mLocation, mNote;
     public RecyclerView mMeds, mPhotos;
 
@@ -46,6 +48,7 @@ public class viewholder_timeline extends RecyclerView.ViewHolder {
     }
 
     private void initView() {
+        mTotalLayout = itemView.findViewById(R.id.tl_item_layout);
         mDate = itemView.findViewById(R.id.date);
         mAppointment = itemView.findViewById(R.id.appointment_type);
         mPhysician = itemView.findViewById(R.id.physician_name);

@@ -4,26 +4,38 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.uhealth.Activity.Timeline;
 import com.example.uhealth.DataModel.timeline_item;
 import com.example.uhealth.R;
 import com.example.uhealth.ViewHolders.viewholder_timeline;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> {
+public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
     private List<timeline_item> itemList;
+
     private Context mContext;
+    private Timeline.passVMtoRV listener;
     private int currentpos = -1;
 
-    public rvadapter_tlitem(Context in_Context, List<timeline_item> in_itemlist){
+    public rvadapter_tlitem(Context in_Context, Timeline.passVMtoRV inlistener, List<timeline_item> in_itemlist){
+//        initially filtered = full
         itemList = in_itemlist;
+        listener = inlistener;
         mContext = in_Context;
     }
+
 
     @NonNull
     @Override
@@ -52,14 +64,11 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> 
         holder.mPhysician.setText(item.getPhysicianName());
         holder.mLocation.setText(item.getApptLocation());
         holder.mNote.setText(item.getNote());
-        holder.mDate.setText(Integer.toString(item.getDate()));
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("meds: ");
-        for (String s:item.getmMedls()){
-            sb.append(s);
-            sb.append("\t");
-        }
+        String dateAsText = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(new Date(item.getDate() * 1000L));
+        holder.mDate.setText(dateAsText);
+
         if (position == currentpos){
 //            only open one at a time
             holder.mDots.setVisibility(View.GONE);
@@ -76,15 +85,26 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline> 
         holder.mMeds.setAdapter(medsAdp);
         holder.mMeds.setHasFixedSize(true);
 
-        //        todo set up nested adapters images
         List<String> l_photos = item.getImagePaths();
         NestedRVAdp_photos photosAdp = new NestedRVAdp_photos(l_photos, mContext);
         RecyclerView.LayoutManager photosLayoutManager = new GridLayoutManager(mContext, 2);
         holder.mPhotos.setLayoutManager(photosLayoutManager);
         holder.mPhotos.setAdapter(photosAdp);
         holder.mPhotos.setHasFixedSize(true);
-        //        todo configure filter
 
+//        filter hide view by appointment type
+
+        if (listener.getfiltertypes().contains(item.getAppointmentType())){
+            holder.itemView.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            holder.itemView.setLayoutParams(params);
+        }else{
+            holder.itemView.setVisibility(View.GONE);
+            ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
+            params.height = 0;
+            holder.itemView.setLayoutParams(params);
+        }
     }
 
     @Override
