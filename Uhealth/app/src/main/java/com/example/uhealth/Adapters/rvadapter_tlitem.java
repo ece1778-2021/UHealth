@@ -65,7 +65,7 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
         holder.mLocation.setText(item.getApptLocation());
         holder.mNote.setText(item.getNote());
 
-        String dateAsText = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        String dateAsText = new SimpleDateFormat("yyyy-MM-dd")
                 .format(new Date(item.getDate() * 1000L));
         holder.mDate.setText(dateAsText);
 
@@ -93,7 +93,6 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
         holder.mPhotos.setHasFixedSize(true);
 
 //        filter hide view by appointment type
-
         if (listener.getfiltertypes().contains(item.getAppointmentType())){
             holder.itemView.setVisibility(View.VISIBLE);
             ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
@@ -106,6 +105,7 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
             holder.itemView.setLayoutParams(params);
         }
 
+//        set color by appointment type
         String type = item.getAppointmentType();
         int color;
         switch (type){
