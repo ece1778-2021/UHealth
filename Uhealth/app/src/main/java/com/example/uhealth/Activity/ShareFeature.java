@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.uhealth.Adapters.FPAdapter_Share;
 import com.example.uhealth.Fragments.ShareRequest_Frag;
@@ -25,6 +27,7 @@ public class ShareFeature extends AppCompatActivity {
         setContentView(R.layout.activity_share_feature);
 
         getSupportActionBar().setTitle("Sharing Feature");
+
         initView();
         initViewPager();
     }

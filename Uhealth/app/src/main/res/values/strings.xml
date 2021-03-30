@@ -64,5 +64,13 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
     <string name="notes"><b>Notes:</b></string>
     <string name="meds"><b>Medications</b></string>
     <string name="additional"><b>Additional Files</b></string>
+    <string name="fsv_explain_title"><b>Requesting Information</b></string>
+    <string name="fsv_explain_content">You may request a snapshot of personal information from another user, permission must be granted from the requested and they will choose which information they would like to share with you.
+        Including: \n\n
+        \u2022 Personal Information and Medical History \n
+        \u2022 Diagnosis Histroy \n
+        \u2022 Timeline \n
+    </string>
+    <string name="fsv_request_title"><b>Enter requested user\'s E-mail</b></string>
 
 </resources>
