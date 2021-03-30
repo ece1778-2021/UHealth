@@ -6,6 +6,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +22,9 @@ import android.widget.Toast;
 
 import com.example.uhealth.Activity.ShareFeature;
 import com.example.uhealth.Activity.Timeline;
+import com.example.uhealth.Adapters.rvadapter_shareoutstandings;
 import com.example.uhealth.R;
+import com.example.uhealth.ViewModel.Share_ViewModel;
 import com.example.uhealth.utils.FireBaseInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -44,12 +50,19 @@ public class ShareRequest_Frag extends Fragment {
     private Context mContext;
     private FrameLayout requestFrame, viewFrame;
     private RelativeLayout requestLayout, viewLayout;
+    private RecyclerView mRV;
+    private RecyclerView.LayoutManager layoutManager;
+    private rvadapter_shareoutstandings mRVAdapter;
     private EditText mEmail;
     private Button mSubmit;
     private FireBaseInfo mFireBaseInfo;
     private String ownId;
     private String targetId;
     private String idKey;
+    private String mailname ="";
+    private String username ="";
+    private Share_ViewModel viewModel;
+
 
     public ShareRequest_Frag() {
         // Required empty public constructor
@@ -65,6 +78,21 @@ public class ShareRequest_Frag extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFireBaseInfo.mFirestore.collection(USERS).document(mFireBaseInfo.mUser.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            mailname = documentSnapshot.getData().get("email").toString();
+                            username = documentSnapshot.getData().get("username").toString();
+                        }
+                        else{
+                            Toast.makeText(getActivity(), "Load user email and username failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -72,13 +100,23 @@ public class ShareRequest_Frag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_request_, container, false);
+        viewModel = new ViewModelProvider(getActivity()).get(Share_ViewModel.class);
 
         initView(view);
         initEvents();
 //        todo set up viewmodel, factory and recyclerview
-//        initRecyclerView();
+        initRecyclerView();
         return view;
     }
+
+    private void initRecyclerView() {
+        layoutManager = new GridLayoutManager(mContext,1);
+        mRV.setLayoutManager(layoutManager);
+        mRVAdapter = new rvadapter_shareoutstandings(mContext, viewModel.getOutstandings().getValue());
+        mRV.setAdapter(mRVAdapter);
+        mRV.setHasFixedSize(false);
+    }
+
 
     private void initEvents() {
         viewFrame.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +155,7 @@ public class ShareRequest_Frag extends Fragment {
         progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
 //        onsuccess, ownId, targetId and Idkey are all complete updated in this function
+//        email and username are also updated and only accessed in makeRequest
         String email = mEmail.getText().toString();
 
         if (email.equals("")){
@@ -166,6 +205,7 @@ public class ShareRequest_Frag extends Fragment {
                             progressDialog.dismiss();
                             return;
                         };
+//                        Since only 1 item
                         for (QueryDocumentSnapshot documentSnapshot: user){
                             targetId = documentSnapshot.getId();
                             idKey = ownId+targetId;
@@ -224,7 +264,10 @@ public class ShareRequest_Frag extends Fragment {
         map.put("IdKey", idKey);
         map.put("from_Id", ownId);
         map.put("to_Id", targetId);
+//        todo set expire limit
         map.put("expire", System.currentTimeMillis()/1000);
+        map.put("from_email", mailname);
+        map.put("from_username", username);
         mFireBaseInfo.mFirestore.collection(OUTSTANDING)
                 .add(map)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -252,6 +295,7 @@ public class ShareRequest_Frag extends Fragment {
         viewLayout = view.findViewById(R.id.fsv_request_viewsection);
         mEmail = view.findViewById(R.id.fsv_enter_ET);
         mSubmit = view.findViewById(R.id.fsv_enter_bt);
+        mRV = view.findViewById(R.id.fsv_request_rv);
     }
 
     @Override
@@ -260,5 +304,9 @@ public class ShareRequest_Frag extends Fragment {
         if (context.getClass() == ShareFeature.class){
             mContext = context;
         }
+    }
+
+    public void updateadapter(){
+        mRVAdapter.notifyDataSetChanged();
     }
 }

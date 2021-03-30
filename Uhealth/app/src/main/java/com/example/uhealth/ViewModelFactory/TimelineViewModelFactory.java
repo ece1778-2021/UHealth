@@ -1,4 +1,4 @@
-package com.example.uhealth.ViewModel;
+package com.example.uhealth.ViewModelFactory;
 
 import android.content.Context;
 
@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.uhealth.Interfaces.DataloadedListener;
+import com.example.uhealth.ViewModel.TimelineViewModel;
 
 public class TimelineViewModelFactory implements ViewModelProvider.Factory {
     private String[] arraylist;

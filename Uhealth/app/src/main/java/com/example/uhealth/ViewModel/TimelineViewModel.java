@@ -43,6 +43,7 @@ public class TimelineViewModel extends ViewModel {
         return timelinedata;
     }
 
+//    getter, setters
     public ArrayList<String> getTypeFilter() {
         return typeFilter;
     }

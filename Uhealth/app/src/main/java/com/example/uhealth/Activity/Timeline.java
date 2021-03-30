@@ -8,25 +8,21 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.uhealth.Adapters.rvadapter_tlitem;
 import com.example.uhealth.DataModel.timeline_item;
 import com.example.uhealth.Fragments.TimelineFilter;
 import com.example.uhealth.Interfaces.DataloadedListener;
 import com.example.uhealth.ViewModel.TimelineViewModel;
-import com.example.uhealth.ViewModel.TimelineViewModelFactory;
+import com.example.uhealth.ViewModelFactory.TimelineViewModelFactory;
 import com.example.uhealth.R;
 import com.example.uhealth.utils.CachedThreadPool;
-import com.example.uhealth.utils.GenerateFakeData;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 

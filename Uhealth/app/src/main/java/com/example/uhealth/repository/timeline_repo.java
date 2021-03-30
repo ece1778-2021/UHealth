@@ -53,9 +53,11 @@ public class timeline_repo {
 
 
     public static timeline_repo getInstance(DataloadedListener in_listener){
-        if (Instance == null){
-            Instance = new timeline_repo();
-        }
+        //        singleton design is not needed fro firebase connections
+//        if (Instance == null){
+//            Instance = new timeline_repo();
+//        }
+        Instance = new timeline_repo();
         dataloadedListener = in_listener;
         return Instance;
     }
