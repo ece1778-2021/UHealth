@@ -34,8 +34,4 @@ public class ShareView_frag extends Fragment {
         return inflater.inflate(R.layout.fragment_share_view_frag, container, false);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 }
