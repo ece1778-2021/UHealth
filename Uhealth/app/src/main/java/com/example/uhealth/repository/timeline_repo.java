@@ -33,8 +33,12 @@ import java.util.List;
 
 public class timeline_repo {
 
+//    private static final String APPOINTMENTS ="appointment_testing_alan";//"AAppointment";//
+//    private static final String MEDICATIONS = "medication_testing_alan";//"MMedication";//
+
     private static final String APPOINTMENTS ="appointment_testing_alan";//"AAppointment";//
     private static final String MEDICATIONS = "medication_testing_alan";//"MMedication";//
+
 
     private static timeline_repo Instance;
     private FireBaseInfo mFirebaseInfo;
@@ -95,6 +99,8 @@ public class timeline_repo {
 
 //                            global index to add meds to apps
                         int g_index = 0;
+                        med_list.clear();
+                        tl_list.clear();
 
                         for (QueryDocumentSnapshot documentSnapshot: q_med){
                             HashMap<String,Object> resMap = (HashMap)documentSnapshot.getData();
