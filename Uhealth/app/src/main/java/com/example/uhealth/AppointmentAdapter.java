@@ -1,6 +1,7 @@
 package com.example.uhealth;
 import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     private AlertDialog mRemoveAppointmentDialog;
     private AlertDialog mUpdateAppointmentDialog;
     private AlertDialog mFurtherUpdateDialog;
+
 
     @NonNull
     @Override
@@ -132,6 +134,12 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         mFurtherUpdateDialog = alertBuilder.create();
         mFurtherUpdateDialog.show();
 
+    }
+    public void startUpdaterActivity(View v,Appointment instance){
+        Intent FurtherUpdate = new Intent(v.getContext(),AppointmentUpdater.class);
+        FurtherUpdate.putExtra("apttype",instance.getAppointmentType());
+        FurtherUpdate.putExtra("apttime",instance.getDate());
+        v.getContext().startActivity(FurtherUpdate);
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
@@ -256,7 +264,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                         }
                                     }
                                 });
-                        furtherUpdate(vv,mAppointment);
+                       // furtherUpdate(vv,mAppointment);
+                        startUpdaterActivity(vv,mAppointment);
                         mUpdateAppointmentDialog.dismiss();
                     }
                 });

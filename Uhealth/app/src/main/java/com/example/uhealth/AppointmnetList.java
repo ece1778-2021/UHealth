@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AppointmnetList extends AppCompatActivity {
+public class AppointmnetList extends AppCompatActivity  {
     List<Appointment> AppointmentList = new ArrayList<>();
     AppointmentAdapter appointmentAdapter;
     private AlertDialog mRemoveAppointmentDialog;
@@ -154,7 +154,7 @@ public class AppointmnetList extends AppCompatActivity {
                                 //
                                 Date t_date = new Date();
                                 try{
-                                    t_date.setTime(1000*Integer.valueOf(resMap.get("date").toString()));
+                                    t_date.setTime((long)1000*Integer.valueOf(resMap.get("date").toString()));
                                     resMap.put("date",mdateformat.format(t_date));
 
                                 }catch (NullPointerException e){
