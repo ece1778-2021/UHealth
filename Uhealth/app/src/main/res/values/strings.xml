@@ -57,6 +57,8 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
     <string name="repeats_count">enter the number of repeats</string>
     <string name="dosis">dosis per time(measured by the storage unit)</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="notes"><b>Notes:</b></string>
+    <string name="meds"><b>Medications</b></string>
+    <string name="additional"><b>Additional Files</b></string>
 
 </resources>

@@ -182,7 +182,7 @@ public class SignUpPage extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            createUser(s_username, r);
+                            createUser(s_username, s_email, r);
                         } else {
                             try {
                                 throw Objects.requireNonNull(task.getException());
@@ -207,9 +207,10 @@ public class SignUpPage extends AppCompatActivity {
                 });
     }
 
-    private void createUser(String s_username, Runnable r) {
+    private void createUser(String s_username, String s_email, Runnable r) {
         Map<String, Object> userinfo = new HashMap<>();
         userinfo.put("username", s_username);
+        userinfo.put("email", s_email);
         mFireBaseInfo = new FireBaseInfo();
         mFireBaseInfo.mFirestore.collection("users").document(mFireBaseInfo.mUser.getUid())
                 .set(userinfo)
