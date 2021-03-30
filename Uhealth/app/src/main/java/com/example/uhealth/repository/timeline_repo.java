@@ -8,11 +8,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.uhealth.Activity.Timeline;
 import com.example.uhealth.Appointment;
-import com.example.uhealth.Appointment_mock_alan;
+import com.example.uhealth.Appointment  ;
 import com.example.uhealth.DataModel.timeline_item;
 import com.example.uhealth.Interfaces.DataloadedListener;
 import com.example.uhealth.Medication;
-import com.example.uhealth.Medication_mock_alan;
+import com.example.uhealth.Medication  ;
 import com.example.uhealth.utils.FireBaseInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,13 +36,13 @@ public class timeline_repo {
 //    private static final String APPOINTMENTS ="appointment_testing_alan";//"AAppointment";//
 //    private static final String MEDICATIONS = "medication_testing_alan";//"MMedication";//
 
-    private static final String APPOINTMENTS ="appointment_testing_alan";//"AAppointment";//
-    private static final String MEDICATIONS = "medication_testing_alan";//"MMedication";//
+    private static final String APPOINTMENTS ="AAppointment";//"appointment_testing_alan";//
+    private static final String MEDICATIONS = "MMedication";//"medication_testing_alan";//
 
 
     private static timeline_repo Instance;
     private FireBaseInfo mFirebaseInfo;
-    private List<Medication_mock_alan> med_list = new ArrayList<>();
+    private List<Medication  > med_list = new ArrayList<>();
     private List<timeline_item> tl_list = new ArrayList<>();
 
     static DataloadedListener dataloadedListener;
@@ -104,7 +104,7 @@ public class timeline_repo {
 
                         for (QueryDocumentSnapshot documentSnapshot: q_med){
                             HashMap<String,Object> resMap = (HashMap)documentSnapshot.getData();
-                                Medication_mock_alan medication = new Medication_mock_alan(resMap);
+                                Medication   medication = new Medication  (resMap);
                                 med_list.add(medication);
                             }
                         for (QueryDocumentSnapshot documentSnapshot: q_app){
@@ -113,18 +113,19 @@ public class timeline_repo {
 
                                 String status = resMap.get("status").toString();
                                 switch(status){
-                                    case "Complete":{
+                                    case "Finished":{
                                     //case "Finished":{
                                         timeline_item apps = new timeline_item(resMap);
 
 //                                        add to medlist for one applicable
                                     for (int i=g_index; i<med_list.size(); i++){
-                                        Medication_mock_alan cur_med = med_list.get(i);
+                                        Medication   cur_med = med_list.get(i);
 
-                                        int start_date = cur_med.getInitDate();
+                                        int start_date = cur_med.getintInitDate();
                                         int end_date;
-                                        if (cur_med.getStatus().equals("complete")){
-                                            end_date = cur_med.getEndDate();
+                                     //   if (cur_med.getStatus().equals("complete")){
+                                        if (cur_med.getStatus().equals("past")){
+                                            end_date = cur_med.getintEndDate();
                                         }else{
                                             end_date = (int) (System.currentTimeMillis()/1000);
                                         }

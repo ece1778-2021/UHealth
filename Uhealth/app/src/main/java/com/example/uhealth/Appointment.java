@@ -58,6 +58,8 @@ public class Appointment {
         this.ApptLocation = Initializer.get("location").toString();
     }
     //----------Get-------------
+    public int getintDate(){return this.ApptDate;}
+
     public String getStatus(){
        return Status;
     }

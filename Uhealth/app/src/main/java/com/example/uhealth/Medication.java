@@ -63,7 +63,15 @@ public class Medication {
         }
     //----Get-------------
         public String getType(){return Type;}
-
+        public int getintInitDate(){return InitDate;}
+        public int getintEndDate(){return  EndDate;
+        }
+        public int getintLastUpdate(){
+            return LastUpdate;
+        }
+        public int getintNextUpdate(){
+            return NextUpdate;
+        }
         public String getEndDate(){
             SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
             Date d_EndDate = new Date();

@@ -259,6 +259,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                                             }
 
 
+
                                         } else {
                                             // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
                                         }
