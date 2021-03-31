@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.uhealth.Adapters.FPAdapter_Share;
+import com.example.uhealth.DataModel.Share_accepted_item;
 import com.example.uhealth.DataModel.Share_outstandings_item;
 import com.example.uhealth.Fragments.Outstanding_accept_Dfrag;
 import com.example.uhealth.Fragments.ShareRequest_Frag;
@@ -60,14 +61,14 @@ public class ShareFeature extends AppCompatActivity {
         ShareViewModelFactory factory = new ShareViewModelFactory(new ShareDataLoadedListener() {
             @Override
             public void onOutstandingsLoaded() {
-                Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.sf_viewpager + ":" + viewPager.getCurrentItem());
+                Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.sf_viewpager + ":" + 0);
                 ShareRequest_Frag mFragRequest = (ShareRequest_Frag) page;
                 viewModel.getOutstandings().observe(ShareFeature.this, new Observer<List<Share_outstandings_item>>() {
                     @Override
                     public void onChanged(List<Share_outstandings_item> share_outstandings_items) {
                         if (mFragRequest!=null){
                             mFragRequest.updateadapter();
-                            Toast.makeText(ShareFeature.this, "Outstandings reloaded", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(ShareFeature.this, "Outstandings reloaded", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -75,7 +76,18 @@ public class ShareFeature extends AppCompatActivity {
             }
             @Override
             public void onAcceptedLoaded() {
-//                todo implement call from fragment
+                Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.sf_viewpager + ":" + 1);
+                ShareView_frag mFragView = (ShareView_frag) page;
+                viewModel.getAccepteds().observe(ShareFeature.this, new Observer<List<Share_accepted_item>>() {
+                    @Override
+                    public void onChanged(List<Share_accepted_item> share_accepted_items) {
+                        if (mFragView!=null){
+                            mFragView.updateAdapter();
+//                            Toast.makeText(ShareFeature.this, "Accepted reloaded", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
             }
         });
         viewModel = new ViewModelProvider(this, factory).get(Share_ViewModel.class);
@@ -150,7 +162,7 @@ public class ShareFeature extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-//                        todo copy collections into here
+//                        todo copy collections into this docid
                         String docid = documentReference.getId();
 
 //                        todo combined task and when all complete (get and delete) then nest combined task to upload into************************
@@ -189,5 +201,10 @@ public class ShareFeature extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    public void viewFromAccepteds(String rbText, String docid){
+//        todo switch rbText choose collection within docid.
+        Toast.makeText(this, "Show: "+rbText+"\t"+docid, Toast.LENGTH_SHORT).show();
     }
 }
