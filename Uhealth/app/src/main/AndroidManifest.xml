@@ -22,7 +22,8 @@
             android:theme="@style/Theme.UHealth.NoActionBar"></activity>
         <activity
             android:name=".Activity.ShareFeature"
-            android:parentActivityName=".Activity.ProfilePage" />
+            android:parentActivityName=".Activity.ProfilePage"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".Activity.DisplayFullImage"
             android:parentActivityName=".Activity.Timeline"
