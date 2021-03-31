@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.uhealth.Activity.ShareFeature;
+import com.example.uhealth.DataModel.Share_accepted_item;
 import com.example.uhealth.DataModel.Share_outstandings_item;
 import com.example.uhealth.Interfaces.ShareDataLoadedListener;
 import com.example.uhealth.utils.FireBaseInfo;
@@ -28,6 +29,7 @@ public class Share_repo {
     private FireBaseInfo mFireBaseInfo;
     static ShareDataLoadedListener listener;
     private List<Share_outstandings_item> outstandingsList =new ArrayList<>();
+    private List<Share_accepted_item> acceptedList = new ArrayList<>();
 
     public Share_repo(){
         mFireBaseInfo = new FireBaseInfo();
@@ -43,15 +45,46 @@ public class Share_repo {
         return Instance;
     }
 
-    public static void nullifyShare_repo(){
-        Instance=null;
-    }
-
     public MutableLiveData<List<Share_outstandings_item>> getOutstandings(){
         loadOutstandings();
         MutableLiveData<List<Share_outstandings_item>> data = new MutableLiveData<>();
         data.setValue(outstandingsList);
         return data;
+    }
+
+    public MutableLiveData<List<Share_accepted_item>> getAccepteds(){
+        loadAccepteds();
+        MutableLiveData<List<Share_accepted_item>> data = new MutableLiveData<>();
+        data.setValue(acceptedList);
+        return data;
+    }
+
+    private void loadAccepteds() {
+        mFireBaseInfo.mFirestore.collection(ACCEPTED)
+                .whereEqualTo("from_Id", mFireBaseInfo.mUser.getUid())
+                .orderBy("expire", Query.Direction.ASCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error!=null){
+                            Log.d(ShareFeature.TAG, "load accepted onsnapshot failed");
+                        }
+                        else {
+                            //                        init list
+                            acceptedList.clear();
+                            for (QueryDocumentSnapshot queryDocumentSnapshot: value){
+                                HashMap<String,Object> resMap = (HashMap)queryDocumentSnapshot.getData();
+                                Share_accepted_item item = new Share_accepted_item(resMap);
+                                item.setDocumentId(queryDocumentSnapshot.getId());
+                                item.setmInfoandHistory((boolean)queryDocumentSnapshot.getData().get("InfoandHistory"));
+                                item.setmDiagnosis((boolean)queryDocumentSnapshot.getData().get("Diagnosis"));
+                                item.setmTimeline((boolean)queryDocumentSnapshot.getData().get("Timeline"));
+                                acceptedList.add(item);
+                            }
+                            listener.onAcceptedLoaded();
+                        }
+                    }
+                });
     }
 
     private void loadOutstandings() {
@@ -70,8 +103,8 @@ public class Share_repo {
                             for (QueryDocumentSnapshot queryDocumentSnapshot: value){
                                 HashMap<String,Object> resMap = (HashMap)queryDocumentSnapshot.getData();
                                 Share_outstandings_item item = new Share_outstandings_item(resMap);
+                                item.setDocumentId(queryDocumentSnapshot.getId());
                                 outstandingsList.add(item);
-
                             }
                             listener.onOutstandingsLoaded();
                         }
