@@ -72,5 +72,6 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
         \u2022 Timeline \n
     </string>
     <string name="fsv_request_title"><b>Enter requested user\'s E-mail</b></string>
+    <string name="DF_outstanding_accept_explain">I agree to share the following information:</string>
 
 </resources>

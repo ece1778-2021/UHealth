@@ -4,15 +4,22 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.uhealth.Activity.ShareFeature;
 import com.example.uhealth.DataModel.Share_outstandings_item;
 import com.example.uhealth.R;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class rvadapter_shareoutstandings extends RecyclerView.Adapter<rvadapter_shareoutstandings.outstandings_vh> {
     private List<Share_outstandings_item> outstandingslist;
@@ -34,9 +41,15 @@ public class rvadapter_shareoutstandings extends RecyclerView.Adapter<rvadapter_
 
     @Override
     public void onBindViewHolder(@NonNull outstandings_vh holder, int position) {
-        Share_outstandings_item outstandings_item = outstandingslist.get(position);
-        String fromuser = outstandings_item.getFrom_username();
-        holder.tv.setText(fromuser);
+        Share_outstandings_item item = outstandingslist.get(position);
+        String fromuser = item.getFrom_username();
+        String fromemail = item.getFrom_email();
+
+        String dateAsText = new SimpleDateFormat("yyyy-MM-dd")
+                .format(new Date(item.getExpire() * 1000L));
+        holder.mEmail.setText(fromemail);
+        holder.mUsername.setText("From "+fromuser);
+        holder.mExpire.setText(dateAsText);
     }
 
     @Override
@@ -49,14 +62,40 @@ public class rvadapter_shareoutstandings extends RecyclerView.Adapter<rvadapter_
     }
 
     public class outstandings_vh extends RecyclerView.ViewHolder {
-        TextView tv;
+        TextView mUsername, mEmail, mExpire;
+        Button mDecline, mAccept;
         public outstandings_vh(@NonNull View itemView) {
             super(itemView);
             initview();
+            initEvents();
+        }
+
+        private void initEvents() {
+            mDecline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Share_outstandings_item item = outstandingslist.get(position);
+                    String docid = item.getDocumentId();
+                    ((ShareFeature)mContext).deletedoc(docid);
+                }
+            });
+            mAccept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Share_outstandings_item item = outstandingslist.get(position);
+                    ((ShareFeature)mContext).openOutstandingAcceptDialog(item);
+                }
+            });
         }
 
         private void initview() {
-            tv = itemView.findViewById(R.id.outstandings_test);
+            mUsername = itemView.findViewById(R.id.outstanding_fromusername);
+            mEmail = itemView.findViewById(R.id.outstanding_fromemail);
+            mExpire = itemView.findViewById(R.id.outstanding_expiredate);
+            mDecline = itemView.findViewById(R.id.outstanding_decline);
+            mAccept = itemView.findViewById(R.id.outstanding_accept);
         }
     }
 }

@@ -61,6 +61,8 @@ public class ShareRequest_Frag extends Fragment {
     private String idKey;
     private String mailname ="";
     private String username ="";
+    private String tomailname = "";
+    private String tousername = "";
     private Share_ViewModel viewModel;
 
 
@@ -100,11 +102,8 @@ public class ShareRequest_Frag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_share_request_, container, false);
-        viewModel = new ViewModelProvider(getActivity()).get(Share_ViewModel.class);
-
         initView(view);
         initEvents();
-//        todo set up viewmodel, factory and recyclerview
         initRecyclerView();
         return view;
     }
@@ -155,7 +154,7 @@ public class ShareRequest_Frag extends Fragment {
         progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
 //        onsuccess, ownId, targetId and Idkey are all complete updated in this function
-//        email and username are also updated and only accessed in makeRequest
+//        email, toemail and username, tousername are also updated and only accessed in makeRequest
         String email = mEmail.getText().toString();
 
         if (email.equals("")){
@@ -208,6 +207,8 @@ public class ShareRequest_Frag extends Fragment {
 //                        Since only 1 item
                         for (QueryDocumentSnapshot documentSnapshot: user){
                             targetId = documentSnapshot.getId();
+                            tomailname = documentSnapshot.getData().get("email").toString();
+                            tousername = documentSnapshot.getData().get("username").toString();
                             idKey = ownId+targetId;
                         }
 //                        check if duplicate in outstanding and accepted
@@ -268,6 +269,8 @@ public class ShareRequest_Frag extends Fragment {
         map.put("expire", System.currentTimeMillis()/1000);
         map.put("from_email", mailname);
         map.put("from_username", username);
+        map.put("to_email", tomailname);
+        map.put("to_username", tousername);
         mFireBaseInfo.mFirestore.collection(OUTSTANDING)
                 .add(map)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -303,6 +306,7 @@ public class ShareRequest_Frag extends Fragment {
         super.onAttach(context);
         if (context.getClass() == ShareFeature.class){
             mContext = context;
+            viewModel = new ViewModelProvider(getActivity()).get(Share_ViewModel.class);
         }
     }
 
