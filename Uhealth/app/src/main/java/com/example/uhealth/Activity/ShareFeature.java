@@ -10,6 +10,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,12 +42,20 @@ public class ShareFeature extends AppCompatActivity {
     private final String INFOHISTORY = "";
     private final String DIAGNOSIS = "";
     private final String APPOINTMENTS = "AApointment";
+//    in s
+    public static final long OUTSTANDING_EXPIRE_TIME = 60;
+    public static final long ACCEPTED_EXPIRE_TIME = 24*3600;
+//    in ms
+    public static final int LOOP_INTERVAL = 30*1000;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FPAdapter_Share fragmentPagerAdapter;
     private FireBaseInfo mFireBaseInfo;
     private Share_ViewModel viewModel;
+
+    private Handler mHandler;
+    private Runnable mLoopcheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +101,53 @@ public class ShareFeature extends AppCompatActivity {
             }
         });
         viewModel = new ViewModelProvider(this, factory).get(Share_ViewModel.class);
+
+        initHandler();
+    }
+
+    private void initHandler() {
+//        use of handler is justified since firebase is already an Async task, check work is light
+        mHandler = new Handler(Looper.getMainLooper());
+        mLoopcheck = new Runnable() {
+            @Override
+            public void run() {
+                long cur_time = System.currentTimeMillis()/1000;
+//                both are oldest first
+                if (viewModel!=null){
+                    for(Share_outstandings_item item :viewModel.getOutstandings().getValue()){
+                        if (item.getExpire()<cur_time){
+                            String id = item.getDocumentId();
+                            ShareFeature.this.deleteOutstandingdoc(id);
+                        }else{
+                            break;
+                        }
+                    }
+                    for(Share_accepted_item item: viewModel.getAccepteds().getValue()){
+                        if (item.getExpire()<cur_time){
+                            String id = item.getDocumentId();
+                            ShareFeature.this.deleteAccepteddoc(id);
+                        }else{
+                            break;
+                        }
+                    }
+                }
+                Log.d(TAG, "One loop of expire check");
+                mHandler.postDelayed(this, LOOP_INTERVAL);
+            }
+        };
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mHandler.post(mLoopcheck);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mHandler.removeCallbacks(mLoopcheck);
     }
 
     private void initViewPager() {
@@ -109,7 +166,7 @@ public class ShareFeature extends AppCompatActivity {
         viewPager = findViewById(R.id.sf_viewpager);
     }
 
-    public void deletedoc(String id){
+    public void deleteOutstandingdoc(String id){
         mFireBaseInfo.mFirestore.collection(OUTSTANDINGS).document(id)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -126,19 +183,38 @@ public class ShareFeature extends AppCompatActivity {
         });
     }
 
+    public void deleteAccepteddoc(String id){
+        mFireBaseInfo.mFirestore.collection(ACCEPTED).document(id)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Delete Accepted success");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ShareFeature.this, "Delete Accepted Failed", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Delete Accepted failed");
+            }
+        });
+    }
+
     public void openOutstandingAcceptDialog(Share_outstandings_item in_item){
         viewModel.setOutstandingAcceptDialogItem(in_item);
         Outstanding_accept_Dfrag outstandingAcceptDfrag = Outstanding_accept_Dfrag.newInstance();
         outstandingAcceptDfrag.show(getSupportFragmentManager(), "tag");
     }
 
-//    todo this thing
+
+
+    //    todo this thing
     public void acceptOutstandings(HashMap<String, Boolean> b_map){
+//        item is saved into viewmodel, thus even if outstanding is deleted, the dialog can still generate desired result
         Share_outstandings_item item = viewModel.getOutstandingAcceptDialogItem();
         HashMap<String, Object> map = new HashMap<>();
         map.put("IdKey", item.getIdKey());
-//        todo extend expire date
-        map.put("expire", item.getExpire());
+        map.put("expire", System.currentTimeMillis()/1000+ACCEPTED_EXPIRE_TIME);
         map.put("from_Id", item.getFrom_id());
         map.put("from_email", item.getFrom_email());
         map.put("from_username", item.getFrom_username());

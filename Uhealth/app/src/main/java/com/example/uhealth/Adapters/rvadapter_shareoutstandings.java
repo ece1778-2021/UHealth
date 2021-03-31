@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,10 +15,8 @@ import com.example.uhealth.DataModel.Share_outstandings_item;
 import com.example.uhealth.R;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class rvadapter_shareoutstandings extends RecyclerView.Adapter<rvadapter_shareoutstandings.outstandings_vh> {
     private List<Share_outstandings_item> outstandingslist;
@@ -45,7 +42,7 @@ public class rvadapter_shareoutstandings extends RecyclerView.Adapter<rvadapter_
         String fromuser = item.getFrom_username();
         String fromemail = item.getFrom_email();
 
-        String dateAsText = new SimpleDateFormat("yyyy-MM-dd")
+        String dateAsText = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 .format(new Date(item.getExpire() * 1000L));
         holder.mEmail.setText(fromemail);
         holder.mUsername.setText("From "+fromuser);
@@ -77,7 +74,7 @@ public class rvadapter_shareoutstandings extends RecyclerView.Adapter<rvadapter_
                     int position = getAdapterPosition();
                     Share_outstandings_item item = outstandingslist.get(position);
                     String docid = item.getDocumentId();
-                    ((ShareFeature)mContext).deletedoc(docid);
+                    ((ShareFeature)mContext).deleteOutstandingdoc(docid);
                 }
             });
             mAccept.setOnClickListener(new View.OnClickListener() {

@@ -47,7 +47,7 @@ public class rvadapter_shareaccepteds extends RecyclerView.Adapter<rvadapter_sha
         holder.mTitle.setText(title);
         holder.mEmail.setText(item.getTo_email());
 
-        String dateAsText = new SimpleDateFormat("yyyy-MM-dd")
+        String dateAsText = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 .format(new Date(item.getExpire() * 1000L));
         String expire = "Expire on: "+dateAsText;
         holder.mExpire.setText(expire);

@@ -265,8 +265,7 @@ public class ShareRequest_Frag extends Fragment {
         map.put("IdKey", idKey);
         map.put("from_Id", ownId);
         map.put("to_Id", targetId);
-//        todo set expire limit
-        map.put("expire", System.currentTimeMillis()/1000);
+        map.put("expire", System.currentTimeMillis()/1000+((ShareFeature)mContext).OUTSTANDING_EXPIRE_TIME);
         map.put("from_email", mailname);
         map.put("from_username", username);
         map.put("to_email", tomailname);
