@@ -78,8 +78,8 @@ public class AppointmentAdder extends AppCompatActivity {
                 }
             }
             else{
-                resMap.put("status","Past");
-                status = "Past";
+                resMap.put("status","Finished");
+                status = "Finished";
             }
 
 

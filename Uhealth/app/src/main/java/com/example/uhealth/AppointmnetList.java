@@ -244,6 +244,7 @@ public class AppointmnetList extends AppCompatActivity  {
 
                     Log.d("HHHH","we are 0001");
                     Appointment temp_appointment = new Appointment(resMap);
+
                     bubble(temp_appointment);
                     appointmentAdapter.notifyDataSetChanged();
                     Log.d("HHHH","we are 0003");
