@@ -97,14 +97,13 @@ public class rvadapter_shareaccepteds extends RecyclerView.Adapter<rvadapter_sha
                 public void onClick(View v) {
                     int postion = getAdapterPosition();
                     Share_accepted_item item = acceptedList.get(postion);
-                    String docid = item.getDocumentId();
                     int rb_id = mRG.getCheckedRadioButtonId();
                     if (rb_id == -1){
                         Toast.makeText(mContext, "Must select type to View", Toast.LENGTH_SHORT).show();
                     }else{
                         RadioButton selected = (RadioButton)itemView.findViewById(rb_id);
                         String rbText = selected.getText().toString();
-                        ((ShareFeature)mContext).viewFromAccepteds(rbText, docid);
+                        ((ShareFeature)mContext).viewFromAccepteds(rbText, item);
                     }
                 }
             });

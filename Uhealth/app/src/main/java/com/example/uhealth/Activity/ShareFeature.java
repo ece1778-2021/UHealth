@@ -203,8 +203,10 @@ public class ShareFeature extends AppCompatActivity {
 
     }
 
-    public void viewFromAccepteds(String rbText, String docid){
+//    todo this one
+    public void viewFromAccepteds(String rbText, Share_accepted_item item){
 //        todo switch rbText choose collection within docid.
-        Toast.makeText(this, "Show: "+rbText+"\t"+docid, Toast.LENGTH_SHORT).show();
+//        todo launch activities from here
+        Toast.makeText(this, "Show: "+rbText+"\t"+item.getTo_username(), Toast.LENGTH_SHORT).show();
     }
 }
