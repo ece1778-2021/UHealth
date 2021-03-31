@@ -8,6 +8,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,9 +31,15 @@ import com.example.uhealth.ViewModelFactory.ShareViewModelFactory;
 import com.example.uhealth.utils.FireBaseInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,11 +47,12 @@ public class ShareFeature extends AppCompatActivity {
     public static final String TAG = ShareFeature.class.getSimpleName();
     private final String OUTSTANDINGS = "Outstanding_Requests";
     private final String ACCEPTED = "Accepted_Requests";
+    private final String APPOINTMENTS = "AAppointment";
     private final String INFOHISTORY = "";
     private final String DIAGNOSIS = "";
-    private final String APPOINTMENTS = "AApointment";
+    private final String TIMELINE = "Timeline";
 //    in s
-    public static final long OUTSTANDING_EXPIRE_TIME = 60;
+    public static final long OUTSTANDING_EXPIRE_TIME = 24*3600;
     public static final long ACCEPTED_EXPIRE_TIME = 24*3600;
 //    in ms
     public static final int LOOP_INTERVAL = 30*1000;
@@ -53,6 +62,8 @@ public class ShareFeature extends AppCompatActivity {
     private FPAdapter_Share fragmentPagerAdapter;
     private FireBaseInfo mFireBaseInfo;
     private Share_ViewModel viewModel;
+
+    private ProgressDialog progressDialog;
 
     private Handler mHandler;
     private Runnable mLoopcheck;
@@ -210,6 +221,14 @@ public class ShareFeature extends AppCompatActivity {
 
     //    todo this thing
     public void acceptOutstandings(HashMap<String, Boolean> b_map){
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+        progressDialog.setContentView(R.layout.progressdialog);
+        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+
 //        item is saved into viewmodel, thus even if outstanding is deleted, the dialog can still generate desired result
         Share_outstandings_item item = viewModel.getOutstandingAcceptDialogItem();
         HashMap<String, Object> map = new HashMap<>();
@@ -222,6 +241,7 @@ public class ShareFeature extends AppCompatActivity {
         map.put("to_email", item.getTo_email());
         map.put("to_username", item.getTo_username());
 
+        final String to_uid = item.getTo_id();
         final boolean mInfoandHistory, mDiagnosis, mTimeline;
         final String outstandingdocid = item.getDocumentId();
         mInfoandHistory = b_map.get("InfoandHistory");
@@ -238,35 +258,93 @@ public class ShareFeature extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-//                        todo copy collections into this docid
-                        String docid = documentReference.getId();
+
+//                        newly created accepted item reference
+//                        Firebase query is shallow, nested collection is accepted (does not surface on query)
+                        final String docid = documentReference.getId();
+
+                        List<Task<?>> taskList= new ArrayList<>();
 
 //                        todo combined task and when all complete (get and delete) then nest combined task to upload into************************
                         if (mInfoandHistory){
-//                            todo copy collection over
+//                            todo copy collection over (not supported yet) makeshift with user collection
+                            Task<?> addInfoandHistory = mFireBaseInfo.mFirestore.collection("users")
+                                    .whereEqualTo("username", "test")
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                                                mFireBaseInfo.mFirestore.collection(ACCEPTED).document(docid)
+                                                        .collection("testcollection")
+                                                        .add(documentSnapshot.getData());
+                                            }
+                                        }
+                                    });
+                            taskList.add(addInfoandHistory);
                         }
                         if (mDiagnosis){
-//                            todo copy colletion over (not support yet)
+//                            todo copy colletion over (not supported yet)
+//                            Task = ...
+//                            taskList.add();
                         }
                         if(mTimeline){
 //                            todo copy collection over (not support yet)
+                            Task<?> addTimeline = mFireBaseInfo.mFirestore
+                                    .collection(APPOINTMENTS)
+                                    .whereEqualTo("patientid", to_uid)
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+                                                mFireBaseInfo.mFirestore.collection(ACCEPTED).document(docid)
+                                                        .collection("testtimeline")
+                                                        .add(documentSnapshot.getData());
+                                            }
+                                        }
+                                    });
+                            taskList.add(addTimeline);
                         }
-                        mFireBaseInfo.mFirestore.collection(OUTSTANDINGS).document(outstandingdocid)
-                                .delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                        Tasks.whenAllComplete(taskList)
+                                .addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
                                     @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "delete old outstanding succeeded");
+                                    public void onSuccess(List<Task<?>> tasks) {
+                                        for (Task task:tasks){
+                                            if (!task.isSuccessful()){
+                                                progressDialog.dismiss();
+                                                Log.d(Timeline.TAG, "Least one task failed in moving into accepted instance");
+                                                return;
+                                            }
+                                        }
+                                        mFireBaseInfo.mFirestore.collection(OUTSTANDINGS).document(outstandingdocid)
+                                                .delete()
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        progressDialog.dismiss();
+                                                        Log.d(TAG, "delete old outstanding succeeded");
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        progressDialog.dismiss();
+                                                        Log.d(TAG, "delete old outstanding failed");
+                                                        Toast.makeText(ShareFeature.this, "Delete old outstanding failed", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "delete old outstanding failed");
-                                        Toast.makeText(ShareFeature.this, "Delete old outstanding failed", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
+                                        Toast.makeText(ShareFeature.this, "Moving Data into Accept Instance failed", Toast.LENGTH_SHORT).show();
+                                        Log.d(TAG, "Moving date into accept instance failed");
                                     }
                                 });
-//                        todo**************************************************************
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -274,6 +352,7 @@ public class ShareFeature extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(ShareFeature.this, "Accept Instance failed", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Create accept instance failed");
+                        progressDialog.dismiss();
                     }
                 });
 
@@ -284,5 +363,11 @@ public class ShareFeature extends AppCompatActivity {
 //        todo switch rbText choose collection within docid.
 //        todo launch activities from here
         Toast.makeText(this, "Show: "+rbText+"\t"+item.getTo_username(), Toast.LENGTH_SHORT).show();
+//        todo change this, for demo purpose only
+        if (rbText.equals("Timeline")){
+            Intent intent = new Intent(this, Timeline.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
