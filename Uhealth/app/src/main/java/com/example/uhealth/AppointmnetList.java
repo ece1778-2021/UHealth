@@ -162,16 +162,25 @@ public class AppointmnetList extends AppCompatActivity  {
                                 }
                                 //
                                 String status = resMap.get("status").toString();
+                                Appointment mmedication = new Appointment(resMap);
                                 switch(status){
                                     case "Scheduled":{
-                                        Appointment mmedication = new Appointment(resMap);
-
-
 
                                         bubble(mmedication );
                                         break;
                                     }
+                                    case "Finished":{
+                                        int aa = 1;
+                                        bubble(mmedication );
+                                        break;
+
+                                    }
+                                    case "Past":{
+                                        int bb = 1;
+                                        bubble(mmedication );
+                                    }
                                     default:{
+
                                         break;
                                     }
 

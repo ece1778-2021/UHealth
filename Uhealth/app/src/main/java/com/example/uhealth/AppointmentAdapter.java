@@ -178,101 +178,107 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         ApptDate.setTime((long)1000*mAppointment.getintDate());
         Date Current = new Date();
         if(Current.getTime()-ApptDate.getTime()>0){
-            holder.appointmentUpdater.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //mAppointment
-                    final String[] items = {"Finished","Canceled","Postponed"};
-
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
-                    alertBuilder.setTitle("Select your appointment feedback.");
-                    alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                            mListStack.add(0,items[i]);
+            if(!("Finished".equals(mAppointment.getStatus()))) {
 
 
-                            //Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                holder.appointmentUpdater.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //mAppointment
+                        final String[] items = {"Finished", "Canceled", "Postponed"};
+
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+                        alertBuilder.setTitle("Select your appointment feedback.");
+                        alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                mListStack.add(0, items[i]);
 
 
-                    alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //
-                            final View vv = v;
-                            SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-                            Date d_instance_date = new Date();
-                            int i_initdate = 0;
-                            try{
-                                d_instance_date = mdateformat.parse(mAppointment.getDate());
-                                i_initdate = (int)(d_instance_date.getTime()/1000);
-                            }catch (ParseException e){
-                                e.printStackTrace();
-
+                                //Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
                             }
-                            mListStack.add("Finished");
-                            String selectedUpdate  = mListStack.get(0);
-                            mFireBaseInfo.mFirestore.collection("AAppointment")//.whereEqualTo("date",i_initdate)
-                                    .whereEqualTo("patientid",mAppointment.getPatientID()).get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
+                        });
 
-                                                QuerySnapshot query_res =  task.getResult();
-                                                List<DocumentSnapshot> documents = query_res.getDocuments();
 
-                                                DocumentSnapshot delDocument = documents.get(0);
-                                                if(delDocument!=null ){
-                                                    DocumentReference delDocumentRef = delDocument.getReference();
-                                                    delDocumentRef.update("status",selectedUpdate );
+                        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //
+                                final View vv = v;
+                                SimpleDateFormat mdateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                                Date d_instance_date = new Date();
+                                int i_initdate = 0;
+                                try {
+                                    d_instance_date = mdateformat.parse(mAppointment.getDate());
+                                    i_initdate = (int) (d_instance_date.getTime() / 1000);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
 
-                                                }else{
+                                }
+                                mListStack.add("Finished");
+                                String selectedUpdate = mListStack.get(0);
+                                mFireBaseInfo.mFirestore.collection("AAppointment")//.whereEqualTo("date",i_initdate)
+                                        .whereEqualTo("patientid", mAppointment.getPatientID()).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
 
+                                                    QuerySnapshot query_res = task.getResult();
+                                                    List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                                                    DocumentSnapshot delDocument = documents.get(0);
+                                                    if (delDocument != null) {
+                                                        DocumentReference delDocumentRef = delDocument.getReference();
+                                                        delDocumentRef.update("status", selectedUpdate);
+
+                                                    } else {
+
+                                                    }
+
+
+                                                } else {
+                                                    // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
                                                 }
-
-
-
-                                            } else {
-                                                // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
                                             }
-                                        }
-                                    });
-                            // furtherUpdate(vv,mAppointment);
-                            startUpdaterActivity(vv,mAppointment);
-                            mUpdateAppointmentDialog.dismiss();
+                                        });
+                                // furtherUpdate(vv,mAppointment);
+                                startUpdaterActivity(vv, mAppointment);
+                                mUpdateAppointmentDialog.dismiss();
+                            }
+                        });
+
+
+                        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mUpdateAppointmentDialog.dismiss();
+                            }
+                        });
+                        mUpdateAppointmentDialog = alertBuilder.create();
+
+                        try {
+                            SimpleDateFormat mdateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                            Date date_time = mdateformat.parse(mAppointment.getDate());
+                            ;
+                            final Date currentDate = new Date();
+
+                            if (currentDate.getTime() - date_time.getTime() > 0) {
+                                mUpdateAppointmentDialog.show();
+                            } else {
+                                // nothing happened
+                            }
+                        } catch (java.text.ParseException e) {
+                            e.printStackTrace();
                         }
-                    });
 
 
-                    alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            mUpdateAppointmentDialog.dismiss();
-                        }
-                    });
-                    mUpdateAppointmentDialog = alertBuilder.create();
-
-                    try{
-                        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-                        Date date_time = mdateformat.parse(mAppointment.getDate());;
-                        final Date currentDate = new Date();
-
-                        if(currentDate.getTime() - date_time.getTime() > 0){
-                            mUpdateAppointmentDialog.show();
-                        }else{
-                            // nothing happened
-                        }
-                    }catch(java.text.ParseException e){
-                        e.printStackTrace();
                     }
-
-
-                }
-            });
+                });
+            }else{
+                holder.appointmentUpdater.setVisibility(View.INVISIBLE);
+            }
         }else{
             holder.appointmentUpdater.setVisibility(View.INVISIBLE);
         }
