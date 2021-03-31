@@ -157,7 +157,7 @@ public class MedicationList extends AppCompatActivity {
 
                     //end int to string
                     Medication mmedication = new Medication(resMap);
-                    if("past".equals(mmedication.getStatus())){
+                    if("once".equals(mmedication.getStatus())){
 
                     }else{
                         bubble(mmedication );

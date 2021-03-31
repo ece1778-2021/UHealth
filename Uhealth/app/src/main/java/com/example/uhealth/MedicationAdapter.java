@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -144,7 +146,20 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
 
         String medication_snippet = position+"  :"+mMedication.getMedicine()+" "+mMedication.getLastUpdate();
         holder.medicationTag.setText(medication_snippet);
-
+        String medication_status = mMedication.getStatus();
+        switch(medication_status){
+            case "ongoing":{
+                holder.medicationCardView.setCardBackgroundColor(ContextCompat.getColor( holder.medicationCardView.getContext(), R.color.lightteal));
+                break;
+            }
+            case "past":{
+                holder.medicationCardView.setCardBackgroundColor(ContextCompat.getColor( holder.medicationCardView.getContext(), R.color.lightpink));
+                break;
+            }
+            default:{
+                break;
+            }
+        }
         holder.medicationChecker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,127 +189,133 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         NextUpdate.setTime((long)1000*mMedication.getintNextUpdate());
         Date CurrentDate = new Date();
         if(CurrentDate.getTime()-NextUpdate.getTime()> 0 ) {
-            holder.medicationUpdater.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final String[] items = {"Finished", "Missed"};
-                    final View vv = v;
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
-                    alertBuilder.setTitle("Select your medication condition");
-                    alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // mListStack.add(0, items[which]);
-                        }
-                    });
-                    alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            mUpdateMedicationDialog.dismiss();
-                        }
-                    });
-                    alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mListStack.add("Finished");
-                            String selectedUpdate = mListStack.get(0);
-                            final long OriginalStorage = mMedication.getCurrentStorage();
-                            long newStorage;
-                            if (selectedUpdate.equals("Finished")) {
-                                newStorage = Math.max(0, mMedication.getCurrentStorage() - mMedication.getDosis());
-
-                            } else {
-                                newStorage = OriginalStorage;
+            if ("ongoing".equals(mMedication.getStatus())){
+                holder.medicationUpdater.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String[] items = {"Finished", "Missed"};
+                        final View vv = v;
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+                        alertBuilder.setTitle("Select your medication condition");
+                        alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // mListStack.add(0, items[which]);
                             }
-                            final long NewStorage = newStorage;
+                        });
+                        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mUpdateMedicationDialog.dismiss();
+                            }
+                        });
+                        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mListStack.add("Finished");
+                                String selectedUpdate = mListStack.get(0);
+                                final long OriginalStorage = mMedication.getCurrentStorage();
+                                long newStorage;
+                                if (selectedUpdate.equals("Finished")) {
+                                    newStorage = Math.max(0, mMedication.getCurrentStorage() - mMedication.getDosis());
 
-                            final long threshhold = Math.max(OriginalStorage, 12 * mMedication.getDosis());
+                                } else {
+                                    newStorage = OriginalStorage;
+                                }
+                                final long NewStorage = newStorage;
+
+                                final long threshhold = Math.max(OriginalStorage, 12 * mMedication.getDosis());
 
 
-                            mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid", mMedication.getUid())
-                                    .whereEqualTo("medicine", mMedication.getMedicine())//.whereEqualTo("initdate",mMedication.getInitDate())
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
+                                mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid", mMedication.getUid())
+                                        .whereEqualTo("medicine", mMedication.getMedicine())//.whereEqualTo("initdate",mMedication.getInitDate())
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
 
-                                                QuerySnapshot query_res = task.getResult();
-                                                List<DocumentSnapshot> documents = query_res.getDocuments();
+                                                    QuerySnapshot query_res = task.getResult();
+                                                    List<DocumentSnapshot> documents = query_res.getDocuments();
 
-                                                DocumentSnapshot delDocument = documents.get(0);
-                                                if (delDocument != null) {
-                                                    DocumentReference delDocumentRef = delDocument.getReference();
+                                                    DocumentSnapshot delDocument = documents.get(0);
+                                                    if (delDocument != null) {
+                                                        DocumentReference delDocumentRef = delDocument.getReference();
 
-                                                    Calendar medicationcalendar = Calendar.getInstance();
-                                                    int interval = 4;
-                                                    SimpleDateFormat mdateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-                                                    try {//ANIMPORTANTNOTE
-                                                        interval = Integer.valueOf(delDocument.get("interval").toString());
-                                                        Date last_time = mdateformat.parse(delDocument.get("nextupdate").toString());
-                                                        String last_time_text = mdateformat.format(medicationcalendar.getTime());// delDocument.get("nextupdate").toString();
-                                                        Date next_time = mdateformat.parse(last_time_text);
-                                                        ;
-                                                        // medicationcalendar.setTime(next_time);
-                                                        medicationcalendar.add(medicationcalendar.HOUR_OF_DAY, interval);
-                                                        String next_update_text = mdateformat.format(medicationcalendar.getTime());
+                                                        Calendar medicationcalendar = Calendar.getInstance();
+                                                        int interval = 4;
+                                                        SimpleDateFormat mdateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                                                        try {//ANIMPORTANTNOTE
+                                                            interval = Integer.valueOf(delDocument.get("interval").toString());
+                                                            Date last_time = mdateformat.parse(delDocument.get("nextupdate").toString());
+                                                            String last_time_text = mdateformat.format(medicationcalendar.getTime());// delDocument.get("nextupdate").toString();
+                                                            Date next_time = mdateformat.parse(last_time_text);
+                                                            ;
+                                                            // medicationcalendar.setTime(next_time);
+                                                            medicationcalendar.add(medicationcalendar.HOUR_OF_DAY, interval);
+                                                            String next_update_text = mdateformat.format(medicationcalendar.getTime());
 
-                                                        if (NewStorage > 0) {
-                                                            delDocumentRef.update("lastupdate", last_time_text);
-                                                            delDocumentRef.update("nextupdate", next_update_text);
-                                                            delDocumentRef.update("currentstorage", NewStorage);
+                                                            if (NewStorage > 0) {
+                                                                delDocumentRef.update("lastupdate", last_time_text);
+                                                                delDocumentRef.update("nextupdate", next_update_text);
+                                                                delDocumentRef.update("currentstorage", NewStorage);
 
-                                                        } else {
-                                                            delDocumentRef.update("status", "past");
-                                                            delDocumentRef.update("endtime", last_time_text);
-                                                            delDocumentRef.update("lastupdate", last_time_text);
-                                                            delDocumentRef.update("nextupdate", last_time_text);
-                                                            delDocumentRef.update("currentstorage", NewStorage);
+                                                            } else {
+                                                                delDocumentRef.update("status", "past");
+                                                                delDocumentRef.update("endtime", last_time_text);
+                                                                delDocumentRef.update("lastupdate", last_time_text);
+                                                                delDocumentRef.update("nextupdate", last_time_text);
+                                                                delDocumentRef.update("currentstorage", NewStorage);
 
+                                                            }
+
+
+                                                            //mMedication.setNextUpdate(next_update_text);
+                                                            //try this one:
+
+
+                                                        } catch (ParseException e) {
+                                                            e.printStackTrace();
                                                         }
-
-
-                                                        //mMedication.setNextUpdate(next_update_text);
-                                                        //try this one:
-
-
-                                                    } catch (ParseException e) {
-                                                        e.printStackTrace();
+                                                        ;
+                                                    } else {
+                                                        Log.d("AAASSSAAASSS", "AAASSSAAASSS");
                                                     }
-                                                    ;
                                                 } else {
-                                                    Log.d("AAASSSAAASSS", "AAASSSAAASSS");
+                                                    Log.d("SSSSAAAASSSSAAAA", "SSSSAAAASSSSAAAA");
                                                 }
-                                            } else {
-                                                Log.d("SSSSAAAASSSSAAAA", "SSSSAAAASSSSAAAA");
+
                                             }
 
-                                        }
 
+                                        });
+                                if (NewStorage < threshhold && NewStorage >= threshhold - mMedication.getDosis()) {
+                                    startStorageReminder(vv, mMedication);
+                                } else {
 
-                                    });
-                            if (NewStorage < threshhold && NewStorage >= threshhold - mMedication.getDosis()) {
-                                startStorageReminder(vv, mMedication);
-                            } else {
+                                }
+
+                                mUpdateMedicationDialog.dismiss();
 
                             }
+                        });
+                        //alertBuilder.setPositiveButton(OK)
+                        //---------------------
+                        mUpdateMedicationDialog = alertBuilder.create();
 
-                            mUpdateMedicationDialog.dismiss();
+                        mUpdateMedicationDialog.show();
 
-                        }
-                    });
-                    //alertBuilder.setPositiveButton(OK)
-                    //---------------------
-                    mUpdateMedicationDialog = alertBuilder.create();
-
-                    mUpdateMedicationDialog.show();
-
-                    //---------------------
+                        //---------------------
 
 
-                }
-            });
-        }else{
+                    }
+                });
+        }
+            else{
+                holder.medicationUpdater.setVisibility(View.INVISIBLE);
+              }
+        }
+        else{
             holder.medicationUpdater.setVisibility(View.INVISIBLE);
         }
     }
@@ -310,6 +331,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         TextView medicationTag;
         Button medicationChecker;
         Button medicationUpdater;
+        CardView medicationCardView;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -317,6 +339,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
             medicationTag = itemView.findViewById(R.id.medication_text_unit);
             medicationChecker = itemView.findViewById(R.id.btnMedicationChecker);
             medicationUpdater = itemView.findViewById(R.id.btnMedicationUpdater);
+            medicationCardView = itemView.findViewById(R.id.medication_card_view);
         }
        }
 }

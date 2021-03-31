@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.uhealth.Activity.MainActivity;
@@ -140,6 +142,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         FurtherUpdate.putExtra("apttype",instance.getAppointmentType());
         FurtherUpdate.putExtra("apttime",instance.getDate());
         v.getContext().startActivity(FurtherUpdate);
+
+
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
@@ -149,7 +153,26 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         //holder.fruitImage.setImageResource(mphoto.getImageID());
         String displayed = position+"  "+mAppointment.getAppointmentType();
         holder.appointmentTag.setText(displayed);
+        String appstatus = mAppointment.getStatus();
 
+        switch(appstatus){
+            case "Finished":{
+
+                holder.appointmentCardView.setCardBackgroundColor(ContextCompat.getColor( holder.appointmentCardView.getContext(), R.color.lightviolet));
+                break;
+            }
+            case "Scheduled":{
+                holder.appointmentCardView.setCardBackgroundColor(ContextCompat.getColor( holder.appointmentCardView.getContext(), R.color.lightgreen));
+                break;
+            }
+            case "Past":{
+                holder.appointmentCardView.setCardBackgroundColor(ContextCompat.getColor( holder.appointmentCardView.getContext(), R.color.lightyellow));
+                break;
+            }
+            default:{
+                break;
+            }
+        }
         holder.appointmentChecker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -304,11 +327,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView appointmentTag;
        // Button appointmentRemover;
+        CardView appointmentCardView;
         Button appointmentChecker;
         Button appointmentUpdater;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);//btnAppointmentUpdater
+            appointmentCardView = itemView.findViewById(R.id.appointment_card_view);
             appointmentTag =itemView.findViewById(R.id.appointmnet_text_unit);
             //appointmentRemover =itemView.findViewById(R.id.btnAppointmentRemover);
             appointmentChecker =itemView.findViewById(R.id.btnAppointmentChecker);
