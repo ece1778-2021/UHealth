@@ -40,8 +40,10 @@ public class MedicationAdder extends AppCompatActivity {
     Button btnInitTime;//findViewById(R.id.btnPickInitTime);
     EditText dosisview;//=findViewById(R.id.dosis);
     AlertDialog  mtypeSelectionDialog;
-
+    AlertDialog mstatusSelectionDialog;
+    String EndTime = "1970-01-01-23";
     private FireBaseInfo mFireBaseInfo;
+    String MedStatus =  "ongoing";
 
 
     public void medicationListener(){
@@ -93,17 +95,28 @@ public class MedicationAdder extends AppCompatActivity {
             intent.putExtra("status","past");
             intent.putExtra("enddate",init_of_repeat);
             intent.putExtra("interval","0");
+
             intent.putExtra("initstorage",dosis);
             intent.putExtra("lastupdate",init_of_repeat);
             intent.putExtra("nextupdate",init_of_repeat);
-
+            intent.putExtra("currentstorage",0);
         }else{//periodical
+
             intent.putExtra("status","ongoing");
             intent.putExtra("enddate",current_time_text);
             intent.putExtra("interval",interval );
             intent.putExtra("initstorage",storage);
+            intent.putExtra("currentstorage",storage);
             intent.putExtra("lastupdate",current_time_text);
             intent.putExtra("nextupdate",next_time_text);
+            if(MedStatus.equals("past")){
+                intent.putExtra("status","past");
+                intent.putExtra("enddate",EndTime);
+                intent.putExtra("lastupdate",EndTime);
+                intent.putExtra("nextupdate",EndTime);
+            }else{
+
+            }
 
         }
 
@@ -118,7 +131,42 @@ public class MedicationAdder extends AppCompatActivity {
 
     }
 
+    public void statusSelectionDialogue(){
+        final String[] items = {"ongoing","past"};
 
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Select your medication status.");
+        alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //selectedtype.setText(items[i]);
+                MedStatus = items[i];
+                //Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mstatusSelectionDialog.dismiss();
+            }
+        });
+
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mstatusSelectionDialog.dismiss();
+            }
+        });
+        mstatusSelectionDialog = alertBuilder.create();
+        mstatusSelectionDialog.show();
+
+
+
+
+    }
     public void typeSelectionDialogue(){
         final String[] items = {"once","periodical"};
 
@@ -136,7 +184,8 @@ public class MedicationAdder extends AppCompatActivity {
         alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                mtypeSelectionDialog.dismiss();
+                statusSelectionDialogue();
+               // mtypeSelectionDialog.dismiss();
             }
         });
 
@@ -154,6 +203,51 @@ public class MedicationAdder extends AppCompatActivity {
 
 
     }
+    public void endMedicationTime(){
+
+        final Calendar calendar = Calendar.getInstance();
+        final List<String> selected_time = new ArrayList<String>();
+        int[] timelist=new int[5];
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        final String init_time = "1970-01-01-23:59";
+        selected_time.add("1970-01-01-23:59");
+        //String selected_time="1970-01-01-23:59";
+
+
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(MedicationAdder.this, new TimePickerDialog.OnTimeSetListener() {
+
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                timelist[3] = hourOfDay;
+                timelist[4] = minute;
+                selected_time.remove(selected_time.get(0));
+                String timetoAdd = String.format("%04d-%02d-%02d-%02d:%02d",timelist[0],timelist[1],timelist[2],timelist[3],timelist[4]);
+                selected_time.add(0,timetoAdd);
+                EndTime = timetoAdd;
+
+            }
+        }, hour, minute, true);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(MedicationAdder.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                timelist[0] = year;
+                timelist[1] = monthOfYear + 1;
+                timelist[2]= dayOfMonth;
+                timePickerDialog.show();
+            }
+        }, year, month, day);
+
+        datePickerDialog.show();
+
+    }
+
     public void initialMedicationTime(){
 
         final Calendar calendar = Calendar.getInstance();
@@ -179,6 +273,12 @@ public class MedicationAdder extends AppCompatActivity {
                 String timetoAdd = String.format("%04d-%02d-%02d-%02d:%02d",timelist[0],timelist[1],timelist[2],timelist[3],timelist[4]);
                 selected_time.add(0,timetoAdd);
                 start_repeat.setText(timetoAdd);
+                if(MedStatus.equals("past")){
+                    endMedicationTime();
+                }else{
+
+                }
+
 
             }
         }, hour, minute, true);

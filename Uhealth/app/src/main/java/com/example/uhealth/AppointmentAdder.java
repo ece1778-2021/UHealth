@@ -45,7 +45,7 @@ public class AppointmentAdder extends AppCompatActivity {
 
     private AlertDialog mtypeSelectionDialog;
     private FireBaseInfo mFireBaseInfo;
-
+    String EndTime = "1970-01-01-23:59";
     final static int SET_APPOINTMENT_ALARM = 15;
 
 
@@ -62,6 +62,7 @@ public class AppointmentAdder extends AppCompatActivity {
        // String userid = "uid123";
         Date date_time = new Date();
         String status ="Scheduled";
+
         HashMap<String,Object> resMap = new HashMap<String,Object>();
         try{
             Long comp = mdateformat.parse(appointment_time).getTime() - currentDate.getTime();
@@ -119,10 +120,56 @@ public class AppointmentAdder extends AppCompatActivity {
        // SimpleDateFormat mdateformat=getDateTimeInstance("yyyy-MM-dd-HH:mm")
         //"1970-01-01-23:59";
     }
+
+    public void endTimePicker(){
+
+        final Calendar calendar = Calendar.getInstance();
+        final List<String> selected_time = new ArrayList<String>();
+        final int[] timelist=new int[5];
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        final String init_time = "1970-01-01-23:59";
+        selected_time.add("1970-01-01-23:59");
+        //String selected_time="1970-01-01-23:59";
+
+
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(AppointmentAdder.this, new TimePickerDialog.OnTimeSetListener() {
+
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                timelist[3] = hourOfDay;
+                timelist[4] = minute;
+                selected_time.remove(selected_time.get(0));
+                String timetoAdd = String.format("%04d-%02d-%02d-%02d:%02d",timelist[0],timelist[1],timelist[2],timelist[3],timelist[4]);
+                selected_time.add(0,timetoAdd);
+                //timeboard.setText(timetoAdd);
+                EndTime = timetoAdd;
+
+            }
+        }, hour, minute, true);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AppointmentAdder.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                timelist[0] = year;
+                timelist[1] = monthOfYear+1;
+                timelist[2]= dayOfMonth;
+                timePickerDialog.show();
+            }
+        }, year, month, day);
+
+        datePickerDialog.show();
+
+    }
     public void startTimePicker(){
         final Calendar calendar = Calendar.getInstance();
         final List<String> selected_time = new ArrayList<String>();
-        int[] timelist=new int[5];
+        final int[] timelist=new int[5];
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
