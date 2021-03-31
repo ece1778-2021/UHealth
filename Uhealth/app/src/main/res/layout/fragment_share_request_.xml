@@ -106,10 +106,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="5dp"
             android:gravity="center"
             android:text="View Requests"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
     </FrameLayout>
 
@@ -128,10 +128,10 @@
                 android:id="@+id/requestframe_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_margin="5dp"
                 android:gravity="center"
                 android:text="Make Requests"
-                android:textSize="30sp" />
+                android:textSize="20sp" />
 
             <View
                 android:layout_width="match_parent"

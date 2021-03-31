@@ -52,8 +52,8 @@ public class ShareFeature extends AppCompatActivity {
     private final String DIAGNOSIS = "";
     private final String TIMELINE = "Timeline";
 //    in s
-    public static final long OUTSTANDING_EXPIRE_TIME = 60;
-    public static final long ACCEPTED_EXPIRE_TIME = 60;
+    public static final long OUTSTANDING_EXPIRE_TIME = 24*3600;
+    public static final long ACCEPTED_EXPIRE_TIME = 24*3600;
 //    in ms
     public static final int LOOP_INTERVAL = 30*1000;
 

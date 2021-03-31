@@ -42,7 +42,7 @@
                     android:id="@+id/Accepted_expire"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/Accepted_email"
                     android:paddingEnd="10dp"
                     android:text="Expire on"/>
 
