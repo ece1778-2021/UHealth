@@ -218,7 +218,7 @@ public class SignUpPage extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "onSuccess: reached createuser");
-                        Intent intent = new Intent(SignUpPage.this, InitRegPage.class);
+                        Intent intent = new Intent(SignUpPage.this, ProfilePage.class);
                         mhandler.post(r);
                         startActivity(intent);
                         finish();

@@ -39,27 +39,19 @@ public class timeline_repo {
     private static final String APPOINTMENTS ="AAppointment";//"appointment_testing_alan";//
     private static final String MEDICATIONS = "MMedication";//"medication_testing_alan";//
 
-
-    private static timeline_repo Instance;
     private FireBaseInfo mFirebaseInfo;
     private List<Medication  > med_list = new ArrayList<>();
     private List<timeline_item> tl_list = new ArrayList<>();
 
-    static DataloadedListener dataloadedListener;
+    private DataloadedListener dataloadedListener;
 
-    private timeline_repo(){
+    private String uid;
+
+    public timeline_repo (DataloadedListener in_listener, String i_uid){
+
         mFirebaseInfo = new FireBaseInfo();
-    }
-
-
-    public static timeline_repo getInstance(DataloadedListener in_listener){
-        //        singleton design is not needed fro firebase connections
-//        if (Instance == null){
-//            Instance = new timeline_repo();
-//        }
-        Instance = new timeline_repo();
         dataloadedListener = in_listener;
-        return Instance;
+        uid = i_uid;
     }
 
     public MutableLiveData<List<timeline_item>> getItems(){
@@ -73,11 +65,11 @@ public class timeline_repo {
         Query query_apps, query_meds;
         query_apps = mFirebaseInfo.mFirestore
                 .collection(APPOINTMENTS)
-                .whereEqualTo("patientid", mFirebaseInfo.mUser.getUid())
+                .whereEqualTo("patientid", uid)
                 .orderBy("date", Query.Direction.DESCENDING);
         query_meds = mFirebaseInfo.mFirestore
                 .collection(MEDICATIONS)
-                .whereEqualTo("uid", mFirebaseInfo.mUser.getUid())
+                .whereEqualTo("uid", uid)
                 .orderBy("initdate", Query.Direction.DESCENDING);
 
         Task t_app = query_apps.get();

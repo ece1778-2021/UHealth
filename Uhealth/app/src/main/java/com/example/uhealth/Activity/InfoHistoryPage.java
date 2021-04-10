@@ -1,8 +1,9 @@
 package com.example.uhealth.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,25 +33,37 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.uhealth.utils.CachedThreadPool;
 import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.R;
 import com.example.uhealth.Adapters.rvadapter_initreg_dialog1;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class InitRegPage extends AppCompatActivity {
+public class InfoHistoryPage extends AppCompatActivity {
 
-    private static final String TAG = InitRegPage.class.getSimpleName();
+    private static final String TAG = InfoHistoryPage.class.getSimpleName();
+//    collection
+    private final String PERSONALINFO = "personalInfo";
     private FireBaseInfo mFireBaseInfo;
     private CachedThreadPool threadPool;
     private ProgressDialog progressDialog;
     private Dialog dialog;
     private Handler handler;
 
-    private Toolbar toolbar;
+    private boolean fromProfilePage;
+
 
     private EditText mName, mPhone, mEContact, mDietary, mAllergy;
     private TextView mBirth;
@@ -55,6 +71,8 @@ public class InitRegPage extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mBirthdayListener;
     private RadioGroup rgAllergy;
     private RadioButton rbAllergy;
+
+
 
     private EditText mDrug, mSmokeinputET, mAlcoholinputET;
     private CheckBox mSmokeCurrent, mAlcoholCurrent;
@@ -64,6 +82,7 @@ public class InitRegPage extends AppCompatActivity {
     private RadioButton rbSurgery, rbTransfusion, rbSmoke, rbAlcohol, rbDrug;
 
     private RadioGroup rgHeart, rgCancer, rgHereditary;
+    private RadioButton rbHeart, rbCancer, rbHereditary;
 
     private enum dialogOption {
         SURGERY,
@@ -82,8 +101,10 @@ public class InitRegPage extends AppCompatActivity {
     private Button mAddSurgery, mAddTransfusion;
 
     private Button msubmit;
-    private Button mSkip;
 
+
+
+//  init information from loading
     private String mBirthHolder, mGenderHolder;
     private String mSmokeStartHolder, mSmokeEndHolder, mAlcoholStartHolder, mAlcoholEndHolder;
     private int mSmokeinputHolder, mAlcoholinputHolder;
@@ -92,13 +113,15 @@ public class InitRegPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_init_reg_page);
+        setContentView(R.layout.activity_infohistory_page);
 
-        toolbar = findViewById(R.id.initreg_toolbar);
-        setSupportActionBar(toolbar);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setContentView(R.layout.progressdialog);
+        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
         mFireBaseInfo = new FireBaseInfo();
         threadPool = CachedThreadPool.getInstance();
-        progressDialog = new ProgressDialog(this);
 
         mName = findViewById(R.id.initreg_ET_name);
         mPhone = findViewById(R.id.initreg_ET_phone);
@@ -116,7 +139,7 @@ public class InitRegPage extends AppCompatActivity {
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        InitRegPage.this,
+                        InfoHistoryPage.this,
                         android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
                         mBirthdayListener,
                         year, month, day
@@ -170,15 +193,44 @@ public class InitRegPage extends AppCompatActivity {
         mAlcoholStart = layoutAlcohol.findViewById(R.id.subview1_startdate);
 
         msubmit = findViewById(R.id.initreg_submit);
-        mSkip = findViewById(R.id.initreg_toolbar_BT_skip);
-        mSkip.setOnClickListener(new View.OnClickListener() {
+        msubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(InitRegPage.this, ProfilePage.class);
-                startActivity(intent);
-                finish();
+                submitFirebaseWrapper();
             }
         });
+
+        mBirthHolder = "";
+        mGenderHolder = "";
+
+        mSmokeStartHolder = "";
+        mSmokeEndHolder = "";
+        mSmokeinputHolder = 0;
+
+        mAlcoholStartHolder = "";
+        mAlcoholEndHolder = "";
+        mAlcoholinputHolder = 0;
+
+        mSurgeryNames = new ArrayList<>();
+        mSurgeryDates = new ArrayList<>();
+        mTransfusionDates = new ArrayList<>();
+
+        initViewSurgery();
+        initViewTransfusion();
+        initViewSmoke();
+        initViewAlcohol();
+
+        Intent intent = getIntent();
+        fromProfilePage = intent.getBooleanExtra("FromProfilePage", true);
+        if (fromProfilePage){
+            getSupportActionBar().setTitle("Profile Page");
+        }else{
+            String other = intent.getStringExtra("NAME");
+            getSupportActionBar().setTitle(other+"'s Profile Page");
+            msubmit.setVisibility(View.GONE);
+        }
+
+
         if (savedInstanceState!=null){
             mBirthHolder = savedInstanceState.getString("BIRTHDAY", "");
             mGenderHolder = savedInstanceState.getString("GENDER", "Male");
@@ -225,32 +277,356 @@ public class InitRegPage extends AppCompatActivity {
             if (!mAlcoholEndHolder.equals("")){
                 mAlcoholEnd.setText(mAlcoholEndHolder);
             }
-
-
         }else{
-//            first time
-            mBirthHolder = "";
-            mGenderHolder = "";
-
-            mSmokeStartHolder = "";
-            mSmokeEndHolder = "";
-            mSmokeinputHolder = 0;
-
-            mAlcoholStartHolder = "";
-            mAlcoholEndHolder = "";
-            mAlcoholinputHolder = 0;
-
-            mSurgeryNames = new ArrayList<>();
-            mSurgeryDates = new ArrayList<>();
-            mTransfusionDates = new ArrayList<>();
+            if (fromProfilePage){
+                String selfid = mFireBaseInfo.mUser.getUid();
+                loadInformation(selfid);
+            }else{
+                String uid = intent.getStringExtra("UID");
+                loadInformation(uid);
+            }
         }
 
-        initViewSurgery();
-        initViewTransfusion();
-        initViewSmoke();
-        initViewAlcohol();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (fromProfilePage){
+            MenuInflater inflater = getMenuInflater();
+//        adds to action bar if present
+            inflater.inflate(R.menu.infohistory_toolbar_menu, menu);
+            return true;
+        }else{
+            //        todo inflate this one depending on intent
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle item selection
+        int v_id = item.getItemId();
+        if (v_id==R.id.infohistory_next){
+            Intent intent = new Intent(this, PastDiagnosis.class);
+            intent.putExtra("FromInfoHistory", true);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        else{
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Nullable
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return getParentActivityIntentImpl();
+    }
+
+    @Nullable
+    @Override
+    public Intent getParentActivityIntent() {
+        return getParentActivityIntentImpl();
+    }
+
+    private Intent getParentActivityIntentImpl() {
+        Intent i = null;
+
+        // Here you need to do some logic to determine from which Activity you came.
+        // example: you could pass a variable through your Intent extras and check that.
+        if (fromProfilePage) {
+            i = new Intent(this, ProfilePage.class);
+            // set any flags or extras that you need.
+            // If you are reusing the previous Activity (i.e. bringing it to the top
+            // without re-creating a new instance) set these flags:
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            i.putExtra("someExtra", "whateverYouNeed");
+        } else {
+            i = new Intent(this, ShareFeature.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            i.putExtra("someExtra", "whateverYouNeed");
+        }
+        return i;
+    }
+
+    private void submitFirebaseWrapper() {
+        progressDialog.show();
+//        section 1
+        String uid = mFireBaseInfo.mUser.getUid();
+        String fullname = mName.getText().toString();
+        String birthdate = mBirthHolder;
+        String gender = mGenderHolder;
+        String phone = mPhone.getText().toString();
+        String econtact = mEContact.getText().toString();
+        String dietary = mDietary.getText().toString();
+        String allergy = mAllergy.getText().toString();
+        boolean select_allergy;
+        if (allergy.equals("")){
+            select_allergy = false;
+        }else{
+            select_allergy = true;
+        }
+//        section 2
+        boolean heartdiseasesFH;
+        int radioidheart = rgHeart.getCheckedRadioButtonId();
+        rbHeart = findViewById(radioidheart);
+        if (rbHeart.getText().toString().equals("Yes")){
+            heartdiseasesFH = true;
+        }else{
+            heartdiseasesFH = false;
+        }
+        boolean cancerdiseasesFH;
+        int radioidcancer = rgCancer.getCheckedRadioButtonId();
+        rbCancer = findViewById(radioidcancer);
+        if (rbCancer.getText().toString().equals("Yes")){
+            cancerdiseasesFH = true;
+        }else{
+            cancerdiseasesFH = false;
+        }
+        boolean hereditarydiseasesFH;
+        int radioidhereditary = rgHereditary.getCheckedRadioButtonId();
+        rbHereditary = findViewById(radioidhereditary);
+        if (rbHereditary.getText().toString().equals("Yes")){
+            hereditarydiseasesFH = true;
+        }else{
+            hereditarydiseasesFH = false;
+        }
+//        section 3
+        ArrayList<String> pastsurgery = mSurgeryNames;
+        ArrayList<String> pastsurgerydates = mSurgeryDates;
+        boolean ispastsurgery;
+        if (pastsurgery.isEmpty()){
+            ispastsurgery = false;
+        }else{
+            ispastsurgery=true;
+        }
+        ArrayList<String> pasttransfusion = mTransfusionDates;
+        boolean ispasttransfusion;
+        if (pasttransfusion.isEmpty()){
+            ispasttransfusion = false;
+        }else{
+            ispasttransfusion=true;
+        }
+        String smokestart = mSmokeStartHolder;
+        String smokeend = mSmokeEndHolder;
+        String smokeinput = mSmokeinputET.getText().toString();
+        if (smokeinput.equals("")){
+            mSmokeinputHolder = 0;
+        }else{
+            mSmokeinputHolder = Integer.parseInt(smokeinput);
+        }
+        int smokeper = mSmokeinputHolder;
+        boolean issmoke;
+        if (smokestart.equals("")){
+            smokeend = "";
+            smokeper = 0;
+            issmoke = false;
+        }else{
+            issmoke = true;
+        }
+
+        String alcolholstart = mAlcoholStartHolder;
+        String alcolholend = mAlcoholEndHolder;
+        String alcoholinput = mAlcoholinputET.getText().toString();
+        if (alcoholinput.equals("")){
+            mAlcoholinputHolder = 0;
+        }else{
+            mAlcoholinputHolder = Integer.parseInt(alcoholinput);
+        }
+        int alcolholper = mAlcoholinputHolder;
+        boolean isalcolhol;
+        if (alcolholstart.equals("")){
+            alcolholend="";
+            alcolholper = 0;
+            isalcolhol = false;
+        }else{
+            isalcolhol = true;
+        }
+
+        String drug = mDrug.getText().toString();
+        boolean isdrug;
+        if (drug.equals("")){
+            isdrug=false;
+        }else{
+            isdrug=true;
+        }
+
+        Map<String, Object> mp = new HashMap<>();
+        mp.put("Fullname", fullname);
+        mp.put("Birthdate", birthdate);
+        mp.put("Gender", gender);
+        mp.put("Phone", phone);
+        mp.put("Econtact", econtact);
+        mp.put("Dietary", dietary);
+        mp.put("Allergy", allergy);
+        mp.put("IsAllergy", select_allergy);
+
+        mp.put("IsHeartDisease", heartdiseasesFH);
+        mp.put("IsCancer", cancerdiseasesFH);
+        mp.put("IsHereditary", hereditarydiseasesFH);
+
+        mp.put("IsPastSurgery", ispastsurgery);
+        mp.put("PastSurgery", pastsurgery);
+        mp.put("PastSurgeryDate", pastsurgerydates);
+        mp.put("IsPastTransfusion", ispasttransfusion);
+        mp.put("PastTransfusion", pasttransfusion);
+        mp.put("IsSmoke", issmoke);
+        mp.put("SmokeStart", smokestart);
+        mp.put("SmokeEnd", smokeend);
+        mp.put("SmokeNumber", smokeper);
+        mp.put("IsAlcohol", isalcolhol);
+        mp.put("AlcoholStart", alcolholstart);
+        mp.put("AlcoholEnd", alcolholend);
+        mp.put("AlcoholNumber", alcolholper);
+        mp.put("IsDrug", isdrug);
+        mp.put("Drug", drug);
+
+        uploadFirebase(uid, mp);
+    }
+
+    private void uploadFirebase(String uid, Map<String, Object> mp) {
+        mFireBaseInfo.mFirestore.collection(PERSONALINFO).document(uid).set(mp)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "upload submit success");
+                        progressDialog.dismiss();
+                        Toast.makeText(InfoHistoryPage.this, "Information Updated", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "upload submit failed");
+                        progressDialog.dismiss();
+                        Toast.makeText(InfoHistoryPage.this, "Submit Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void loadInformation(String uid) {
+        progressDialog.show();
+
+        mFireBaseInfo.mFirestore.collection(PERSONALINFO).document(uid)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.d(TAG, "Load info Success");
+                        Map<String, Object> loadmp = documentSnapshot.getData();
+                        if (loadmp==null){
+                            Log.d(TAG, "No previous information");
+                            progressDialog.dismiss();
+                            return;
+                        }
+                        mName.setText(loadmp.get("Fullname").toString());
+                        mBirthHolder = loadmp.get("Birthdate").toString();
+                        if (!mBirthHolder.equals("")){
+                            mBirth.setText(mBirthHolder);
+                        }
+                        mGenderHolder = loadmp.get("Gender").toString();
+                        if (mGenderHolder.equals("Female")){
+                            spGender.setSelection(1);
+                        }else if (mGenderHolder.equals("Other")){
+                            spGender.setSelection(2);
+                        }
+                        mPhone.setText(loadmp.get("Phone").toString());
+                        mEContact.setText(loadmp.get("Econtact").toString());
+                        mDietary.setText(loadmp.get("Dietary").toString());
+//                        nonnull expected from submit function
+                        boolean isAllergy = (boolean)loadmp.get("IsAllergy");
+                        if (isAllergy){
+                            rbAllergy = findViewById(R.id.initreg_RB_allergy_yes);
+                            rbAllergy.performClick();
+                            mAllergy.setText(loadmp.get("Allergy").toString());
+                        }
+
+//                        nonnull expected from submit function
+                        boolean isHeart = (boolean)loadmp.get("IsHeartDisease");
+                        if (isHeart){
+                            rbHeart = findViewById(R.id.initreg_RB_heart_yes);
+                            rbHeart.performClick();
+                        }
+                        boolean isCancer = (boolean)loadmp.get("IsCancer");
+                        if (isCancer){
+                            rbCancer = findViewById(R.id.initreg_RB_cancer_yes);
+                            rbCancer.performClick();
+                        }
+                        boolean isHereditary = (boolean)loadmp.get("IsHereditary");
+                        if (isHereditary){
+                            rbHereditary = findViewById(R.id.initreg_RB_hereditary_yes);
+                            rbHereditary.performClick();
+                        }
+
+                        boolean isSurgery = (boolean)loadmp.get("IsPastSurgery");
+                        if (isSurgery){
+                            rbSurgery = findViewById(R.id.initreg_RB_surgery_yes);
+                            rbSurgery.performClick();
+                            mSurgeryNames = (ArrayList<String>)loadmp.get("PastSurgery");
+                            mSurgeryDates = (ArrayList<String>)loadmp.get("PastSurgeryDate");
+                            initViewSurgery();
+                        }
+
+                        boolean isTransfusion = (boolean)loadmp.get("IsPastTransfusion");
+                        if (isTransfusion){
+                            rbTransfusion = findViewById(R.id.initreg_RB_transfusion_yes);
+                            rbTransfusion.performClick();
+                            mTransfusionDates = (ArrayList<String>)loadmp.get("PastTransfusion");
+                            initViewTransfusion();
+                        }
+
+                        boolean issmoke = (boolean)loadmp.get("IsSmoke");
+                        if (issmoke){
+                            rbSmoke = findViewById(R.id.initreg_RB_smoke_yes);
+                            rbSmoke.performClick();
+                            mSmokeStartHolder = loadmp.get("SmokeStart").toString();
+                            mSmokeEndHolder = loadmp.get("SmokeEnd").toString();
+                            mSmokeinputHolder = ((Long)(loadmp.get("SmokeNumber"))).intValue();
+                            if (mSmokeEndHolder.equals("")){
+                                mSmokeCurrent.setChecked(true);
+                            }else{
+                                mSmokeCurrent.setChecked(false);
+                                mSmokeEnd.setText(mSmokeEndHolder);
+                            }
+                            mSmokeStart.setText(mSmokeStartHolder);
+                            mSmokeinputET.setText(String.valueOf(mSmokeinputHolder));
+                        }
+
+                        boolean isdrug = (boolean)loadmp.get("IsDrug");
+                        if (isdrug){
+                            mDrug.setText(loadmp.get("Drug").toString());
+                        }
+
+                        boolean isalcohol = (boolean)loadmp.get("IsAlcohol");
+                        if (isalcohol){
+                            rbAlcohol = findViewById(R.id.initreg_RB_alcohol_yes);
+                            rbAlcohol.performClick();
+                            mAlcoholStartHolder = loadmp.get("AlcoholStart").toString();
+                            mAlcoholEndHolder = loadmp.get("AlcoholEnd").toString();
+                            mAlcoholinputHolder = ((Long)(loadmp.get("AlcoholNumber"))).intValue();
+                            if (mAlcoholEndHolder.equals("")){
+                                mAlcoholCurrent.setChecked(true);
+                            }else{
+                                mAlcoholCurrent.setChecked(false);
+                                mAlcoholEnd.setText(mAlcoholEndHolder);
+                            }
+                            mAlcoholStart.setText(mAlcoholStartHolder);
+                            mAlcoholinputET.setText(String.valueOf(mAlcoholinputHolder));
+
+                            progressDialog.dismiss();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Load info Failed");
+                        progressDialog.dismiss();
+                        Toast.makeText(InfoHistoryPage.this, "Load Info from Firebase Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
 
     @Override
@@ -374,7 +750,7 @@ public class InitRegPage extends AppCompatActivity {
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        InitRegPage.this,
+                        InfoHistoryPage.this,
                         android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
                         mAlcoholStartListener,
                         year, month, day
@@ -401,7 +777,7 @@ public class InitRegPage extends AppCompatActivity {
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        InitRegPage.this,
+                        InfoHistoryPage.this,
                         android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
                         mAlcoholEndListener,
                         year, month, day
@@ -448,7 +824,7 @@ public class InitRegPage extends AppCompatActivity {
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        InitRegPage.this,
+                        InfoHistoryPage.this,
                         android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
                         mSmokeStartListener,
                         year, month, day
@@ -475,7 +851,7 @@ public class InitRegPage extends AppCompatActivity {
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        InitRegPage.this,
+                        InfoHistoryPage.this,
                         android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
                         mSmokeEndListener,
                         year, month, day
@@ -558,12 +934,12 @@ public class InitRegPage extends AppCompatActivity {
     private void builddialog(dialogOption val) {
         dialog = new Dialog(this);
         ImageButton mCancel, mAdd, mDateAdd;
-        EditText mName;
+        EditText mDialogName;
         RelativeLayout nameSection;
         TextView mDate;
         dialog.setContentView(R.layout.dialog_initreg_type1);
         nameSection = dialog.findViewById(R.id.dialog1_nameSection);
-        mName = dialog.findViewById(R.id.initreg_dialog1_name);
+        mDialogName = dialog.findViewById(R.id.initreg_dialog1_name);
         mDate = dialog.findViewById(R.id.initreg_dialog1_date);
         mDateAdd = dialog.findViewById(R.id.dialog1_dateBT);
         mDateAdd.setOnClickListener(new View.OnClickListener() {
@@ -575,7 +951,7 @@ public class InitRegPage extends AppCompatActivity {
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
-                        InitRegPage.this,
+                        InfoHistoryPage.this,
                         android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -604,10 +980,10 @@ public class InitRegPage extends AppCompatActivity {
                 mAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String name = mName.getText().toString();
+                        String name = mDialogName.getText().toString();
                         String date = mDate.getText().toString();
                         if (name.equals("")){
-                            mName.setError("Cant be empty");
+                            mDialogName.setError("Cant be empty");
                             return;
                         }
                         if (date.equals("")){

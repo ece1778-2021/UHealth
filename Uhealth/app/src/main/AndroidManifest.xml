@@ -16,14 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UHealth">
+        <activity android:name=".Activity.PastDiagnosis"
+            android:parentActivityName=".Activity.ProfilePage"></activity>
         <activity
             android:name=".AppointmentUpdater"
             android:label="@string/title_activity_appointment_updater"
-            android:theme="@style/Theme.UHealth.NoActionBar"></activity>
+            android:theme="@style/Theme.UHealth.NoActionBar" />
         <activity
             android:name=".Activity.ShareFeature"
             android:parentActivityName=".Activity.ProfilePage"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activity.DisplayFullImage"
             android:parentActivityName=".Activity.Timeline"
@@ -50,10 +52,9 @@
             android:parentActivityName=".Activity.MainActivity"
             android:theme="@style/Theme.UHealth.nobar" />
         <activity
-            android:name=".Activity.InitRegPage"
+            android:name=".Activity.InfoHistoryPage"
             android:exported="true"
-            android:noHistory="true"
-            android:theme="@style/Theme.UHealth.nobar" />
+            android:parentActivityName=".Activity.ProfilePage" />
         <activity
             android:name=".Activity.SignUpPage"
             android:exported="true"

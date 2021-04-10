@@ -38,7 +38,11 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="30dp">
+                    android:paddingTop="15dp"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:background="@color/orangeLight"
+                    >
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardavatar"
@@ -48,10 +52,10 @@
                         app:cardCornerRadius="160dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_user_foreground" />
-
+                            android:id="@+id/img_view"
+                            android:layout_width="75dp"
+                            android:layout_height="75dp"
+                            app:srcCompat="@mipmap/ic_defaultavatar_foreground" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -66,8 +70,40 @@
                         android:layout_toEndOf="@id/cardavatar"
                         android:text="Username" />
 
+
                 </RelativeLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="@drawable/lightorangegradient1"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:text="Tip of the Day"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/blackdividerbg"/>
+
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/VP_healthtip"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="15dp"
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"

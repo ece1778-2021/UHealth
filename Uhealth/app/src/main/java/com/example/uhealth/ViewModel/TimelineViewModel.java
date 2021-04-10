@@ -22,20 +22,22 @@ public class TimelineViewModel extends ViewModel {
     private int dateFilterInstance = -1;
     private timeline_repo datarepo;
     private MutableLiveData<List<timeline_item>> timelinedata;
+    private String uid;
 
 //    Constructor
-    public TimelineViewModel(String[] input, DataloadedListener in_listener){
+    public TimelineViewModel(String[] input, String i_uid, DataloadedListener in_listener){
         listener = in_listener;
         original = input;
         typeFilter.clear();
         typeFilter.addAll(Arrays.asList(original));
+        uid = i_uid;
 
         if (timelinedata!=null){
             return;
         }
 
         in_listener.onBeforeLoaded();
-        datarepo = timeline_repo.getInstance(listener);
+        datarepo = new timeline_repo(listener, uid);
         timelinedata = datarepo.getItems();
     }
 
