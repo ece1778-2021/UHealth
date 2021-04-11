@@ -9,25 +9,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.uhealth.Activity.InitRegPage;
+import com.example.uhealth.Activity.InfoHistoryPage;
 import com.example.uhealth.R;
 
 import java.util.ArrayList;
 
 public class rvadapter_initreg_dialog1 extends RecyclerView.Adapter<rvadapter_initreg_dialog1.box> {
-    private InitRegPage.removeRV callback;
+    private InfoHistoryPage.removeRV callback;
     private ArrayList<String> names, dates;
     private enum option {SURGERY, TRANSFUSION}
     private option val;
 
 //    Constructor
-    public rvadapter_initreg_dialog1(InitRegPage.removeRV in_callback, ArrayList<String> in_names, ArrayList<String> in_dates){
+    public rvadapter_initreg_dialog1(InfoHistoryPage.removeRV in_callback, ArrayList<String> in_names, ArrayList<String> in_dates){
         callback = in_callback;
         names = in_names;
         dates = in_dates;
         val = option.SURGERY;
     }
-    public rvadapter_initreg_dialog1(InitRegPage.removeRV in_callback, ArrayList<String> in_dates){
+    public rvadapter_initreg_dialog1(InfoHistoryPage.removeRV in_callback, ArrayList<String> in_dates){
         callback = in_callback;
         dates = in_dates;
         val = option.TRANSFUSION;

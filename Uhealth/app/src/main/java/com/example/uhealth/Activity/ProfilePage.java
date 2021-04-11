@@ -3,9 +3,14 @@ package com.example.uhealth.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.uhealth.Adapters.FSPadapter_healthtip;
 import com.example.uhealth.AppointmnetList;
 import com.example.uhealth.utils.FireBaseInfo;
 import com.example.uhealth.MedicationList;
@@ -27,6 +33,14 @@ public class ProfilePage extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView mUsername;
 
+    private ViewPager viewPager;
+    private String[] tiplist;
+    private FSPadapter_healthtip mVPAdapter;
+
+    private Handler mHandler;
+    private Runnable mLoopRun;
+    private int mInterval = 5*1000;
+
     private RelativeLayout mPlaceHolderInitReg, mPlaceHolderapp, mPlaceHoldermed, mPlaceHolderQuestionnaire,
             mPlaceHolderTimeline, mPlaceHolderShare;
 
@@ -39,7 +53,7 @@ public class ProfilePage extends AppCompatActivity {
         mFireBaseInfo = new FireBaseInfo();
         toolbar = findViewById(R.id.profilepg_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("profile page");
+        getSupportActionBar().setTitle("Profile");
 
         mUsername = findViewById(R.id.profileusername);
 
@@ -55,6 +69,57 @@ public class ProfilePage extends AppCompatActivity {
 
         mPlaceHolderShare = findViewById(R.id.ShareSection);
 
+        initVP();
+        initHandler();
+
+    }
+
+    private void initHandler() {
+        mHandler = new Handler(Looper.getMainLooper());
+        mLoopRun = new Runnable() {
+            @Override
+            public void run() {
+                int cur_index = viewPager.getCurrentItem();
+                if (cur_index==tiplist.length+1){
+                    viewPager.setCurrentItem(0);
+                }else{
+                    viewPager.setCurrentItem(cur_index+1);
+                }
+                mHandler.postDelayed(mLoopRun, mInterval);
+            }
+        };
+    }
+
+
+    private void initVP() {
+        viewPager = findViewById(R.id.VP_healthtip);
+        tiplist = getResources().getStringArray(R.array.Preventative_Health);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        mVPAdapter = new FSPadapter_healthtip(fragmentManager,
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,
+                tiplist);
+        viewPager.setAdapter(mVPAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == tiplist.length){
+                    viewPager.setCurrentItem(0, false);
+                }
+                mHandler.removeCallbacks(mLoopRun);
+                mHandler.postDelayed(mLoopRun, mInterval);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 
@@ -64,9 +129,9 @@ public class ProfilePage extends AppCompatActivity {
         mPlaceHolderInitReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfilePage.this, InitRegPage.class);
+                Intent intent = new Intent(ProfilePage.this, InfoHistoryPage.class);
+                intent.putExtra("FromProfilePage", true);
                 startActivity(intent);
-                finish();
             }
         });
         mPlaceHolderQuestionnaire.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +160,7 @@ public class ProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, Timeline.class);
+                intent.putExtra("FromProfilePage", true);
                 startActivity(intent);
             }
         });
@@ -124,6 +190,14 @@ public class ProfilePage extends AppCompatActivity {
                         }
                     }
                 });
+
+        mHandler.postDelayed(mLoopRun, mInterval);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(mLoopRun);
     }
 
     @Override

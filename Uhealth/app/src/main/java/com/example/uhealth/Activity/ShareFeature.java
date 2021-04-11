@@ -48,9 +48,12 @@ public class ShareFeature extends AppCompatActivity {
     private final String OUTSTANDINGS = "Outstanding_Requests";
     private final String ACCEPTED = "Accepted_Requests";
     private final String APPOINTMENTS = "AAppointment";
-    private final String INFOHISTORY = "";
-    private final String DIAGNOSIS = "";
-    private final String TIMELINE = "Timeline";
+    private final String INFOHISTORY = "personalInfo";
+    private final String DIAGNOSIS = "PastDiagnosis";
+
+    private final String AR_TIMELINE = "SharedTimeline";
+    private final String AR_INFOHISTORY = "SharedInfoHistory";
+    private final String AR_DIAGNOSIS="SharedDiagnosis";
 //    in s
     public static final long OUTSTANDING_EXPIRE_TIME = 24*3600;
     public static final long ACCEPTED_EXPIRE_TIME = 24*3600;
@@ -219,7 +222,7 @@ public class ShareFeature extends AppCompatActivity {
 
 
 
-    //    todo this thing
+    //    todo cutcorner complete
     public void acceptOutstandings(HashMap<String, Boolean> b_map){
 
         progressDialog = new ProgressDialog(this);
@@ -265,59 +268,56 @@ public class ShareFeature extends AppCompatActivity {
 
                         List<Task<?>> taskList= new ArrayList<>();
 
-//                        todo combined task and when all complete (get and delete) then nest combined task to upload into************************
+//                        todo instead of taking info snapshot, going to be direct load
                         if (mInfoandHistory){
-//                            todo copy collection over (not supported yet) makeshift with user collection
-                            Task<?> addInfoandHistory = mFireBaseInfo.mFirestore.collection("users")
-                                    .whereEqualTo("username", "test")
-                                    .get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
-                                                mFireBaseInfo.mFirestore.collection(ACCEPTED).document(docid)
-                                                        .collection("testcollection")
-                                                        .add(documentSnapshot.getData());
-                                            }
-                                        }
-                                    });
-                            taskList.add(addInfoandHistory);
+//                            Task<?> addInfoandHistory = mFireBaseInfo.mFirestore.collection("users")
+//                                    .whereEqualTo("username", "test")
+//                                    .get()
+//                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                                        @Override
+//                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                            for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+//                                                mFireBaseInfo.mFirestore.collection(ACCEPTED).document(docid)
+//                                                        .collection("testcollection")
+//                                                        .add(documentSnapshot.getData());
+//                                            }
+//                                        }
+//                                    });
+//                            taskList.add(addInfoandHistory);
                         }
                         if (mDiagnosis){
-//                            todo copy colletion over (not supported yet)
 //                            Task = ...
 //                            taskList.add();
                         }
                         if(mTimeline){
-//                            todo copy collection over (not support yet)
-                            Task<?> addTimeline = mFireBaseInfo.mFirestore
-                                    .collection(APPOINTMENTS)
-                                    .whereEqualTo("patientid", to_uid)
-                                    .get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
-                                                mFireBaseInfo.mFirestore.collection(ACCEPTED).document(docid)
-                                                        .collection("testtimeline")
-                                                        .add(documentSnapshot.getData());
-                                            }
-                                        }
-                                    });
-                            taskList.add(addTimeline);
+//                            Task<?> addTimeline = mFireBaseInfo.mFirestore
+//                                    .collection(APPOINTMENTS)
+//                                    .whereEqualTo("patientid", to_uid)
+//                                    .get()
+//                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                                        @Override
+//                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                                            for (QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots){
+//                                                mFireBaseInfo.mFirestore.collection(ACCEPTED).document(docid)
+//                                                        .collection("testtimeline")
+//                                                        .add(documentSnapshot.getData());
+//                                            }
+//                                        }
+//                                    });
+//                            taskList.add(addTimeline);
                         }
 
-                        Tasks.whenAllComplete(taskList)
-                                .addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
-                                    @Override
-                                    public void onSuccess(List<Task<?>> tasks) {
-                                        for (Task task:tasks){
-                                            if (!task.isSuccessful()){
-                                                progressDialog.dismiss();
-                                                Log.d(Timeline.TAG, "Least one task failed in moving into accepted instance");
-                                                return;
-                                            }
-                                        }
+//                        Tasks.whenAllComplete(taskList)
+//                                .addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+//                                    @Override
+//                                    public void onSuccess(List<Task<?>> tasks) {
+//                                        for (Task task:tasks){
+//                                            if (!task.isSuccessful()){
+//                                                progressDialog.dismiss();
+//                                                Log.d(Timeline.TAG, "Least one task failed in moving into accepted instance");
+//                                                return;
+//                                            }
+//                                        }
                                         mFireBaseInfo.mFirestore.collection(OUTSTANDINGS).document(outstandingdocid)
                                                 .delete()
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -335,16 +335,16 @@ public class ShareFeature extends AppCompatActivity {
                                                         Toast.makeText(ShareFeature.this, "Delete old outstanding failed", Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(ShareFeature.this, "Moving Data into Accept Instance failed", Toast.LENGTH_SHORT).show();
-                                        Log.d(TAG, "Moving date into accept instance failed");
-                                    }
-                                });
+//                                    }
+//                                })
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        progressDialog.dismiss();
+//                                        Toast.makeText(ShareFeature.this, "Moving Data into Accept Instance failed", Toast.LENGTH_SHORT).show();
+//                                        Log.d(TAG, "Moving date into accept instance failed");
+//                                    }
+//                                });
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -358,16 +358,35 @@ public class ShareFeature extends AppCompatActivity {
 
     }
 
-//    todo this one
+//    todo cutcorner complete
     public void viewFromAccepteds(String rbText, Share_accepted_item item){
-//        todo switch rbText choose collection within docid.
-//        todo launch activities from here
-        Toast.makeText(this, "Show: "+rbText+"\t"+item.getTo_username(), Toast.LENGTH_SHORT).show();
-//        todo change this, for demo purpose only
-        if (rbText.equals("Timeline")){
-            Intent intent = new Intent(this, Timeline.class);
-            startActivity(intent);
-            finish();
+        String searchuid = item.getTo_id();
+        String searchname = item.getTo_username();
+        switch (rbText){
+            case "Personal Info and Medical History":
+                Intent intent = new Intent(this, InfoHistoryPage.class);
+                intent.putExtra("FromProfilePage", false);
+                intent.putExtra("UID", searchuid);
+                intent.putExtra("NAME", searchname);
+                startActivity(intent);
+                break;
+            case "Past Diagnosis":
+                Intent intent1 = new Intent(this, PastDiagnosis.class);
+                intent1.putExtra("FromInfoHistory", false);
+                intent1.putExtra("UID", searchuid);
+                intent1.putExtra("NAME", searchname);
+                startActivity(intent1);
+                break;
+            case "Timeline":
+                Intent intent2 = new Intent(this, Timeline.class);
+                intent2.putExtra("FromProfilePage", false);
+                intent2.putExtra("UID", searchuid);
+                intent2.putExtra("NAME", searchname);
+                startActivity(intent2);
+                break;
+            default:
+                Log.d(TAG, "viewFromAccepteds: missed switch, should never happen");
+                break;
         }
     }
 }

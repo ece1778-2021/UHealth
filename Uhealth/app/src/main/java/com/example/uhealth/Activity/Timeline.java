@@ -1,5 +1,6 @@
 package com.example.uhealth.Activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +24,7 @@ import com.example.uhealth.ViewModel.TimelineViewModel;
 import com.example.uhealth.ViewModelFactory.TimelineViewModelFactory;
 import com.example.uhealth.R;
 import com.example.uhealth.utils.CachedThreadPool;
+import com.example.uhealth.utils.FireBaseInfo;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,6 +33,7 @@ public class Timeline extends AppCompatActivity{
     public static final String TAG = Timeline.class.getSimpleName();
 
     private TimelineViewModel timelineViewModel;
+    private FireBaseInfo mFireBaseInfo;
     private CachedThreadPool threadPool;
 
     private ProgressDialog progressDialog;
@@ -38,20 +42,33 @@ public class Timeline extends AppCompatActivity{
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter mAdapter;
 
+    private boolean fromProfilePage;
+    private String uidKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
-        getSupportActionBar().setTitle("Timeline");
-
+        mFireBaseInfo = new FireBaseInfo();
         threadPool = CachedThreadPool.getInstance();
 
         initViews();
 
+        Intent intent = getIntent();
+        fromProfilePage = intent.getBooleanExtra("FromProfilePage", true);
+        if (fromProfilePage){
+            getSupportActionBar().setTitle("Timeline");
+            uidKey = mFireBaseInfo.mUser.getUid();
+        }else{
+            uidKey = intent.getStringExtra("UID");
+            String name = intent.getStringExtra("NAME");
+            getSupportActionBar().setTitle(name+"'s Timeline");
+        }
+
 
         String[] filterlist = getResources().getStringArray(R.array.Appointment_types);
-        TimelineViewModelFactory factory = new TimelineViewModelFactory(filterlist, new DataloadedListener() {
+        TimelineViewModelFactory factory = new TimelineViewModelFactory(filterlist, uidKey, new DataloadedListener() {
             @Override
             public void onDataLoaded() {
                 timelineViewModel.getTl_items().observe(Timeline.this, new Observer<List<timeline_item>>() {
@@ -75,6 +92,38 @@ public class Timeline extends AppCompatActivity{
         });
         timelineViewModel = new ViewModelProvider(this, factory).get(TimelineViewModel.class);
         initRecyclerView();
+    }
+
+    @Nullable
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return getParentActivityIntentImpl();
+    }
+
+    @Nullable
+    @Override
+    public Intent getParentActivityIntent() {
+        return getParentActivityIntentImpl();
+    }
+
+    private Intent getParentActivityIntentImpl() {
+        Intent i = null;
+
+        // Here you need to do some logic to determine from which Activity you came.
+        // example: you could pass a variable through your Intent extras and check that.
+        if (fromProfilePage) {
+            i = new Intent(this, ProfilePage.class);
+            // set any flags or extras that you need.
+            // If you are reusing the previous Activity (i.e. bringing it to the top
+            // without re-creating a new instance) set these flags:
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            i.putExtra("someExtra", "whateverYouNeed");
+        } else {
+            i = new Intent(this, ShareFeature.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            i.putExtra("someExtra", "whateverYouNeed");
+        }
+        return i;
     }
 
     private void initRecyclerView() {

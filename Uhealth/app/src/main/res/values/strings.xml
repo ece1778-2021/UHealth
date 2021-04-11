@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">UHealth</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
 
     <string name="policy">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Viverra mauris in aliquam sem fringilla ut. Convallis convallis tellus id interdum. Ultrices tincidunt arcu non sodales neque. Nec dui nunc mattis enim ut tellus. Molestie ac feugiat sed lectus vestibulum mattis ullamcorper velit. At ultrices mi tempus imperdiet nulla malesuada. Mauris pharetra et ultrices neque. Eget est lorem ipsum dolor sit amet consectetur adipiscing. Integer vitae justo eget magna fermentum iaculis eu non diam. Quis viverra nibh cras pulvinar mattis nunc sed.
 
@@ -22,6 +21,14 @@ Fames ac turpis egestas sed. Tempus egestas sed sed risus pretium quam vulputate
 Mi proin sed libero enim sed faucibus. Fringilla phasellus faucibus scelerisque eleifend donec. Lacinia at quis risus sed vulputate odio. Dui id ornare arcu odio. Vel orci porta non pulvinar neque laoreet suspendisse interdum consectetur. Quam viverra orci sagittis eu volutpat odio facilisis mauris. Feugiat scelerisque varius morbi enim nunc faucibus. Ac felis donec et odio pellentesque diam volutpat. Justo eget magna fermentum iaculis eu. A iaculis at erat pellentesque. Ipsum nunc aliquet bibendum enim facilisis gravida neque.
 
 Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod nisi porta lorem mollis aliquam ut porttitor. Adipiscing vitae proin sagittis nisl rhoncus. Metus dictum at tempor commodo ullamcorper a. Et pharetra pharetra massa massa ultricies mi. Fringilla est ullamcorper eget nulla facilisi etiam dignissim. Est ullamcorper eget nulla facilisi etiam. Nisi lacus sed viverra tellus in. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices. Laoreet non curabitur gravida arcu ac tortor. Vestibulum mattis ullamcorper velit sed ullamcorper morbi. In iaculis nunc sed augue. Ipsum a arcu cursus vitae congue mauris rhoncus. Justo laoreet sit amet cursus sit amet. Vestibulum morbi blandit cursus risus at ultrices mi tempus imperdiet. Magna fermentum iaculis eu non diam phasellus vestibulum lorem sed. Tristique senectus et netus et malesuada fames. Purus viverra accumsan in nisl nisi scelerisque. Condimentum lacinia quis vel eros donec. Natoque penatibus et magnis dis.</string>
+
+    <string-array name="Preventative_Health">
+        <item>Cardiovascular diseases are the number one cause of death among patients with prostate cancer, take care of your heart!</item>
+        <item>Obesity, smoking, and a sedentary life are things that we should prevent to take care of our overall health</item>
+        <item>If you are 50 years old or older, remember to do screening of colorectal cancer, ask your Family Physician about the recommendations</item>
+        <item>Prostate cancer is present in 1 out of 7 men, you are not alone</item>
+        <item>Feeling anxious about your prostate cancer diagnosis? Ask your doctor about advocacy groups available in your area, you are not alone!</item>
+    </string-array>
     <string-array name="gender_option">
         <item>Male</item>
         <item>Female</item>
@@ -34,6 +41,105 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
         <item>surgery or procedure appointment</item>
         <item>radiation session</item>
         <item>imaging appointment</item>
+    </string-array>
+
+    <string-array name="Diag_Category">
+        <item>Neurological Diseases</item>
+        <item>Sensory Diseases</item>
+        <item>Endocrine Diseases</item>
+        <item>Cardiovascular Diseases</item>
+        <item>Lung Diseases</item>
+        <item>Gastrointestinal Diseases</item>
+        <item>Genitourinary Disorders</item>
+        <item>Vascular Diseases</item>
+        <item>Rheumatoid Diseases</item>
+        <item>Cancers</item>
+        <item>Miscellaneous</item>
+    </string-array>
+
+    <string-array name="Neurological_Disease">
+        <item>History of stroke</item>
+        <item>Multiple sclerosis</item>
+        <item>Brain Tumor</item>
+        <item>History of seizures</item>
+        <item>Epilepsy</item>
+        <item>Cerebral palsy</item>
+        <item>Amyotrophic lateral sclerosis</item>
+        <item>Autism Spectrum disorder</item>
+        <item>Attention deficit and hyperactivity disorder</item>
+        <item>Head or neck injuries</item>
+    </string-array>
+
+    <string-array name="Sensory_Disease">
+        <item>Blindness or near-blindness</item>
+        <item>Deafness or near-deafness</item>
+        <item>Loss of taste</item>
+        <item>Loss of sense of smell</item>
+    </string-array>
+
+    <string-array name="Endocrine_Disease">
+        <item>Diabetes mellitus</item>
+        <item>Diabetes insipidus</item>
+        <item>Hypothyroidism</item>
+        <item>Hyperthyroidism</item>
+        <item>Parathyroid abnormalities</item>
+        <item>Hypogonadism</item>
+    </string-array>
+
+    <string-array name="Cardiovascular_Disease">
+        <item>History of myocardial infraction</item>
+        <item>Angina</item>
+        <item>Systemic arterial hypertension</item>
+        <item>Heart failure</item>
+        <item>Heart valve disease</item>
+    </string-array>
+
+    <string-array name="Lung_Disease">
+        <item>History of smoking</item>
+        <item>Idiopatic pulmonary fibrosis</item>
+        <item>Emphysema</item>
+        <item>Asthma</item>
+    </string-array>
+
+    <string-array name="Gastrointestinal_Disease">
+        <item>Gastroesophageal reflux</item>
+        <item>Swallowing disorder</item>
+        <item>Gastritis</item>
+        <item>History of pancreatitis</item>
+        <item>Constipation</item>
+        <item>Chronic diarrhea</item>
+        <item>Short bowel syndrome</item>
+        <item>Diverticular disease</item>
+    </string-array>
+
+    <string-array name="Genitourinary_Disorders">
+        <item>Kidney stones</item>
+        <item>Kidney cysts</item>
+        <item>Benign kidney tumors</item>
+        <item>Single kidney</item>
+        <item>Hypoactive bladder</item>
+        <item>Hyperactive bladder</item>
+        <item>Benign prostatic growth</item>
+        <item>History of sexually transmitted disease</item>
+    </string-array>
+
+    <string-array name="Vascular_Disease">
+        <item>History of aneurism</item>
+        <item>Vasculitis</item>
+        <item>Venous insufficiency</item>
+        <item>Venous thromboembolism</item>
+    </string-array>
+
+    <string-array name="Rheumatoid_Disease">
+        <item>Lupus</item>
+        <item>Rheumatoid arthritis</item>
+        <item>Fybromialgia</item>
+    </string-array>
+
+    <string-array name="Cancer"></string-array>
+
+    <string-array name="Miscellaneous">
+        <item>Human immunodeficiency syndrome</item>
     </string-array>
 
     <string name="default_str">a</string>
