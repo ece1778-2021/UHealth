@@ -1,5 +1,7 @@
 package com.example.uhealth.Fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,10 +18,12 @@ public class Frag_questionnaire_details extends Fragment {
     private String description;
     private String interpretation;
     private String furthermore;
-    TextView mDes, mInt, mFur;
+    private String title;
+    TextView mDes, mInt, mFur, mAbout;
 
-    public Frag_questionnaire_details(String Description, String Interpretation, String FurtherMore) {
+    public Frag_questionnaire_details(String i_title, String Description, String Interpretation, String FurtherMore) {
         // Required empty public constructor
+        title = i_title;
         description = Description;
         interpretation = Interpretation;
         furthermore = FurtherMore;
@@ -39,10 +43,18 @@ public class Frag_questionnaire_details extends Fragment {
         mDes = view.findViewById(R.id.Description);
         mInt = view.findViewById(R.id.Interpretation);
         mFur = view.findViewById(R.id.Further_Info);
+        mAbout = view.findViewById(R.id.abouts);
 
         mDes.setText(description);
         mInt.setText(interpretation);
-        mFur.setText(furthermore);
+        mFur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse(furthermore);
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            }
+        });
+        mAbout.setText("About "+title);
         return view;
     }
 }

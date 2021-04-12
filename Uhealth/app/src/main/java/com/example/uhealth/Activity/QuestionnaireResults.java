@@ -24,6 +24,7 @@ public class QuestionnaireResults extends AppCompatActivity {
     private TextView mScore;
     private FrameLayout mFragContainer;
     private String mTitleAddOn = "";
+    private String mTitle ="";
 
     private Fragment mFragment;
 
@@ -42,19 +43,22 @@ public class QuestionnaireResults extends AppCompatActivity {
 
         switch (qid){
             case "058oX2H0lvHLyYFXQMls":
-                mTitleAddOn = "ECOG";
+                mTitleAddOn = "Eastern Cooperative Oncology Group Scale (ECOG)";
+                mTitle = "ECOG";
                 description = getResources().getString(R.string.ECOG_Description);
                 interpretation = getResources().getString(R.string.ECOG_Interpretation);
                 further = getResources().getString(R.string.ECOG_Furthermore);
                 break;
             case "M7ynd1hCO7Tw2Wi2v3Jt":
-                mTitleAddOn = "ICIQ";
+                mTitleAddOn = "The International Consultation on Incontinence (ICIQ)";
+                mTitle = "ICIQ";
                 description = getResources().getString(R.string.ICIQ_Description);
                 interpretation = getResources().getString(R.string.ICIQ_Interpretation);
                 further = getResources().getString(R.string.ICIQ_Furthermore);
                 break;
             case "WVsMwi0gL8VlANuPDt97":
-                mTitleAddOn = "IIEF";
+                mTitleAddOn = "International Index of Erectile Function (IIEF)";
+                mTitle = "IIEF";
                 description = getResources().getString(R.string.IIEF_Description);
                 interpretation = getResources().getString(R.string.IIEF_Interpretation);
                 further = getResources().getString(R.string.IIEF_Furthermore);
@@ -67,8 +71,8 @@ public class QuestionnaireResults extends AppCompatActivity {
                 break;
         }
 
-        getSupportActionBar().setTitle(mTitleAddOn+" Information");
-        mFragment = new Frag_questionnaire_details(description, interpretation, further);
+        getSupportActionBar().setTitle(mTitle+" Information");
+        mFragment = new Frag_questionnaire_details(mTitleAddOn, description, interpretation, further);
 
 
         try{
@@ -86,7 +90,7 @@ public class QuestionnaireResults extends AppCompatActivity {
         if (intent.getBooleanExtra("HASSCORE",false)){
             mScorelayout.setVisibility(View.VISIBLE);
         }else{
-            mScorelayout.setVisibility(View.INVISIBLE);
+            mScorelayout.setVisibility(View.GONE);
         }
 
     }
