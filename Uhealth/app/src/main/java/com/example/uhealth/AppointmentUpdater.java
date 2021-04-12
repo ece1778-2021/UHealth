@@ -2,6 +2,7 @@ package com.example.uhealth;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,8 +20,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +40,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -67,10 +71,12 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == REQUEST_TAKE_PHOTO  && resultCode == RESULT_OK ) {
-            if(data==null)
+            if(data!=null)
             {
+                Bundle extras = data.getExtras();
+                Bitmap bitmap = (Bitmap)extras.get("data");
                 //Toast.makeText(MainActivity.this, "Bad boy!!!", Toast.LENGTH_LONG).show();
-                uploadPhoto();
+                uploadPhoto(bitmap);
             }
             else
             {
@@ -87,9 +93,9 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         target_path = t_path;
         dispatchTakePictureIntent();
     }
-    public void uploadPhoto(){
+    public void uploadPhoto(Bitmap mbitmap){
         String cloudpath = "images/";
-        uploadmodule(currentPhotoPath,cloudpath);
+        uploadmodule(mbitmap,cloudpath);
 
     }
     public void furtherUpdate(String StringDate,String StringType){
@@ -112,7 +118,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
 
                PhotoNameList.add("images/"+mdate.getTime()+".jpg");//cloud path and local path
                 PhotoTitle.setText(mdate.getTime()+".jpg");
-                String t_name = mdate.getTime()+"";
+                String t_name = mdate.getTime()+".jpg";
                 String t_path ="/ece1778";
                 takePhoto(t_path,t_name);
             }
@@ -127,7 +133,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                 try{
                     d_instance_date = mdateformat.parse(str_date);
                     i_initdate = (int)(d_instance_date.getTime()/1000);
-                    Toast.makeText(AppointmentUpdater.this,str_date+" ;"+mFireBaseInfo.mUser.getUid()+" ;"+str_type,Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(AppointmentUpdater.this,str_date+" ;"+mFireBaseInfo.mUser.getUid()+" ;"+str_type,Toast.LENGTH_LONG).show();
                 }catch (ParseException e){
                     e.printStackTrace();
 
@@ -261,25 +267,24 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         return requestCode;
     }
     private void dispatchTakePictureIntent() {
-        Toast.makeText(AppointmentUpdater.this, "dispatchTakePictureIntent", Toast.LENGTH_LONG).show();
+      //  Toast.makeText(AppointmentUpdater.this, "dispatchTakePictureIntent", Toast.LENGTH_LONG).show();
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
+            //File photoFile = null;
+            //try {
+                //photoFile = createImageFile();
+            //} catch (IOException ex) {
                 // Error occurred while creating the File
-                ex.printStackTrace();
-            }
+              //  ex.printStackTrace();
+            //}
             // Continue only if the File was successfully created
-            if (photoFile != null) {
-                // Uri photoURI = FileProvider.getUriForFile(this,
-                //       "com.example.android.fileprovider",
-                //     photoFile);
+            //if (photoFile != null) {
+
                 Uri photoURI = null;
+                /*
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
                 {
                     // Toast.makeText(RegisterActivity.this,"SDK>22R" ,Toast.LENGTH_LONG).show();
@@ -289,13 +294,13 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                 {
                     //Toast.makeText(RegisterActivity.this,"SDK<22" ,Toast.LENGTH_LONG).show();
                     photoURI = Uri.fromFile(photoFile);
-                }
+                }*/
 
 
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+               // takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
+            //}
         }
         else
         {
@@ -303,19 +308,20 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         }
 
     }
-    private File createImageFile() throws IOException {
+    //private File createImageFile() throws IOException {
         // Create an image file name
         //Toast.makeText(RegisterActivity.this, "Creating picFiles!!!", Toast.LENGTH_LONG).show();
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+     //   String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
         //String impath =  Environment.getExternalStorageDirectory().getAbsolutePath()+"/ece1778";
-        String impath =  Environment.getExternalStorageDirectory().getAbsolutePath()+target_path;
+       // String impath =  AppointmentUpdater.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        //String impath =  Environment.getExternalStorageDirectory().getAbsolutePath()+target_path;
         //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File storageDir = new File(impath);
-        if (!storageDir.exists()) {
-            storageDir.mkdirs();
-        }
-        File image = new File(storageDir ,target_name + ".jpg");
+       // File storageDir = new File(impath);
+      //  if (!storageDir.exists()) {
+      //      storageDir.mkdirs();
+      //  }
+       // File image = new File(storageDir ,target_name + ".jpg");
         /*
         File image = File.createTempFile(
                 imageFileName,
@@ -324,13 +330,13 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         );
 */
         // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        currentPhotoDir = impath;
-        return image;
-    }
-    public void uploadmodule(String localpath,String cloudpath){
+        //currentPhotoPath = image.getAbsolutePath();
+       // currentPhotoDir = impath;
+      //  return image;
+   // }
+    public void uploadmodule(Bitmap mbitmap, String cloudpath){
         // File or Blob
-        Uri file = Uri.fromFile(new File(localpath));
+        //Uri file = Uri.fromFile(new File(localpath));
 
 // Create the file metadata
         StorageMetadata metadata = new StorageMetadata.Builder()
@@ -338,9 +344,13 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                 .build();
 
 // Upload file and metadata to the path 'images/mountains.jpg'
-        UploadTask uploadTask = mFireBaseInfo.mStorage.getReference().child(cloudpath+"/"+file.getLastPathSegment()).putFile(file, metadata);
-
+        StorageReference PhotoRef = mFireBaseInfo.mStorage.getReference().child(cloudpath+target_name);
+     //   UploadTask uploadTask = mFireBaseInfo.mStorage.getReference().child(cloudpath+"/"+file.getLastPathSegment()).putFile(file, metadata);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 // Listen for state changes, errors, and completion of the upload.
+        mbitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = PhotoRef.putBytes(data);
         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {

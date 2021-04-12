@@ -49,7 +49,7 @@ public class MedicationList extends AppCompatActivity {
             mp.setDataSource(this,
                     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
             mp.prepare();
-            mp.start();
+            //mp.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -169,7 +169,7 @@ public class MedicationList extends AppCompatActivity {
 
 
             } else {
-                // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+
             }
         }
     });
@@ -207,13 +207,13 @@ public class MedicationList extends AppCompatActivity {
             mFireBaseInfo.mFirestore.collection("MMedication").add(resMap) .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
-                    //Toast.makeText(RegisterActivity.this, "Congratulation!!!", Toast.LENGTH_LONG).show();
+
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //  Toast.makeText(RegisterActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+
 
                         }
 
@@ -435,7 +435,7 @@ public class MedicationList extends AppCompatActivity {
 
 
                         } else {
-                            // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+
                         }
                     }
                 });

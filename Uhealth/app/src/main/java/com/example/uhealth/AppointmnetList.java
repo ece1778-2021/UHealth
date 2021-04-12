@@ -297,7 +297,7 @@ public class AppointmnetList extends AppCompatActivity  {
             mp.setDataSource(this,
                     RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
             mp.prepare();
-            mp.start();
+            //mp.start();
         } catch (Exception e) {
             e.printStackTrace();
         }

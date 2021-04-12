@@ -77,17 +77,17 @@ public class MedicationAdder extends AppCompatActivity {
         try{
             d_initdate.setTime(mdateformat.parse(init_of_repeat).getTime());
             init_calendar.setTime(d_initdate);
-            int init_min = init_calendar.MINUTE;
-            int init_hour = init_calendar.HOUR_OF_DAY;
-            int cur_min = medication_calendar.MINUTE;
-            int cur_hour = medication_calendar.HOUR_OF_DAY;
+            int init_min =init_calendar.get(init_calendar.MINUTE) ;
+            int init_hour =init_calendar.get( init_calendar.HOUR_OF_DAY);
+            int cur_min = init_calendar.get(medication_calendar.MINUTE);
+            int cur_hour = init_calendar.get(medication_calendar.HOUR_OF_DAY);
             if(cur_hour > init_hour){
                 medication_calendar.add(medication_calendar.DAY_OF_MONTH,1);
                 medication_calendar.add(medication_calendar.HOUR_OF_DAY,init_hour-cur_hour);
-                medication_calendar.add(medication_calendar.MINUTE,init_min-cur_min);
+                medication_calendar.add(medication_calendar.MINUTE,init_min-cur_min+1);
             }else{
                 medication_calendar.add(medication_calendar.HOUR_OF_DAY,init_hour-cur_hour);
-                medication_calendar.add(medication_calendar.HOUR_OF_DAY,init_min-cur_min);
+                medication_calendar.add(medication_calendar.MINUTE,init_min-cur_min+1);
             }
             int nNumInterval = Integer.valueOf(interval);
 
@@ -160,7 +160,7 @@ public class MedicationAdder extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 //selectedtype.setText(items[i]);
                 MedStatus = items[i];
-                //Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -195,7 +195,7 @@ public class MedicationAdder extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 selectedtype.setText(items[i]);
-                //Toast.makeText(MainActivity.this, items[i], Toast.LENGTH_SHORT).show();
+
             }
         });
 

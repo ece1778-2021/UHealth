@@ -91,6 +91,7 @@ public class Medication {
         public String getrInitDate(){
             return this.InitDate+"";
         }
+
         public String getInitDate(){
             SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
             Date d_EndDate = new Date();

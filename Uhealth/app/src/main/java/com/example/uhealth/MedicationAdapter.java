@@ -181,7 +181,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                 final String[] items =  Selectedmedication.toArray(new String[Selectedmedication.size()]);
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
                 alertBuilder.setTitle("Check medication");
-                Toast.makeText(v.getContext(),mMedication.getrInitDate(),Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(v.getContext(),mMedication.getrInitDate(),Toast.LENGTH_SHORT).show();
                 alertBuilder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -204,6 +204,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         Date CurrentDate = new Date();
         if(CurrentDate.getTime()-NextUpdate.getTime()> 0 ) {
             if ("ongoing".equals(mMedication.getStatus())){
+
                 holder.medicationUpdater.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -228,6 +229,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                             public void onClick(DialogInterface dialog, int which) {
                                 mListStack.add("Finished");
                                 String selectedUpdate = mListStack.get(0);
+                                final long InitStorage = mMedication.getInitStorage();
                                 final long OriginalStorage = mMedication.getCurrentStorage();
                                 long newStorage;
                                 if (selectedUpdate.equals("Finished")) {
@@ -238,11 +240,11 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                 }
                                 final long NewStorage = newStorage;
 
-                                final long threshhold = Math.max(OriginalStorage, 12 * mMedication.getDosis());
+                                final long threshhold = Math.min(InitStorage, 6 * mMedication.getDosis());
 
 
                                 mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid", mMedication.getUid())
-                                        .whereEqualTo("medicine", mMedication.getMedicine())//.whereEqualTo("initdate",mMedication.getInitDate())
+                                        .whereEqualTo("medicine", mMedication.getMedicine()).whereEqualTo("initdate",mMedication.getintInitDate())
                                         .get()
                                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
@@ -267,14 +269,15 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                                             Date last_time =new Date();
                                                            // last_time.setTime((long)1000*Integer.valueOf(delDocument.get("nextupdate").toString()));
                                                             //String last_time_text = mdateformat.format(medicationcalendar.getTime());// delDocument.get("nextupdate").toString();
-                                                           // Date next_time = new Date();//mdateformat.parse(last_time_text);
+                                                           //Date next_time = new Date();//mdateformat.parse(last_time_text);
                                                             //next_time.setTime((long)1000*Integer.valueOf(delDocument.get("nextupdate").toString()));
                                                             String MedicineName = delDocument.get("medicine").toString();
 
-                                                            // medicationcalendar.setTime(next_time);
+                                                             medicationcalendar.setTime(last_time);
                                                             medicationcalendar.add(medicationcalendar.HOUR_OF_DAY, interval);
                                                             //String next_update_text = mdateformat.format(medicationcalendar.getTime());
                                                             Date next_time = medicationcalendar.getTime();
+
 
                                                             if (NewStorage > 0) {
                                                                 delDocumentRef.update("lastupdate", last_time.getTime()/1000);
@@ -307,7 +310,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
 
 
                                         });
-                                if (NewStorage < threshhold && NewStorage >= threshhold - mMedication.getDosis()) {
+                                if ((NewStorage < threshhold) && (NewStorage >= threshhold - mMedication.getDosis())) {
                                     startStorageReminder(vv, mMedication);
                                 } else {
 
