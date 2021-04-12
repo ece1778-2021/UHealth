@@ -132,7 +132,7 @@ public class AppointmnetList extends AppCompatActivity  {
         intent.putExtra("apttype",aptype);
         PendingIntent pi = PendingIntent.getBroadcast(AppointmnetList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        manager.set(AlarmManager.RTC_WAKEUP,time+30*1000,pi);
+        manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
        // Toast.makeText(AppointmnetList.this,"What is this"+mFormat.format(time+5*1000),Toast.LENGTH_SHORT).show();
 
     }
