@@ -16,8 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UHealth">
-        <activity android:name=".Activity.PastDiagnosis"
-            android:parentActivityName=".Activity.ProfilePage"></activity>
+        <activity android:name=".Activity.QuestionnaireResults"
+            android:parentActivityName=".Activity.Questionnaire"></activity>
+        <activity
+            android:name=".Activity.PastDiagnosis"
+            android:parentActivityName=".Activity.ProfilePage" />
         <activity
             android:name=".AppointmentUpdater"
             android:label="@string/title_activity_appointment_updater"

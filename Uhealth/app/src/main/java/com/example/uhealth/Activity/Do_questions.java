@@ -198,7 +198,11 @@ public class Do_questions extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             if (task.isSuccessful()){
                                                 progressDialog.dismiss();
-                                                Toast.makeText(Do_questions.this, mqs_text+":"+f_sum+" Result Submited!", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(Do_questions.this, QuestionnaireResults.class);
+                                                intent.putExtra("HASSCORE", true);
+                                                intent.putExtra("SCORE", f_sum);
+                                                intent.putExtra("QID", mqs_id);
+                                                Do_questions.this.startActivity(intent);
                                                 finish();
                                             }else{
                                                 progressDialog.dismiss();

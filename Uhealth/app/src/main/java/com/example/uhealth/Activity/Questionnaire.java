@@ -104,7 +104,7 @@ public class Questionnaire extends AppCompatActivity {
                             v_mp.put("des", mp_des);
                             mp.put(key, v_mp);
                         }
-                        mADquestionsets = new rvadapter_questionnaire_questions(mp, new rvadapter_questionnaire_questions.onQSClickListener() {
+                        mADquestionsets = new rvadapter_questionnaire_questions(Questionnaire.this, mp, new rvadapter_questionnaire_questions.onQSClickListener() {
                             @Override
                             public void onQSClick(String qs_id, String qs_text, String qs_des) {
                                 Questionnaire.this.qs_idHolder = qs_id;

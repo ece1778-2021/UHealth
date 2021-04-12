@@ -164,7 +164,6 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
     <string name="dosis">dosis per time(measured by the storage unit)</string>
 
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_appointment_updater">AppointmentUpdater</string>
 
     <string name="notes"><b>Notes:</b></string>
@@ -179,5 +178,17 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
     </string>
     <string name="fsv_request_title"><b>Enter requested user\'s E-mail</b></string>
     <string name="DF_outstanding_accept_explain">I agree to share the following information:</string>
+
+    <string name="ECOG_Description">ECOG Description</string>
+    <string name="ECOG_Interpretation">ECOG Interpretation</string>
+    <string name="ECOG_Furthermore">ECOG Furthermore</string>
+
+    <string name="ICIQ_Description">ICIQ Description</string>
+    <string name="ICIQ_Interpretation">ICIQ Interpretation</string>
+    <string name="ICIQ_Furthermore">ICIQ Furthermore</string>
+
+    <string name="IIEF_Description">IIEF Description</string>
+    <string name="IIEF_Interpretation">IIEF Interpretation</string>
+    <string name="IIEF_Furthermore">IIEF Furthermore</string>
 
 </resources>
