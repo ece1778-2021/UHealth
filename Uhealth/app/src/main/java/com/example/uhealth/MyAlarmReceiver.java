@@ -67,7 +67,20 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 MedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 MedIntent.putExtra("isMedication",true);
                 MedIntent.putExtra("medicine",starter.getStringExtra("medicine"));//medicine
-                context.startActivity(MedIntent);
+                /////////////////////
+                PendingIntent mpendingIntent = PendingIntent.getActivity(context, 0, MedIntent, 0);
+                Notification notify = new Notification.Builder(context)
+                        .setSmallIcon(R.drawable.ic_baseline_favorite_24)
+                        .setTicker(extras.getString("medicine"))
+                        .setContentTitle("Medication Reminder!")
+                        .setContentText(extras.getString("medtime"))
+                        .setContentIntent(mpendingIntent)
+                        .setNumber(1)
+                        .build();
+                notify.flags |= Notification.FLAG_AUTO_CANCEL;
+                m_notificationMgr .notify(NOTIFICATION_FLAG, notify);
+                ///////////////////////
+                //context.startActivity(MedIntent);
 
             }else{
 

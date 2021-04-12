@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
@@ -68,13 +69,31 @@ public class MedicationAdder extends AppCompatActivity {
 
 
         Calendar medication_calendar  =Calendar.getInstance();
+        Calendar init_calendar = Calendar.getInstance();
         medication_calendar.setTime(currentDate);
         String next_time_text =new String(current_time_text);
+        Date d_initdate = new Date();
+
         try{
+            d_initdate.setTime(mdateformat.parse(init_of_repeat).getTime());
+            init_calendar.setTime(d_initdate);
+            int init_min = init_calendar.MINUTE;
+            int init_hour = init_calendar.HOUR_OF_DAY;
+            int cur_min = medication_calendar.MINUTE;
+            int cur_hour = medication_calendar.HOUR_OF_DAY;
+            if(cur_hour > init_hour){
+                medication_calendar.add(medication_calendar.DAY_OF_MONTH,1);
+                medication_calendar.add(medication_calendar.HOUR_OF_DAY,init_hour-cur_hour);
+                medication_calendar.add(medication_calendar.MINUTE,init_min-cur_min);
+            }else{
+                medication_calendar.add(medication_calendar.HOUR_OF_DAY,init_hour-cur_hour);
+                medication_calendar.add(medication_calendar.HOUR_OF_DAY,init_min-cur_min);
+            }
             int nNumInterval = Integer.valueOf(interval);
-            medication_calendar.add(medication_calendar.HOUR_OF_DAY,nNumInterval);
+
+           // medication_calendar.add(medication_calendar.HOUR_OF_DAY,nNumInterval);
             next_time_text = mdateformat.format(medication_calendar.getTime());
-        }catch(NumberFormatException e){
+        }catch(NumberFormatException| ParseException e){
             e.printStackTrace();
         }
         medication_calendar.add(medication_calendar.HOUR_OF_DAY,-1);

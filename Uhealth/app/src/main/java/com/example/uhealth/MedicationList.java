@@ -78,7 +78,7 @@ public class MedicationList extends AppCompatActivity {
         PendingIntent pi = PendingIntent.getBroadcast(MedicationList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
         //manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
-        manager.set(AlarmManager.RTC_WAKEUP,time+12*1000 ,pi);
+        manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime() ,pi);
 
     }
     public void bubble(Medication newinstance){

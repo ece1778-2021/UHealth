@@ -60,83 +60,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         return InfoList;
 
     }
-    public void furtherUpdate(View v,Appointment mAppointment){
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
-
-        LayoutInflater minflater = LayoutInflater.from(v.getContext());
-        View em_view = minflater.inflate(R.layout.appointment_update_dialog, null);
-        EditText EdNote = (EditText) em_view.findViewById(R.id.appointment_note);
-        Button btnPhoto = (Button) em_view.findViewById(R.id.btn_photo_uploader);
-        Button btnAdder =  (Button)em_view.findViewById(R.id.btn_information_adder);
-        TextView PhotoTitle  =(TextView) em_view.findViewById(R.id.current_title);
-        alertBuilder.setView(em_view);
-        btnPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Date mdate = new Date();
-                mAppointment.addPath("images/"+mdate.getTime()+".jpg");
-                PhotoTitle.setText(mdate.getTime()+".jpg");
-            }
-        });
-        btnAdder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String m_Note =EdNote.getText().toString();
-                SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-                Date d_instance_date = new Date();
-                int i_initdate = 0;
-                try{
-                    d_instance_date = mdateformat.parse(mAppointment.getDate());
-                    i_initdate = (int)(d_instance_date.getTime()/1000);
-                }catch (ParseException e){
-                    e.printStackTrace();
-
-                }
-                final List<String> ImagePaths= mAppointment.getList();
-                final String mNote = EdNote.getText().toString();
-                mFireBaseInfo.mFirestore.collection("AAppointment")//.whereEqualTo("patientid",mAppointment.getPatientID())
-                        //.whereEqualTo("type",mAppointment.getAppointmentType()).whereEqualTo("date",i_initdate)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {//////
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {////
-                                if(task.isSuccessful()){
-
-                                    QuerySnapshot query_res = task.getResult();
-                                    List<DocumentSnapshot> documents = query_res.getDocuments();
-
-                                    DocumentSnapshot delDocument = documents.get(0);
-
-
-                                    if(delDocument!=null){
-                                        DocumentReference delDocumentRef = delDocument.getReference();
-                                        delDocumentRef.update("path",ImagePaths);
-                                        delDocumentRef.update("note",mNote);
-
-
-                                    }
-                                    else{
-
-                                    }
-                                }
-                                else{
-
-                                }
-
-                            }////
-
-
-                        });//////
-
-                mFurtherUpdateDialog.dismiss();
-            }
-        });
-
-
-        mFurtherUpdateDialog = alertBuilder.create();
-        mFurtherUpdateDialog.show();
-
-    }
     public void startUpdaterActivity(View v,Appointment instance){
         Intent FurtherUpdate = new Intent(v.getContext(),AppointmentUpdater.class);
         FurtherUpdate.putExtra("apttype",instance.getAppointmentType());
@@ -227,49 +150,67 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                         alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                //
-                                final View vv = v;
-                                SimpleDateFormat mdateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-                                Date d_instance_date = new Date();
-                                int i_initdate = 0;
-                                try {
-                                    d_instance_date = mdateformat.parse(mAppointment.getDate());
-                                    i_initdate = (int) (d_instance_date.getTime() / 1000);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
+                                mListStack.add("Finished");
+                                switch (mListStack.get(0)) {
+
+                                    case "Finished": {
+
+
+                                        //
+                                        final View vv = v;
+                                        SimpleDateFormat mdateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+                                        Date d_instance_date = new Date();
+                                        int i_initdate = 0;
+                                        try {
+                                            d_instance_date = mdateformat.parse(mAppointment.getDate());
+                                            i_initdate = (int) (d_instance_date.getTime() / 1000);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+
+                                        }
+
+                                        String selectedUpdate = mListStack.get(0);
+                                        mFireBaseInfo.mFirestore.collection("AAppointment").whereEqualTo("date",i_initdate)
+                                                .whereEqualTo("patientid", mAppointment.getPatientID()).get()
+                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                        if (task.isSuccessful()) {
+
+                                                            QuerySnapshot query_res = task.getResult();
+                                                            List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                                                            DocumentSnapshot delDocument = documents.get(0);
+                                                            if (delDocument != null) {
+                                                                DocumentReference delDocumentRef = delDocument.getReference();
+                                                                delDocumentRef.update("status", selectedUpdate);
+                                                                startUpdaterActivity(vv, mAppointment);
+                                                                mUpdateAppointmentDialog.dismiss();
+
+                                                            } else {
+
+                                                            }
+
+
+                                                        } else {
+                                                            // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    }
+                                                });
+                                        // furtherUpdate(vv,mAppointment);
+
+                                        break;
+                                    }
+                                    case "Postponed":{break;}
+                                    case "Canceled":{break;}
+                                    default:{
+                                        break;
+                                    }
 
                                 }
-                                mListStack.add("Finished");
-                                String selectedUpdate = mListStack.get(0);
-                                mFireBaseInfo.mFirestore.collection("AAppointment")//.whereEqualTo("date",i_initdate)
-                                        .whereEqualTo("patientid", mAppointment.getPatientID()).get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-
-                                                    QuerySnapshot query_res = task.getResult();
-                                                    List<DocumentSnapshot> documents = query_res.getDocuments();
-
-                                                    DocumentSnapshot delDocument = documents.get(0);
-                                                    if (delDocument != null) {
-                                                        DocumentReference delDocumentRef = delDocument.getReference();
-                                                        delDocumentRef.update("status", selectedUpdate);
-
-                                                    } else {
-
-                                                    }
-
-
-                                                } else {
-                                                    // Toast.makeText(ProfileActivity.this, "Ouch!!!", Toast.LENGTH_LONG).show();
-                                                }
-                                            }
-                                        });
-                                // furtherUpdate(vv,mAppointment);
-                                startUpdaterActivity(vv, mAppointment);
-                                mUpdateAppointmentDialog.dismiss();
+                                //end case
                             }
+
                         });
 
 

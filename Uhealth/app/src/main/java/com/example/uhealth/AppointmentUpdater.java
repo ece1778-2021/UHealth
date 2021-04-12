@@ -127,6 +127,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                 try{
                     d_instance_date = mdateformat.parse(str_date);
                     i_initdate = (int)(d_instance_date.getTime()/1000);
+                    Toast.makeText(AppointmentUpdater.this,str_date+" ;"+mFireBaseInfo.mUser.getUid()+" ;"+str_type,Toast.LENGTH_LONG).show();
                 }catch (ParseException e){
                     e.printStackTrace();
 
@@ -151,6 +152,10 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                                         DocumentReference delDocumentRef = delDocument.getReference();
                                         delDocumentRef.update("path",ImagePaths);
                                         delDocumentRef.update("note",mNote);
+                                        Intent mintent = new Intent();
+                                        setResult(RESULT_OK, mintent);
+
+                                        finish();
 
 
                                     }
@@ -168,10 +173,10 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                         });//////
 
                // mFurtherUpdateDialog.dismiss();
-                Intent mintent = new Intent();
-                setResult(RESULT_OK, mintent);
+                //Intent mintent = new Intent();
+               // setResult(RESULT_OK, mintent);
 
-                finish();
+             //   finish();
             }
         });
 

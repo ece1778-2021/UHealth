@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.util.Log;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,7 +136,20 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         mAlarmStorageDialog = alertBuilder.create();
         mAlarmStorageDialog.show();
     }
+    public void finalDemo(Date date_time,String medicine,Context context){
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        long time =date_time.getTime();
 
+        Intent intent = new Intent(context,MyAlarmReceiver.class);
+        intent.putExtra("isMedication",true);
+        intent.putExtra("medtime",mdateformat.format(date_time));
+        intent.putExtra("medicine",medicine);
+        PendingIntent pi = PendingIntent.getBroadcast(context,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager manager = (AlarmManager)context.getSystemService(context.ALARM_SERVICE);
+        //manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
+        manager.set(AlarmManager.RTC_WAKEUP,time ,pi);
+
+    }
     @Override
     public void onBindViewHolder(@NonNull MedicationAdapter.ViewHolder holder, int position) {
 
@@ -200,7 +214,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                         alertBuilder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // mListStack.add(0, items[which]);
+                                mListStack.add(0, items[which]);
                             }
                         });
                         alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -245,38 +259,42 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                                         Calendar medicationcalendar = Calendar.getInstance();
                                                         int interval = 4;
                                                         SimpleDateFormat mdateformat = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-                                                        try {//ANIMPORTANTNOTE
+
+
                                                             interval = Integer.valueOf(delDocument.get("interval").toString());
-                                                            Date last_time = mdateformat.parse(delDocument.get("nextupdate").toString());
-                                                            String last_time_text = mdateformat.format(medicationcalendar.getTime());// delDocument.get("nextupdate").toString();
-                                                            Date next_time = mdateformat.parse(last_time_text);
-                                                            ;
+
+                                                            //Date last_time = mdateformat.parse(delDocument.get("nextupdate").toString());
+                                                            Date last_time =new Date();
+                                                           // last_time.setTime((long)1000*Integer.valueOf(delDocument.get("nextupdate").toString()));
+                                                            //String last_time_text = mdateformat.format(medicationcalendar.getTime());// delDocument.get("nextupdate").toString();
+                                                           // Date next_time = new Date();//mdateformat.parse(last_time_text);
+                                                            //next_time.setTime((long)1000*Integer.valueOf(delDocument.get("nextupdate").toString()));
+                                                            String MedicineName = delDocument.get("medicine").toString();
+
                                                             // medicationcalendar.setTime(next_time);
                                                             medicationcalendar.add(medicationcalendar.HOUR_OF_DAY, interval);
-                                                            String next_update_text = mdateformat.format(medicationcalendar.getTime());
+                                                            //String next_update_text = mdateformat.format(medicationcalendar.getTime());
+                                                            Date next_time = medicationcalendar.getTime();
 
                                                             if (NewStorage > 0) {
-                                                                delDocumentRef.update("lastupdate", last_time_text);
-                                                                delDocumentRef.update("nextupdate", next_update_text);
+                                                                delDocumentRef.update("lastupdate", last_time.getTime()/1000);
+                                                                delDocumentRef.update("nextupdate", next_time.getTime()/1000);
                                                                 delDocumentRef.update("currentstorage", NewStorage);
+                                                                finalDemo(next_time,MedicineName,vv.getContext());
 
                                                             } else {
                                                                 delDocumentRef.update("status", "past");
-                                                                delDocumentRef.update("endtime", last_time_text);
-                                                                delDocumentRef.update("lastupdate", last_time_text);
-                                                                delDocumentRef.update("nextupdate", last_time_text);
+                                                                delDocumentRef.update("endtime", last_time.getTime()/1000);
+                                                                delDocumentRef.update("lastupdate", last_time.getTime()/1000);
+                                                                delDocumentRef.update("nextupdate", last_time.getTime()/1000);
                                                                 delDocumentRef.update("currentstorage", NewStorage);
 
                                                             }
 
 
-                                                            //mMedication.setNextUpdate(next_update_text);
-                                                            //try this one:
 
 
-                                                        } catch (ParseException e) {
-                                                            e.printStackTrace();
-                                                        }
+
                                                         ;
                                                     } else {
                                                         Log.d("AAASSSAAASSS", "AAASSSAAASSS");
