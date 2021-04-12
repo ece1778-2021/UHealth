@@ -98,7 +98,7 @@
                 <androidx.viewpager.widget.ViewPager
                     android:id="@+id/VP_healthtip"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
+                    android:layout_height="100dp"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="15dp" />

@@ -179,16 +179,46 @@ Mattis aliquam faucibus purus in massa tempor nec feugiat. Imperdiet sed euismod
     <string name="fsv_request_title"><b>Enter requested user\'s E-mail</b></string>
     <string name="DF_outstanding_accept_explain">I agree to share the following information:</string>
 
-    <string name="ECOG_Description">ECOG Description</string>
-    <string name="ECOG_Interpretation">ECOG Interpretation</string>
-    <string name="ECOG_Furthermore">ECOG Furthermore</string>
+    <string name="ECOG_Description">To conduct clinical trials for the treatment of cancer in a consistent manner across many participating hospitals, cancer centers, and clinics requires the use of standard criteria for measuring how the disease impacts a patient’s daily living abilities (known to physicians and researchers as a patient’s performance status). The ECOG Scale of Performance Status is one such measurement. It describes a patient’s level of functioning in terms of their ability to care for themself, daily activity, and physical ability (walking, working, etc.).
+    \n\n
+    Researchers worldwide take the ECOG Performance Status into consideration when planning trials to study a new treatment method. This numbering scale is one way to define the population of patients to be studied in the trial, so that it can be uniformly reproduced among physicians who enroll patients. It is also a way for physicians to track changes in a patient’s level of functioning as a result of treatment during the trial.</string>
+    <string name="ECOG_Interpretation">\n
+    0 - Fully active, able to carry on all pre-disease performance without restriction \n\n
+    1 - Restricted in physically strenuous activity but ambulatory and able to carry out work of a light or sedentary nature, e.g., light house work, office work\n\n
+    2 - Ambulatory and capable of all selfcare but unable to carry out any work activities; up and about more than 50% of waking hours \n\n
+        3 - Capable of only limited selfcare; confined to bed or chair more than 50% of waking hours \n\n
+        4 - Completely disabled; cannot carry on any selfcare; totally confined to bed or chair \n\n
+        5 - Dead
+    </string>
+    <string name="ECOG_Furthermore">https://ecog-acrin.org/resources/ecog-performance-status</string>
 
-    <string name="ICIQ_Description">ICIQ Description</string>
-    <string name="ICIQ_Interpretation">ICIQ Interpretation</string>
-    <string name="ICIQ_Furthermore">ICIQ Furthermore</string>
+    <string name="ICIQ_Description">The ICIQ-UI Short Form is a questionnaire for evaluating the frequency, severity and impact on quality of life (QoL) of urinary incontinence in men and women in research and clinical practice across the world. This short and simple questionnaire is also of use to general practitioners and clinicians in both primary and secondary care institutions to screen for incontinence, to obtain a brief yet comprehensive summary of the level, impact and perceived cause of symptoms of incontinence and to facilitate patient-clinician discussions.</string>
+    <string name="ICIQ_Interpretation">
+        \u2022 The ICIQ is a self-reported survey and screening tool for incontinence \n\n
+        \u2022 Scoring scale: 0-21, minimum 0, maximum 21. A higher score indicates greater impairment from incontinence. \n\n
+        \u2022 Item-level scores vary but range from 0-10. Item (question) 6 (self-perceived cause) is unscored \n\n
+    </string>
+    <string name="ICIQ_Furthermore">https://www.sralab.org/rehabilitation-measures/international-consultation-incontinence-questionnaire-short-form</string>
 
-    <string name="IIEF_Description">IIEF Description</string>
-    <string name="IIEF_Interpretation">IIEF Interpretation</string>
-    <string name="IIEF_Furthermore">IIEF Furthermore</string>
+    <string name="IIEF_Description">These questions ask about the effects that your erection problems have had on your sex life over the
+last four weeks. Please try to answer the questions as honestly and as clearly as you are able. Your
+answers will help your doctor to choose the most effective treatment suited to your condition. In
+        answering the questions, the following definitions apply:
+        \n\n
+        - <b>Sexual activity</b> includes intercourse, caressing, foreplay &amp; masturbation \n\n
+        - <b>Sexual intercourse</b> is defined as sexual penetration of your partner \n\n
+        - <b>Sexual stimulation</b> includes situation such as foreplay, erotic pictures etc. \n\n
+        - <b>Ejaculation</b> is the ejection of semen from the penis (or the feeling of this) \n\n
+        - <b>Orgasm</b> is the fulfilment or climax following sexual stimulation or intercourse \n\n
+</string>
+    <string name="IIEF_Interpretation">
+        \u2022 1-10: Severe Erectile Dysfunction \n\n
+        \u2022 11-16: Moderate dysfunction \n\n
+        \u2022 17-21: Mild to moderate dysfunction \n\n
+        \u2022 22-25: Mild dysfunction \n\n
+        \u2022 26+: No dysfunction \n\n
+       </string>
+    <string name="IIEF_Furthermore">https://www.baus.org.uk/_userfiles/pages/files/Patients/Leaflets/iief.pdf</string>
+    <string name="further_information"><u>Further Information</u></string>
 
 </resources>

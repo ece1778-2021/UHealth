@@ -13,17 +13,29 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/scoretitle"
+            android:id="@+id/intro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Your Score for blah blah is ... " />
+            android:gravity="center"
+            android:text="You have scored ..."/>
 
         <TextView
+            android:layout_below="@id/intro"
             android:id="@+id/actualscore"
-            android:layout_below="@id/scoretitle"
+            android:textSize="30sp"
+            android:textColor="@color/orangeDark"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="42" />
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/scoretitle"
+            android:layout_below="@id/actualscore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="... on " />
 
     </RelativeLayout>
 
