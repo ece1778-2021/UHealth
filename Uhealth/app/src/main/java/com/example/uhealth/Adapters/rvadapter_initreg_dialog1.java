@@ -50,7 +50,7 @@ public class rvadapter_initreg_dialog1 extends RecyclerView.Adapter<rvadapter_in
                 holder.mDate.setText(dates.get(position));
                 break;
             case TRANSFUSION:
-                holder.mName.setVisibility(View.GONE);
+                holder.mName.setText("Past Transfusion");
                 holder.mDate.setText(dates.get(position));
                 break;
             default:
@@ -64,12 +64,13 @@ public class rvadapter_initreg_dialog1 extends RecyclerView.Adapter<rvadapter_in
     }
 
     public class box extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView mName, mDate;
+        TextView mName, mDate, mNamelabel;
         ImageButton mRemove;
 
         public box(@NonNull View itemView) {
             super(itemView);
             mName = itemView.findViewById(R.id.rv_dialog1_name);
+            mNamelabel = itemView.findViewById(R.id.event);
             mDate = itemView.findViewById(R.id.rv_dialog1_date);
             mRemove = itemView.findViewById(R.id.rv_dialog1_cancel);
             mRemove.setOnClickListener(this);

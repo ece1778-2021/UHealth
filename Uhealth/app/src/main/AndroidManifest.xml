@@ -57,6 +57,7 @@
         <activity
             android:name=".Activity.InfoHistoryPage"
             android:exported="true"
+            android:windowSoftInputMode="adjustNothing"
             android:parentActivityName=".Activity.ProfilePage" />
         <activity
             android:name=".Activity.SignUpPage"

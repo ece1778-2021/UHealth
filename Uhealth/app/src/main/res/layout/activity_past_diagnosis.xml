@@ -10,10 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
 
@@ -25,15 +24,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+
             android:id="@+id/pd_submit_BT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/diag_dropdownRV"
+            android:layout_alignParentEnd="true"
             android:text="Submit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_gravity="end"
+            android:layout_margin="20dp"
 
-    </LinearLayout>
+             />
+
+    </RelativeLayout>
 
         </ScrollView>
 

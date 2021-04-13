@@ -60,7 +60,10 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
     @Override
     public void onBindViewHolder(@NonNull viewholder_timeline holder, int position) {
         timeline_item item = itemList.get(position);
-        holder.mAppointment.setText(item.getAppointmentType());
+        String myString = item.getAppointmentType();
+        String upperString = myString.substring(0, 1).toUpperCase() + myString.substring(1).toLowerCase();
+
+        holder.mAppointment.setText(upperString);
         holder.mPhysician.setText(item.getPhysicianName());
         holder.mLocation.setText(item.getApptLocation());
         holder.mNote.setText(item.getNote());
@@ -71,9 +74,11 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
 
         if (position == currentpos){
 //            only open one at a time
+            holder.mCard.setCardElevation(50);
             holder.mDots.setVisibility(View.GONE);
             holder.mAdditional.setVisibility(View.VISIBLE);
         }else{
+            holder.mCard.setCardElevation(0);
             holder.mDots.setVisibility(View.VISIBLE);
             holder.mAdditional.setVisibility(View.GONE);
         }
@@ -107,35 +112,41 @@ public class rvadapter_tlitem extends RecyclerView.Adapter<viewholder_timeline>{
 
 //        set color by appointment type
         String type = item.getAppointmentType();
-        int color;
+        Drawable color;
         switch (type){
             case "office appointment":{
-                color = mContext.getResources().getColor(R.color.lightgreen);
+                color = mContext.getResources().getDrawable(R.drawable.tldot_lightgreen);
+//                color = mContext.getResources().getColor(R.color.lightgreen);
                 break;
             }
             case "chemotherapy":{
-                color = mContext.getResources().getColor(R.color.lightpink);
+                color = mContext.getResources().getDrawable(R.drawable.tldot_lightpink);
+//                color = mContext.getResources().getColor(R.color.lightpink);
                 break;
             }
             case "surgery or procedure appointment" :{
-                color = mContext.getResources().getColor(R.color.lightteal);
+                color = mContext.getResources().getDrawable(R.drawable.tldot_lightteal);
+//                color = mContext.getResources().getColor(R.color.lightteal);
                 break;
             }
             case "radiation session":{
-                color = mContext.getResources().getColor(R.color.lightviolet);
+                color = mContext.getResources().getDrawable(R.drawable.tldot_lightviolet);
+//                color = mContext.getResources().getColor(R.color.lightviolet);
                 break;
             }
             case "imaging appointment":{
-                color = mContext.getResources().getColor(R.color.lightyellow);
+                color = mContext.getResources().getDrawable(R.drawable.tldot_lightyellow);
+//                color = mContext.getResources().getColor(R.color.lightyellow);
                 break;
             }
             default:
-                color = mContext.getResources().getColor(R.color.orangeDark);
+                color = mContext.getResources().getDrawable(R.drawable.tldot_lightgreen);
+//                color = mContext.getResources().getColor(R.color.orangeDark);
                 break;
         }
-        holder.mPhysician.setBackgroundColor(color);
-        holder.mAppointment.setBackgroundColor(color);
-
+//        holder.mPhysician.setBackgroundColor(color);
+//        holder.mAppointment.setBackgroundColor(color);
+        holder.mtldot.setBackground(color);
     }
 
     @Override

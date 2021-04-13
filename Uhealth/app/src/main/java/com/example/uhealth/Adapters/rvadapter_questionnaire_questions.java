@@ -160,8 +160,8 @@ public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvad
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error!=null){
-                    Log.d(Questionnaire.TAG, "Load grpah data Failed");
+                if (error!=null || value.isEmpty() || value==null){
+                    Log.d(Questionnaire.TAG, "Load graph data Failed");
                 }else{
                     values.clear();
                     for (DocumentSnapshot documentSnapshot: value.getDocuments()){

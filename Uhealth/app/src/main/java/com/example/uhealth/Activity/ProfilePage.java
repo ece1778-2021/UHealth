@@ -39,7 +39,7 @@ public class ProfilePage extends AppCompatActivity {
 
     private Handler mHandler;
     private Runnable mLoopRun;
-    private int mInterval = 15*1000;
+    private int mInterval = 8*1000;
 
     private RelativeLayout mPlaceHolderInitReg, mPlaceHolderapp, mPlaceHoldermed, mPlaceHolderQuestionnaire,
             mPlaceHolderTimeline, mPlaceHolderShare;
