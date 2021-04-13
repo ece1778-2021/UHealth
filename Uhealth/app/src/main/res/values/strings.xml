@@ -220,5 +220,7 @@ answers will help your doctor to choose the most effective treatment suited to y
        </string>
     <string name="IIEF_Furthermore">https://www.baus.org.uk/_userfiles/pages/files/Patients/Leaflets/iief.pdf</string>
     <string name="further_information"><u>Further Information</u></string>
+    <string name="event"><b>Event:</b></string>
+    <string name="location"><b>date:</b></string>
 
 </resources>

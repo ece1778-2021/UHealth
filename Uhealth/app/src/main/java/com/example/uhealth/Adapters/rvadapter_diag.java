@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -125,7 +124,7 @@ public class rvadapter_diag extends RecyclerView.Adapter<rvadapter_diag.DropDown
     public class DropDownDiagVH extends RecyclerView.ViewHolder {
         TextView title;
         ImageView arrow;
-        RelativeLayout expandable;
+        RelativeLayout expandable, titlelayout;
         RecyclerView nestedRV;
         EditText otherbox;
 
@@ -137,8 +136,10 @@ public class rvadapter_diag extends RecyclerView.Adapter<rvadapter_diag.DropDown
             expandable = itemView.findViewById(R.id.expandable_content);
             nestedRV = itemView.findViewById(R.id.nestedrv_diag);
             otherbox = itemView.findViewById(R.id.diag_other);
+            titlelayout = itemView.findViewById(R.id.expandable_title);
 
-            arrow.setOnClickListener(new View.OnClickListener() {
+
+            titlelayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();

@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -933,7 +934,9 @@ public class InfoHistoryPage extends AppCompatActivity {
 
     private void builddialog(dialogOption val) {
         dialog = new Dialog(this);
-        ImageButton mCancel, mAdd, mDateAdd;
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        ImageButton mDateAdd;
+        Button mCancel, mAdd;
         EditText mDialogName;
         RelativeLayout nameSection;
         TextView mDate;
@@ -952,7 +955,7 @@ public class InfoHistoryPage extends AppCompatActivity {
 
                 DatePickerDialog dialog = new DatePickerDialog(
                         InfoHistoryPage.this,
-                        android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
+                        R.style.MySpinnerDatePickerStyle,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {

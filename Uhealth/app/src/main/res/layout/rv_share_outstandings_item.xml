@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:padding="5dp">
 
    <androidx.cardview.widget.CardView
        android:layout_width="match_parent"
@@ -18,19 +20,27 @@
                android:id="@+id/outstanding_fromusername"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:text="from username"/>
+               android:text="From user"/>
 
            <TextView
                android:id="@+id/outstanding_fromemail"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_below="@id/outstanding_fromusername"
-               android:text="from email"/>
+               android:text="From email"/>
+           <TextView
+               android:id="@+id/expire_label"
+               android:layout_below="@id/outstanding_fromemail"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Expires: "/>
            <TextView
                android:id="@+id/outstanding_expiredate"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:layout_below="@id/outstanding_fromemail"
+               android:gravity="end"
+               android:layout_alignParentEnd="true"
                android:text="expire on"/>
            <Button
                android:id="@+id/outstanding_decline"
