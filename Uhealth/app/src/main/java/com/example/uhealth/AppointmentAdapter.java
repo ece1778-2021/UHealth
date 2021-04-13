@@ -173,7 +173,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         String displayed = position+"  "+mAppointment.getAppointmentType();
         holder.appointmentTag.setText(displayed);
         String appstatus = mAppointment.getStatus();
-
+        Date curDate = new Date();
         switch(appstatus){
             case "Finished":{
 
@@ -181,10 +181,16 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 break;
             }
             case "Scheduled":{
+                if(curDate.getTime()-(long)1000*mAppointment.getintDate() > 0){
+                    holder.appointmentUpdater.setVisibility(View.VISIBLE);
+                }
                 holder.appointmentCardView.setCardBackgroundColor(ContextCompat.getColor( holder.appointmentCardView.getContext(), R.color.lightgreen));
                 break;
             }
             case "Past":{
+                if(curDate.getTime()-(long)1000*mAppointment.getintDate() > 0){
+                    holder.appointmentUpdater.setVisibility(View.VISIBLE);
+                }
                 holder.appointmentCardView.setCardBackgroundColor(ContextCompat.getColor( holder.appointmentCardView.getContext(), R.color.lightyellow));
                 break;
             }

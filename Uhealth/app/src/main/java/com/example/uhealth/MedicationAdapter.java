@@ -161,8 +161,12 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         String medication_snippet = position+"  :"+mMedication.getMedicine()+" "+mMedication.getLastUpdate();
         holder.medicationTag.setText(medication_snippet);
         String medication_status = mMedication.getStatus();
+        Date curDate =new Date();
         switch(medication_status){
             case "ongoing":{
+                if(curDate.getTime()-(long)1000*mMedication.getintNextUpdate()>0){
+                    holder.medicationUpdater.setVisibility(View.VISIBLE);
+                }
                 holder.medicationCardView.setCardBackgroundColor(ContextCompat.getColor( holder.medicationCardView.getContext(), R.color.lightteal));
                 break;
             }
@@ -277,21 +281,24 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                                             medicationcalendar.add(medicationcalendar.HOUR_OF_DAY, interval);
                                                             //String next_update_text = mdateformat.format(medicationcalendar.getTime());
                                                             Date next_time = medicationcalendar.getTime();
-
-
-                                                            if (NewStorage > 0) {
-                                                                delDocumentRef.update("lastupdate", last_time.getTime()/1000);
-                                                                delDocumentRef.update("nextupdate", next_time.getTime()/1000);
-                                                                delDocumentRef.update("currentstorage", NewStorage);
-                                                                finalDemo(next_time,MedicineName,vv.getContext());
-
-                                                            } else {
+                                                            if("once".equals(mMedication.getType().toString())){
                                                                 delDocumentRef.update("status", "past");
-                                                                delDocumentRef.update("endtime", last_time.getTime()/1000);
-                                                                delDocumentRef.update("lastupdate", last_time.getTime()/1000);
-                                                                delDocumentRef.update("nextupdate", last_time.getTime()/1000);
-                                                                delDocumentRef.update("currentstorage", NewStorage);
 
+                                                            }else {
+                                                                if (NewStorage > 0) {
+                                                                    delDocumentRef.update("lastupdate", last_time.getTime() / 1000);
+                                                                    delDocumentRef.update("nextupdate", next_time.getTime() / 1000);
+                                                                    delDocumentRef.update("currentstorage", NewStorage);
+                                                                    finalDemo(next_time, MedicineName, vv.getContext());
+
+                                                                } else {
+                                                                    delDocumentRef.update("status", "past");
+                                                                    delDocumentRef.update("endtime", last_time.getTime() / 1000);
+                                                                    delDocumentRef.update("lastupdate", last_time.getTime() / 1000);
+                                                                    delDocumentRef.update("nextupdate", last_time.getTime() / 1000);
+                                                                    delDocumentRef.update("currentstorage", NewStorage);
+
+                                                                }
                                                             }
 
 
@@ -310,7 +317,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
 
 
                                         });
-                                if ((NewStorage < threshhold) && (NewStorage >= threshhold - mMedication.getDosis())) {
+                                if (("periodical".equals(mMedication.getType().toString())&&NewStorage < threshhold) && (NewStorage >= threshhold - mMedication.getDosis())) {
                                     startStorageReminder(vv, mMedication);
                                 } else {
 

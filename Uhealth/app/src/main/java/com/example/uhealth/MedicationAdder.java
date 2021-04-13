@@ -96,7 +96,7 @@ public class MedicationAdder extends AppCompatActivity {
         }catch(NumberFormatException| ParseException e){
             e.printStackTrace();
         }
-        medication_calendar.add(medication_calendar.HOUR_OF_DAY,-1);
+       // medication_calendar.add(medication_calendar.HOUR_OF_DAY,-1);
 
 
         Intent intent = new Intent();
@@ -112,6 +112,9 @@ public class MedicationAdder extends AppCompatActivity {
 
         if(medication_type.equals("once")){
             intent.putExtra("status","past");
+            if(MedStatus.equals("ongoing")){
+                intent.putExtra("status","ongoing");
+            }
             intent.putExtra("enddate",init_of_repeat);
             intent.putExtra("interval","0");
 
