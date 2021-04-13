@@ -29,6 +29,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -51,15 +54,19 @@ import java.util.List;
 
 public class AppointmentUpdater extends AppCompatActivity  implements PermissionInterface {
     final static int INITIAL_REQUESTCODE = 10000;
+    List<UpdatedPhoto> PhotoList = new ArrayList<>();
     private int requestCode= INITIAL_REQUESTCODE;
     private PermissionHelper mPermissionHelper;
     private FireBaseInfo mFireBaseInfo;
     private AlertDialog mFurtherUpdateDialog;
     String currentPhotoPath;
     String currentPhotoDir;
+    private PhotoAdapter photoAdapter;
+
     String target_path;
     String target_name;
     private List<String> PhotoNameList = new ArrayList<String>();
+    private List<String> PhotoTitleList = new ArrayList<String>();
     final static int REQUEST_TAKE_PHOTO =255;
     public void initPermission(){
 
@@ -76,6 +83,12 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                 Bundle extras = data.getExtras();
                 Bitmap bitmap = (Bitmap)extras.get("data");
                 //Toast.makeText(MainActivity.this, "Bad boy!!!", Toast.LENGTH_LONG).show();
+                //
+                int ind = PhotoTitleList.size()-1;
+                String title = PhotoTitleList.get(ind);
+                UpdatedPhoto mPhoto = new UpdatedPhoto(title ,bitmap);
+                PhotoList.add(mPhoto);
+                photoAdapter.notifyDataSetChanged();
                 uploadPhoto(bitmap);
             }
             else
@@ -117,6 +130,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                 Date mdate = new Date();
 
                PhotoNameList.add("images/"+mdate.getTime()+".jpg");//cloud path and local path
+                PhotoTitleList.add(mdate.getTime()+".jpg");
                 PhotoTitle.setText(mdate.getTime()+".jpg");
                 String t_name = mdate.getTime()+".jpg";
                 String t_path ="/ece1778";
@@ -208,11 +222,16 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_photolist);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        recyclerView.setLayoutManager(layoutManager);
+        photoAdapter = new PhotoAdapter(PhotoList);
+        recyclerView.setAdapter(photoAdapter);
+        mFireBaseInfo = new FireBaseInfo();
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        mFireBaseInfo = new FireBaseInfo();
+       // mFireBaseInfo = new FireBaseInfo();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

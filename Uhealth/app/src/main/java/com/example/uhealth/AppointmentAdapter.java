@@ -380,14 +380,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     }
     private List<String> mListStack = new ArrayList<String>();
-    private ItemClickListener mItemClickListener;
-    public interface ItemClickListener{
-        public void onItemClick(int position);
-    }
-    public void setOnItemClickListener(ItemClickListener itemClickListener){
-        this.mItemClickListener = itemClickListener ;
 
-    }
 
 
 
@@ -414,11 +407,5 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
     //
 
-    public void showAppointmentDialogue(){
 
-
-
-
-
-    }
 }

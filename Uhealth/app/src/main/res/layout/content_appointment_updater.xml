@@ -38,14 +38,23 @@ tools:showIn="@layout/activity_appointment_updater"
     android:layout_below ="@+id/btn_photo_uploader"
     android:text="photo title"
     tools:ignore="Autofill" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_photolist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/current_title"
+        android:layout_above="@+id/btn_information_adder"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
 <Button
     android:id="@+id/btn_information_adder"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
-    android:layout_marginTop="10dp"
+   android:layout_marginTop="10dp"
 
-    android:layout_below ="@+id/current_title"
+    android:layout_alignParentBottom="true"
     android:text="Submit"
     />
 
