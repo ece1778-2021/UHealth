@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
 
 public class MyAlarmReceiver extends BroadcastReceiver {
     private static final int APPOINTMENT_CHANNEL = 5;
@@ -20,27 +21,24 @@ public class MyAlarmReceiver extends BroadcastReceiver {
     AlertDialog mAlarmAppointmentDialog;
     private NotificationManager m_notificationMgr = null;
     private static final int NOTIFICATION_FLAG = 3;
-    private void createNotificationChannel(Context context,NotificationManager notificationManager) {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Notification Chanel";
-            String description = "default description";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("notification channel", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-             //notificationManager = context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+    final private String Cid = "mChannelID";
+    public void initChannel(Context context){
+        //Notification.Builder builder;
+        m_notificationMgr = (NotificationManager) context.getSystemService(NotificationManager.class);
+        NotificationChannel channel = new NotificationChannel(Cid, Cid,
+                NotificationManager.IMPORTANCE_DEFAULT);
+        //builder = new Notification.Builder(context, Cid);
+        m_notificationMgr.createNotificationChannel(channel);
+
     }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         //String AppointmentType = intent.getStringExtra("type");
         //
-        m_notificationMgr = (NotificationManager) context.getSystemService(NotificationManager.class);
-        createNotificationChannel(context,m_notificationMgr);
+
+       // createNotificationChannel(context,m_notificationMgr);
+        initChannel(context);
         Intent starter = intent;
         Bundle extras = starter.getExtras();
         if (extras != null) {
@@ -54,15 +52,17 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 ListIntent.putExtra("apttype",extras.getString("apttype"));
                 ListIntent.putExtra("apttime",extras.getString("apttime"));
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, ListIntent, 0);
-                Notification notify = new Notification.Builder(context,"notification channel")
+                NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context,Cid )
+                        .setCategory(Notification.CATEGORY_RECOMMENDATION)
                         .setSmallIcon(R.drawable.ic_baseline_favorite_24)
                         .setTicker(extras.getString("apttype"))
                         .setContentTitle("Appointment Reminder!")
                         .setContentText(extras.getString("apttime"))
                         .setContentIntent(pendingIntent)
-                        .setNumber(1)
-                        .build();
-                notify.flags |= Notification.FLAG_AUTO_CANCEL;
+                        .setNumber(1);
+                       // .build();
+                Notification notify = notifyBuilder.build();
+               // notify.flags |= Notification.FLAG_AUTO_CANCEL;
                 m_notificationMgr .notify(NOTIFICATION_FLAG, notify);
 
 
@@ -88,7 +88,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 MedIntent.putExtra("medicine",starter.getStringExtra("medicine"));//medicine
                 /////////////////////
                 PendingIntent mpendingIntent = PendingIntent.getActivity(context, 0, MedIntent, 0);
-                Notification notify = new Notification.Builder(context,"notification channel")
+                Notification mnotify = new Notification.Builder(context,Cid)
                         .setSmallIcon(R.drawable.ic_baseline_favorite_24)
                         .setTicker(extras.getString("medicine"))
                         .setContentTitle("Medication Reminder!")
@@ -96,8 +96,8 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                         .setContentIntent(mpendingIntent)
                         .setNumber(1)
                         .build();
-                notify.flags |= Notification.FLAG_AUTO_CANCEL;
-                m_notificationMgr .notify(NOTIFICATION_FLAG, notify);
+             //   mnotify.flags |= Notification.FLAG_AUTO_CANCEL;
+                m_notificationMgr .notify(NOTIFICATION_FLAG, mnotify);
                 ///////////////////////
                 //context.startActivity(MedIntent);
 
