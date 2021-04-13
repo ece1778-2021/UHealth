@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
+
+import com.example.uhealth.Activity.ProfilePage;
 
 public class MyAlarmReceiver extends BroadcastReceiver {
     private static final int APPOINTMENT_CHANNEL = 5;
@@ -41,6 +44,8 @@ public class MyAlarmReceiver extends BroadcastReceiver {
         initChannel(context);
         Intent starter = intent;
         Bundle extras = starter.getExtras();
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(ProfilePage.class);
         if (extras != null) {
             boolean isAppointment = extras.getBoolean("isAppointment", false);
             boolean isMedication= extras.getBoolean("isMedication", false);
@@ -51,7 +56,9 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 ListIntent.putExtra("typefromalarm","AppointmentReminder");
                 ListIntent.putExtra("apttype",extras.getString("apttype"));
                 ListIntent.putExtra("apttime",extras.getString("apttime"));
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, ListIntent, 0);
+                stackBuilder.addNextIntent(ListIntent);
+                PendingIntent pendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+               // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, ListIntent, 0);
                 NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context,Cid )
                         .setCategory(Notification.CATEGORY_RECOMMENDATION)
                         .setSmallIcon(R.drawable.ic_baseline_favorite_24)
@@ -86,8 +93,10 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 MedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 MedIntent.putExtra("isMedication",true);
                 MedIntent.putExtra("medicine",starter.getStringExtra("medicine"));//medicine
+                stackBuilder.addNextIntent(MedIntent);
                 /////////////////////
-                PendingIntent mpendingIntent = PendingIntent.getActivity(context, 0, MedIntent, 0);
+                PendingIntent mpendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                //PendingIntent mpendingIntent = PendingIntent.getActivity(context, 0, MedIntent, 0);
                 Notification mnotify = new Notification.Builder(context,Cid)
                         .setSmallIcon(R.drawable.ic_baseline_favorite_24)
                         .setTicker(extras.getString("medicine"))

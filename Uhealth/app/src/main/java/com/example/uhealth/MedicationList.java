@@ -37,6 +37,8 @@ import java.util.List;
 
 public class MedicationList extends AppCompatActivity {
     List<Medication> MedicationList = new ArrayList<>();
+    List<Medication> UpdateMedicationList=new ArrayList<>();
+    List<Medication> YetUpdateMedicationList=new ArrayList<>();
    MedicationAdapter medicationAdapter;
     private FireBaseInfo mFireBaseInfo;
     Button MedicationRemover,MedicationAdder;
@@ -81,7 +83,23 @@ public class MedicationList extends AppCompatActivity {
         manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime() ,pi);
 
     }
-    public void bubble(Medication newinstance){
+    public void booleanArrange(Medication newinstance){
+        boolean sign = false;
+        Date cur = new Date();
+        if("periodical".equals(newinstance.getType())&&"ongoing".equals(newinstance.getStatus())){
+            if(cur.getTime()/1000 > newinstance.getintNextUpdate()){
+                sign = true;
+                bubble(newinstance,UpdateMedicationList);
+            }
+        }
+        if(sign == false){
+            bubble(newinstance,YetUpdateMedicationList);
+        }
+        else{
+            MedicationList.add(0,newinstance);
+        }
+    }
+    public void bubble(Medication newinstance,List<Medication>MedicationList){
         final Date currentDate = new Date();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         String init_time = newinstance.getInitDate();
@@ -160,10 +178,12 @@ public class MedicationList extends AppCompatActivity {
                     if("once".equals(mmedication.getStatus())){
 
                     }else{
-                        bubble(mmedication );
+                        booleanArrange(mmedication );
                     }
 
                 }
+                MedicationList.addAll(UpdateMedicationList);
+                MedicationList.addAll(YetUpdateMedicationList);
                 medicationAdapter.notifyDataSetChanged();
 
 
@@ -293,7 +313,11 @@ public class MedicationList extends AppCompatActivity {
 
                     upload_medication_instance(resMap);
                     Medication temp_medication = new Medication(resMap);
-                    bubble(temp_medication);
+                   // bubble(temp_medication);
+                    booleanArrange(temp_medication);
+                    MedicationList.clear();
+                    MedicationList.addAll(UpdateMedicationList);
+                    MedicationList.addAll(YetUpdateMedicationList);
                     medicationAdapter.notifyDataSetChanged();
                     try{
 
