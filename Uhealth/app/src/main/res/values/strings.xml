@@ -222,5 +222,6 @@ answers will help your doctor to choose the most effective treatment suited to y
     <string name="further_information"><u>Further Information</u></string>
     <string name="event"><b>Event:</b></string>
     <string name="location"><b>date:</b></string>
+    <string name="listofappointments">List of Appointments</string>
 
 </resources>

@@ -72,24 +72,24 @@
             android:theme="@style/Theme.UHealth.nobar" />
         <activity
             android:name=".MedicationAdder"
-            android:label="@string/title_activity_medication_adder"
+            android:label="Add a Medication Plan"
             android:parentActivityName=".MedicationList"
-            android:theme="@style/Theme.UHealth.NoActionBar" />
+           />
         <activity
             android:name=".AppointmentAdder"
-            android:label="@string/title_activity_appointment_adder"
+            android:label="Add an Appointment"
             android:parentActivityName=".AppointmnetList"
-            android:theme="@style/Theme.UHealth.NoActionBar" />
+            />
         <activity
             android:name=".MedicationList"
-            android:label="@string/title_activity_medication_list"
+            android:label="List of Medication plans"
             android:parentActivityName=".Activity.ProfilePage"
-            android:theme="@style/Theme.UHealth.NoActionBar" />
+             />
         <activity
             android:name=".AppointmnetList"
-            android:label="@string/title_activity_appointmnet_list"
+            android:label="@string/listofappointments"
             android:parentActivityName=".Activity.ProfilePage"
-            android:theme="@style/Theme.UHealth.NoActionBar" />
+            />
         <activity
             android:name=".Activity.MainActivity"
             android:noHistory="true">

@@ -37,10 +37,11 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
 
-public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.ViewHolder> {
+public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.ViewHolder> implements NotifyInterface {
     private List<Medication> mMedicationList;
     private FireBaseInfo mFireBaseInfo;
     private AlertDialog mUpdateMedicationDialog;
+    private AlertDialog mRemoveMedicationDialog;
     private AlertDialog mAlarmStorageDialog;
     private AlertDialog mShowMedicationDialog;
     private List<String> mListStack = new ArrayList<String>();
@@ -58,7 +59,10 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         mMedicationList = medicationList;
         mFireBaseInfo= new FireBaseInfo();
     }
+    @Override
+    public void flasher(int position){
 
+    }
     private List<String> showMedication(Medication mMedication){
         List<String> InfoList =new ArrayList<String>();
         InfoList.add(0, "Medicine:"+mMedication.getMedicine());
@@ -152,6 +156,86 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         manager.set(AlarmManager.RTC_WAKEUP,time ,pi);
 
     }
+
+    public void remoteDelMedication(Medication instance,int position){
+        FireBaseInfo mFireBaseInfo = new FireBaseInfo();
+
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        Date d_instance_date = new Date();
+        int i_initdate = 0;
+        try{
+            d_instance_date = mdateformat.parse(instance.getInitDate());
+            i_initdate = (int)(d_instance_date.getTime()/1000);
+        }catch (ParseException e){
+            e.printStackTrace();
+
+        }
+
+        mFireBaseInfo.mFirestore.collection("MMedication").whereEqualTo("uid",instance.getUid()).whereEqualTo("initdate",i_initdate).get()
+
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            QuerySnapshot query_res =  task.getResult();
+                            List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                            DocumentSnapshot delDocument = documents.get(0);
+                            if(delDocument!=null ){
+                                DocumentReference delDocumentRef = delDocument.getReference();
+                                delDocumentRef.update("status","canceled");
+                                mMedicationList.remove(position);
+
+                            }else{
+
+                            }
+
+
+                        } else {
+
+                        }
+                    }
+                });
+    }
+    public void startRemover(int position,View v){
+        List<String> TitleList = new ArrayList<String>();
+        String element;
+
+        //final String[] items=TitleList.toArray(new String[TitleList.size()]);
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+        alertBuilder.setTitle("Delete this medication plan?");
+
+
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // mirror image
+
+                    // Log.d("aqaqaq",i+"");
+                    Medication InstToDel = mMedicationList.get(position);
+                    //remote remove
+                    remoteDelMedication(InstToDel,position);
+
+                    notifyDataSetChanged();
+
+
+
+
+                mRemoveMedicationDialog.dismiss();
+            }
+        });
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mRemoveMedicationDialog.dismiss();
+            }
+        });
+        mRemoveMedicationDialog = alertBuilder.create();
+        mRemoveMedicationDialog.show();
+
+    }
     @Override
     public void onBindViewHolder(@NonNull MedicationAdapter.ViewHolder holder, int position) {
 
@@ -162,6 +246,12 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
 
         String medication_snippet = position+"  :"+mMedication.getMedicine()+" "+mMedication.getLastUpdate();
         holder.medicationTag.setText(medication_snippet);
+        holder.singleMedicationRemover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRemover(position,v);
+            }
+        });
         String medication_status = mMedication.getStatus();
         Date curDate =new Date();
         switch(medication_status){
@@ -381,9 +471,10 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         CardView medicationCardView;
         LinearLayout details;
         TextView dosisView,storageView,nextupdateView,intervalView;
-
+        Button singleMedicationRemover ;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            singleMedicationRemover = itemView.findViewById(R.id.btnSingleMedicationRemover);
             dosisView = itemView.findViewById(R.id.dosisview);
             storageView= itemView.findViewById(R.id.storageview);
             nextupdateView = itemView.findViewById(R.id.nextupdateview);

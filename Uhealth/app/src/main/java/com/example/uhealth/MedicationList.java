@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MedicationList extends AppCompatActivity {
-    List<Medication> MedicationList = new ArrayList<>();
+    final static  List<Medication> MedicationList = new ArrayList<>();
     List<Medication> UpdateMedicationList=new ArrayList<>();
     List<Medication> YetUpdateMedicationList=new ArrayList<>();
    MedicationAdapter medicationAdapter;
@@ -179,10 +179,11 @@ public class MedicationList extends AppCompatActivity {
 
                     //end int to string
                     Medication mmedication = new Medication(resMap);
-                    if("once".equals(mmedication.getStatus())){
+                    if("canceled".equals(mmedication.getStatus())){
 
                     }else{
-                        booleanArrange(mmedication );
+
+                       bubble(mmedication );
                     }
 
                 }
@@ -471,11 +472,11 @@ public class MedicationList extends AppCompatActivity {
     public void initListener(){
         MedicationRemover = findViewById(R.id.btnDelMedication);
         MedicationAdder = findViewById(R.id.btnAddMedication);;
-
+        MedicationRemover.setVisibility(View.INVISIBLE);
         MedicationRemover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRemover();
+                /*startRemover();*/
             }
         });
 
@@ -507,7 +508,10 @@ public class MedicationList extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
+
         Intent starter = getIntent();
+      //  download_medication_list();
+        int position = 0;
         Bundle extras = starter.getExtras();
         if (extras != null) {
             boolean isMedication = extras.getBoolean("isMedication", false);
@@ -516,7 +520,13 @@ public class MedicationList extends AppCompatActivity {
 
                 //-----------------------------------------
                 startMedia();// Do something
+                position = starter.getIntExtra("position",0);
+                Medication tempMedication = MedicationList.get(position);
+                MedicationList.add(0,tempMedication);
+                MedicationList.remove(position+1);
+                medicationAdapter.notifyDataSetChanged();
                 medicationReminderDialog(starter.getStringExtra("medicine"));
+
             } else {
                 //Do nothing
             }
@@ -527,6 +537,7 @@ public class MedicationList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medication_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.GONE);
         //setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);

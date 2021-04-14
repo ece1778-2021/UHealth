@@ -37,15 +37,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
+public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> implements NotifyInterface {
     private List<Appointment> mAppointmentList;
     private FireBaseInfo mFireBaseInfo;
     private AlertDialog mShowAppointmentDialog;
     private AlertDialog mRemoveAppointmentDialog;
     private AlertDialog mUpdateAppointmentDialog;
     private AlertDialog mFurtherUpdateDialog;
+    private int flashsign = 65535;
+    @Override
+    public void flasher(int position){
 
-
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -166,6 +169,85 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     }
 
+    public void remoteDelAppointment(Appointment instance,int position){
+        FireBaseInfo mFireBaseInfo = new FireBaseInfo();
+
+        SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+        Date d_instance_date = new Date();
+        int i_initdate = 0;
+        try{
+            d_instance_date = mdateformat.parse(instance.getDate());
+            i_initdate = (int)(d_instance_date.getTime()/1000);
+        }catch (ParseException e){
+            e.printStackTrace();
+
+        }
+
+        mFireBaseInfo.mFirestore.collection("AAppointment").whereEqualTo("patientid",instance.getPatientID()).whereEqualTo("date",i_initdate).get()
+
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            QuerySnapshot query_res =  task.getResult();
+                            List<DocumentSnapshot> documents = query_res.getDocuments();
+
+                            DocumentSnapshot delDocument = documents.get(0);
+                            if(delDocument!=null ){
+                                DocumentReference delDocumentRef = delDocument.getReference();
+                                delDocumentRef.update("status","Canceled");
+                                mAppointmentList.remove(position);
+
+                            }else{
+
+                            }
+
+
+                        } else {
+
+                        }
+                    }
+                });
+    }
+    public void startRemover(int position,View v){
+        List<String> TitleList = new ArrayList<String>();
+        String element;
+
+        //final String[] items=TitleList.toArray(new String[TitleList.size()]);
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v.getContext());
+        alertBuilder.setTitle("Delete this Appointment?");
+
+
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // mirror image
+
+                // Log.d("aqaqaq",i+"");
+                Appointment InstToDel = mAppointmentList.get(position);
+                //remote remove
+                remoteDelAppointment(InstToDel,position);
+
+                notifyDataSetChanged();
+
+
+
+
+                mRemoveAppointmentDialog.dismiss();
+            }
+        });
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                mRemoveAppointmentDialog.dismiss();
+            }
+        });
+        mRemoveAppointmentDialog = alertBuilder.create();
+        mRemoveAppointmentDialog.show();
+
+    }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
@@ -173,6 +255,12 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         //note from res id to actual bitmap
         //holder.fruitImage.setImageResource(mphoto.getImageID());
         String displayed = position+"  "+mAppointment.getAppointmentType();
+        holder.singleAppointmentRemover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRemover(position,v);
+            }
+        });
         holder.appointmentTag.setText(displayed);
         String appstatus = mAppointment.getStatus();
         Date curDate = new Date();
@@ -417,7 +505,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         TextView physicianView ;
         TextView locationView;
         TextView dateView;
-
+        Button singleAppointmentRemover;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);//btnAppointmentUpdater
@@ -430,6 +518,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             //appointmentRemover =itemView.findViewById(R.id.btnAppointmentRemover);
             appointmentChecker =itemView.findViewById(R.id.btnAppointmentChecker);
             appointmentUpdater =itemView.findViewById(R.id.btnAppointmentUpdater);
+            singleAppointmentRemover = itemView.findViewById(R.id.btnSingleAppointmentRemover);
+
         }
     }
     //

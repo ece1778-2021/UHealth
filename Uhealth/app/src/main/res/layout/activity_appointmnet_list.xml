@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="List of Appointment"
         android:theme="@style/Theme.UHealth.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
@@ -16,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            android:label="List of Appointment"
             app:popupTheme="@style/Theme.UHealth.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>

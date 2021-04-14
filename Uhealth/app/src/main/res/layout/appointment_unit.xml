@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
 
-        card_view:cardCornerRadius="20dp"
+        card_view:cardCornerRadius="0dp"
         card_view:cardElevation="18dp"
 
         card_view:cardBackgroundColor="@color/yellowLight">
@@ -82,6 +82,16 @@
                 android:text="@string/default_str"
                 android:layout_marginTop="0dp"
                 android:textSize="20sp"/>
+            <Button
+                android:id="@+id/btnSingleAppointmentRemover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+
+
+
+                android:text="DELETE"
+                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

@@ -56,6 +56,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 ListIntent.putExtra("typefromalarm","AppointmentReminder");
                 ListIntent.putExtra("apttype",extras.getString("apttype"));
                 ListIntent.putExtra("apttime",extras.getString("apttime"));
+                ListIntent.putExtra("position",extras.getInt("position"));
                 stackBuilder.addParentStack(AppointmnetList.class);
                 stackBuilder.addNextIntent(ListIntent);
                 PendingIntent pendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -93,6 +94,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 Intent MedIntent = new Intent(context, MedicationList.class);
                 MedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 MedIntent.putExtra("isMedication",true);
+                MedIntent.putExtra("position",extras.getInt("position"));
                 MedIntent.putExtra("medicine",starter.getStringExtra("medicine"));//medicine
                 stackBuilder.addParentStack(MedicationList.class);
                 stackBuilder.addNextIntent(MedIntent);

@@ -293,8 +293,8 @@ public class AppointmentAdder extends AppCompatActivity {
         initListener();
 
     }
-
-       // Toolbar toolbar = findViewById(R.id.toolbar);
+    //Toolbar toolbar = findViewById(R.id.toolbar);
+        //toolbar
         //setSupportActionBar(toolbar);
 
 

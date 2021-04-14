@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AppointmnetList extends AppCompatActivity  {
-    List<Appointment> AppointmentList = new ArrayList<>();
+    final static List<Appointment> AppointmentList = new ArrayList<>();
     AppointmentAdapter appointmentAdapter;
     private AlertDialog mRemoveAppointmentDialog;
     private AlertDialog mAlarmAppointmentDialog;
@@ -79,12 +79,13 @@ public class AppointmnetList extends AppCompatActivity  {
   //      manager.setExact(AlarmManager.RTC_WAKEUP, appointment_calendar.getTimeInMillis(), sender);
         manager.set(AlarmManager.RTC_WAKEUP, cur.getTime()+12*1000, sender);
     }
-    public void bubble(Appointment newinstance){
+    public int bubble(Appointment newinstance){
         final Date currentDate = new Date();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         String appointment_time = newinstance.getDate();
         Long newtime =new  Long(0);
         Long oldtime =new Long(0);
+        int position = 0;
         final int count = AppointmentList.size();
         if(count <=0){
             AppointmentList.add(newinstance);
@@ -94,6 +95,7 @@ public class AppointmnetList extends AppCompatActivity  {
                 if(i==count )
                 {
                     AppointmentList.add(i,newinstance);
+                    position = i;
                 }else{
                     int res = 0;
                     try{
@@ -112,6 +114,7 @@ public class AppointmnetList extends AppCompatActivity  {
                     }
                     else{
                         AppointmentList.add(i,newinstance);
+                        position = i;
                         break;
                     }
                 }
@@ -119,10 +122,12 @@ public class AppointmnetList extends AppCompatActivity  {
 
             }
 
+
         }
+        return position;
 
     }
-    public void finalDemo(Date date_time,String aptype){
+    public void finalDemo(Date date_time,String aptype,int position){
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         long time = System.currentTimeMillis();
 
@@ -130,6 +135,7 @@ public class AppointmnetList extends AppCompatActivity  {
         intent.putExtra("isAppointment",true);
         intent.putExtra("apttime",mdateformat.format(date_time));
         intent.putExtra("apttype",aptype);
+        intent.putExtra("position",position);
         PendingIntent pi = PendingIntent.getBroadcast(AppointmnetList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
         manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
@@ -234,6 +240,7 @@ public class AppointmnetList extends AppCompatActivity  {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
+        int position = 0;
         switch (requestCode) {
 
             case REQUEST_ADD_AN_APPOINTMENT :{
@@ -254,7 +261,7 @@ public class AppointmnetList extends AppCompatActivity  {
                     Log.d("HHHH","we are 0001");
                     Appointment temp_appointment = new Appointment(resMap);
 
-                    bubble(temp_appointment);
+                    position = bubble(temp_appointment);
                     appointmentAdapter.notifyDataSetChanged();
                     Log.d("HHHH","we are 0003");
                     try{
@@ -268,7 +275,7 @@ public class AppointmnetList extends AppCompatActivity  {
 
 
                             //setAlarm(date_time,resMap.get("type").toString());
-                            finalDemo(date_time,resMap.get("type").toString());
+                            finalDemo(date_time,resMap.get("type").toString(),position);
                         }
 
 
@@ -354,6 +361,7 @@ public class AppointmnetList extends AppCompatActivity  {
     protected void onStart(){
         super.onStart();
         Intent starter = getIntent();
+        int position = 0;
         Bundle extras = starter.getExtras();
         if (extras != null) {
             boolean isAppointment = extras.getBoolean("isAppointment", false);
@@ -363,7 +371,15 @@ public class AppointmnetList extends AppCompatActivity  {
                 //-----------------------------------------
                 //Toast.makeText(AppointmnetList.this,"Welcomeback",Toast.LENGTH_LONG).show();
                 startMedia();// Do something
+               // download_medication_list();
+                position = starter.getIntExtra("position",0);
+                Appointment tempappointment = AppointmentList.get(position);
+                AppointmentList.add(0,tempappointment);
+                AppointmentList.remove(position+1);
+                appointmentAdapter.notifyDataSetChanged();
                 alarmDialog(starter.getStringExtra("apttype"),starter.getStringExtra("apttime"));
+
+
             } else {
                 //Do nothing
             }
@@ -480,11 +496,11 @@ public class AppointmnetList extends AppCompatActivity  {
     public void initListener(){
         AppointmentRemover = findViewById(R.id.btnDelAppointment);
         AppointmentAdder = findViewById(R.id.btnAddAppointment);;
-
+        AppointmentRemover.setVisibility(View.INVISIBLE);
         AppointmentRemover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startRemover();
+                /*startRemover();*/
             }
         });
 
@@ -507,7 +523,8 @@ public class AppointmnetList extends AppCompatActivity  {
         recyclerView.setAdapter(appointmentAdapter );
         mFireBaseInfo = new FireBaseInfo();
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        toolbar.setVisibility(View.GONE);
+       // setSupportActionBar(toolbar);
         download_medication_list();
         initListener();
 
