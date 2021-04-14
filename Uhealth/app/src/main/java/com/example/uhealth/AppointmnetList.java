@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AppointmnetList extends AppCompatActivity  {
-    final static List<Appointment> AppointmentList = new ArrayList<>();
+    final  static List <Appointment> AppointmentList = new ArrayList<>();
     AppointmentAdapter appointmentAdapter;
     private AlertDialog mRemoveAppointmentDialog;
     private AlertDialog mAlarmAppointmentDialog;
