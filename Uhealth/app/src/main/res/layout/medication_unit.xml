@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="22dp"
 
         android:layout_toEndOf ="@+id/medication_text_unit"
         android:text="UPDATE"
@@ -34,10 +34,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="22dp"
         android:layout_alignParentEnd="true"
         android:text="CHECK"
         />
+        <LinearLayout
+            android:id="@+id/medication_detail_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp"
+
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/storageview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_str"
+                android:layout_marginTop="0dp"
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/dosisview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_str"
+                android:layout_marginTop="0dp"
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/intervalview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_str"
+                android:layout_marginTop="0dp"
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/nextupdateview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/default_str"
+                android:layout_marginTop="0dp"
+                android:textSize="20sp"/>
+        </LinearLayout>
         <!-- android:layout_above=-->
         <!-- android:layout_toRightOf=-->
         <!-- android:layout_toLeftOf=-->

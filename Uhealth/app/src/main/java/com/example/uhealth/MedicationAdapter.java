@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -178,7 +179,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                 break;
             }
         }
-        holder.medicationChecker.setOnClickListener(new View.OnClickListener() {
+        /*holder.medicationChecker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<String> Selectedmedication =  showMedication(mMedication);
@@ -201,6 +202,23 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                 });
                 mShowMedicationDialog = alertBuilder.create();
                 mShowMedicationDialog.show();
+            }
+        });*/
+        holder.medicationChecker.setVisibility(View.GONE);
+        holder.dosisView.setText("Dosis :"+mMedication.getDosis()+"");
+        holder.storageView.setText("Pills left :"+mMedication.getCurrentStorage()+"");
+        holder.nextupdateView.setText("Next medication :"+mMedication.getNextUpdate());
+        holder.intervalView.setText("Medication interval :"+mMedication.getInterval()+" hours");
+        holder.details.setVisibility(View.GONE);
+        holder.medicationCardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                int state =  holder.details.getVisibility();
+                if(state==View.GONE){
+                    holder.details.setVisibility(View.VISIBLE);
+                }else{
+                    holder.details.setVisibility(View.GONE);
+                }
             }
         });
         Date NextUpdate = new Date();
@@ -360,12 +378,18 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         Button medicationChecker;
         Button medicationUpdater;
         CardView medicationCardView;
-
+        LinearLayout details;
+        TextView dosisView,storageView,nextupdateView,intervalView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            dosisView = itemView.findViewById(R.id.dosisview);
+            storageView= itemView.findViewById(R.id.storageview);
+            nextupdateView = itemView.findViewById(R.id.nextupdateview);
+            intervalView= itemView.findViewById(R.id.intervalview);
+            details  =itemView.findViewById(R.id.medication_detail_group);
             medicationTag = itemView.findViewById(R.id.medication_text_unit);
-            medicationChecker = itemView.findViewById(R.id.btnMedicationChecker);
+           medicationChecker = itemView.findViewById(R.id.btnMedicationChecker);
             medicationUpdater = itemView.findViewById(R.id.btnMedicationUpdater);
             medicationCardView = itemView.findViewById(R.id.medication_card_view);
         }
