@@ -45,7 +45,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
         Intent starter = intent;
         Bundle extras = starter.getExtras();
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(ProfilePage.class);
+
         if (extras != null) {
             boolean isAppointment = extras.getBoolean("isAppointment", false);
             boolean isMedication= extras.getBoolean("isMedication", false);
@@ -56,6 +56,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 ListIntent.putExtra("typefromalarm","AppointmentReminder");
                 ListIntent.putExtra("apttype",extras.getString("apttype"));
                 ListIntent.putExtra("apttime",extras.getString("apttime"));
+                stackBuilder.addParentStack(AppointmnetList.class);
                 stackBuilder.addNextIntent(ListIntent);
                 PendingIntent pendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                // PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, ListIntent, 0);
@@ -93,6 +94,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                 MedIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 MedIntent.putExtra("isMedication",true);
                 MedIntent.putExtra("medicine",starter.getStringExtra("medicine"));//medicine
+                stackBuilder.addParentStack(MedicationList.class);
                 stackBuilder.addNextIntent(MedIntent);
                 /////////////////////
                 PendingIntent mpendingIntent =stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

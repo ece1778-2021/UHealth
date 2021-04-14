@@ -24,6 +24,7 @@
         <activity
             android:name=".AppointmentUpdater"
             android:label="@string/title_activity_appointment_updater"
+            android:parentActivityName=".AppointmnetList"
             android:theme="@style/Theme.UHealth.NoActionBar" />
         <activity
             android:name=".Activity.ShareFeature"
@@ -72,18 +73,22 @@
         <activity
             android:name=".MedicationAdder"
             android:label="@string/title_activity_medication_adder"
+            android:parentActivityName=".MedicationList"
             android:theme="@style/Theme.UHealth.NoActionBar" />
         <activity
             android:name=".AppointmentAdder"
             android:label="@string/title_activity_appointment_adder"
+            android:parentActivityName=".AppointmnetList"
             android:theme="@style/Theme.UHealth.NoActionBar" />
         <activity
             android:name=".MedicationList"
             android:label="@string/title_activity_medication_list"
+            android:parentActivityName=".Activity.ProfilePage"
             android:theme="@style/Theme.UHealth.NoActionBar" />
         <activity
             android:name=".AppointmnetList"
             android:label="@string/title_activity_appointmnet_list"
+            android:parentActivityName=".Activity.ProfilePage"
             android:theme="@style/Theme.UHealth.NoActionBar" />
         <activity
             android:name=".Activity.MainActivity"
