@@ -137,7 +137,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         mAlarmStorageDialog = alertBuilder.create();
         mAlarmStorageDialog.show();
     }
-    public void finalDemo(Date date_time,String medicine,Context context){
+    public void finalDemo(Date date_time,String medicine,Context context,int position){
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         long time =date_time.getTime();
 
@@ -145,6 +145,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
         intent.putExtra("isMedication",true);
         intent.putExtra("medtime",mdateformat.format(date_time));
         intent.putExtra("medicine",medicine);
+        intent.putExtra("position",position);
         PendingIntent pi = PendingIntent.getBroadcast(context,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)context.getSystemService(context.ALARM_SERVICE);
         //manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
@@ -307,7 +308,7 @@ public class MedicationAdapter extends RecyclerView.Adapter<MedicationAdapter.Vi
                                                                     delDocumentRef.update("lastupdate", last_time.getTime() / 1000);
                                                                     delDocumentRef.update("nextupdate", next_time.getTime() / 1000);
                                                                     delDocumentRef.update("currentstorage", NewStorage);
-                                                                    finalDemo(next_time, MedicineName, vv.getContext());
+                                                                    finalDemo(next_time, MedicineName, vv.getContext(),position);
 
                                                                 } else {
                                                                     delDocumentRef.update("status", "past");

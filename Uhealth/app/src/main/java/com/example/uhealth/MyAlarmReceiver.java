@@ -103,7 +103,7 @@ public class MyAlarmReceiver extends BroadcastReceiver {
                         .setSmallIcon(R.drawable.ic_baseline_favorite_24)
                         .setTicker(extras.getString("medicine"))
                         .setContentTitle("Medication Reminder!")
-                        .setContentText(extras.getString("medtime"))
+                        .setContentText(extras.getInt("position")+"."+extras.getString("medicine"))
                         .setContentIntent(mpendingIntent)
                         .setNumber(1)
                         .build();

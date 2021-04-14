@@ -69,7 +69,7 @@ public class MedicationList extends AppCompatActivity {
         startActivityForResult(addMedIntent, REQUEST_ADD_A_MEDICATION);
 
     }
-    public void finalDemo(Date date_time,String medicine){
+    public void finalDemo(Date date_time,String medicine,int position){
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         long time = System.currentTimeMillis();
 
@@ -77,6 +77,7 @@ public class MedicationList extends AppCompatActivity {
         intent.putExtra("isMedication",true);
         intent.putExtra("medtime",mdateformat.format(date_time));
         intent.putExtra("medicine",medicine);
+        intent.putExtra("position",position);
         PendingIntent pi = PendingIntent.getBroadcast(MedicationList.this,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
         //manager.set(AlarmManager.RTC_WAKEUP,date_time.getTime(),pi);
@@ -89,22 +90,23 @@ public class MedicationList extends AppCompatActivity {
         if("periodical".equals(newinstance.getType())&&"ongoing".equals(newinstance.getStatus())){
             if(cur.getTime()/1000 > newinstance.getintNextUpdate()){
                 sign = true;
-                bubble(newinstance,UpdateMedicationList);
+                bubble(newinstance);
             }
         }
         if(sign == false){
-            bubble(newinstance,YetUpdateMedicationList);
+            bubble(newinstance);
         }
         else{
             MedicationList.add(0,newinstance);
         }
     }
-    public void bubble(Medication newinstance,List<Medication>MedicationList){
+    public int bubble(Medication newinstance){
         final Date currentDate = new Date();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
         String init_time = newinstance.getInitDate();
         Long newtime =new  Long(0);
         Long oldtime =new Long(0);
+        int index =0;
         final int count = MedicationList.size();
         if(count<=0){
             MedicationList.add(newinstance);
@@ -114,6 +116,7 @@ public class MedicationList extends AppCompatActivity {
                 if(i==count)
                 {
                     MedicationList.add(i,newinstance);
+                    index = i;
                 }else{
                     int res = 0;
                     try{
@@ -132,6 +135,7 @@ public class MedicationList extends AppCompatActivity {
                     }
                     else{
                         MedicationList.add(i,newinstance);
+                        index = i;
                         break;
                     }
                 }
@@ -140,7 +144,7 @@ public class MedicationList extends AppCompatActivity {
             }
 
         }
-
+        return index;
     }
     public void download_medication_list(){
         String uid = mFireBaseInfo.mUser.getUid();
@@ -310,14 +314,14 @@ public class MedicationList extends AppCompatActivity {
                     resMap.put("currentstorage",icstorage);
                     resMap.put("interval",iinterval);
 
-
+                    int position = 0;
                     upload_medication_instance(resMap);
                     Medication temp_medication = new Medication(resMap);
-                   // bubble(temp_medication);
-                    booleanArrange(temp_medication);
-                    MedicationList.clear();
-                    MedicationList.addAll(UpdateMedicationList);
-                    MedicationList.addAll(YetUpdateMedicationList);
+                    position=bubble(temp_medication);
+                 //   booleanArrange(temp_medication);
+                   // MedicationList.clear();
+                    //MedicationList.addAll(UpdateMedicationList);
+                    //MedicationList.addAll(YetUpdateMedicationList);
                     medicationAdapter.notifyDataSetChanged();
                     try{
 
@@ -331,7 +335,7 @@ public class MedicationList extends AppCompatActivity {
 
 
                                 //setAlarm(date_time,resMap.get("type").toString());
-                                finalDemo(date_time,resMap.get("medicine").toString());
+                                finalDemo(date_time,resMap.get("medicine").toString(), position);
                             }else{
 
                             }
