@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -62,7 +63,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         InfoList.add(0, "Time:      "+mAppointment.getDate());
         InfoList.add(1,"Type:       "+ mAppointment.getAppointmentType());
         InfoList.add(2, "Location:      "+mAppointment.getApptLocation());
-        InfoList.add(3, "Uid:       "+mAppointment.getPatientID());
+
+        InfoList.add(3, "Physician:       "+mAppointment.getPhysicianName());
         return InfoList;
 
     }
@@ -198,7 +200,23 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 break;
             }
         }
-        holder.appointmentChecker.setOnClickListener(new View.OnClickListener() {
+        holder.dateView.setText("Date: "+mAppointment.getDate());
+        holder.locationView.setText("Location :"+mAppointment.getApptLocation());
+        holder.physicianView.setText("Doctor :"+mAppointment.getPhysicianName());
+        holder.details.setVisibility(View.GONE);
+        holder.appointmentCardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                int state =  holder.details.getVisibility();
+                if(state==View.GONE){
+                    holder.details.setVisibility(View.VISIBLE);
+                }else{
+                    holder.details.setVisibility(View.GONE);
+                }
+            }
+        });
+        holder.appointmentChecker.setVisibility(View.GONE);
+        /*holder.appointmentChecker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<String> SelectedAppointment =  showAppointment(mAppointment);
@@ -221,7 +239,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 mShowAppointmentDialog = alertBuilder.create();
                 mShowAppointmentDialog.show();
             }
-        });
+        });*/
         Date ApptDate = new Date();
         ApptDate.setTime((long)1000*mAppointment.getintDate());
         Date Current = new Date();
@@ -395,9 +413,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         CardView appointmentCardView;
         Button appointmentChecker;
         Button appointmentUpdater;
+        LinearLayout details;
+        TextView physicianView ;
+        TextView locationView;
+        TextView dateView;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);//btnAppointmentUpdater
+            details = itemView.findViewById(R.id.appointment_detail_group);
+            physicianView = itemView.findViewById(R.id.physicianview);
+            locationView = itemView.findViewById(R.id.locationview);
+            dateView = itemView.findViewById(R.id.dateview);
             appointmentCardView = itemView.findViewById(R.id.appointment_card_view);
             appointmentTag =itemView.findViewById(R.id.appointmnet_text_unit);
             //appointmentRemover =itemView.findViewById(R.id.btnAppointmentRemover);
