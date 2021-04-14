@@ -141,7 +141,7 @@ public class InfoHistoryPage extends AppCompatActivity {
 
                 DatePickerDialog dialog = new DatePickerDialog(
                         InfoHistoryPage.this,
-                        android.R.style.Theme_DeviceDefault_Dialog_MinWidth,
+                        R.style.MySpinnerDatePickerStyle,
                         mBirthdayListener,
                         year, month, day
                 );

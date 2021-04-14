@@ -201,7 +201,7 @@
                                 android:layout_marginTop="10dp"
                                 android:background="@color/orangeDark"
                                 android:gravity="center"
-                                android:text="Personnal Info"
+                                android:text="Personal Info"
                                 android:textColor="@color/grayLight" />
 
                             <View
