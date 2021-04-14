@@ -84,6 +84,8 @@ public class rvadapter_questionnaire_questions extends RecyclerView.Adapter<rvad
 
         XAxis x_axis= holder.lineChart.getXAxis();
         holder.lineChart.getDescription().setText("");
+        holder.lineChart.setExtraLeftOffset(5);
+        holder.lineChart.setExtraRightOffset(5);
         x_axis.setGranularity(1f);
         x_axis.setLabelRotationAngle(335f);
         x_axis.setValueFormatter(new GraphXAxisValueFormater());
