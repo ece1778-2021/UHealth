@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -292,20 +293,21 @@ public class AppointmentAdder extends AppCompatActivity {
         initListener();
 
     }
-        /*
+
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+
+        /*
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show();
             }
-        });
-        */
+        });*/
+
 
     }
 

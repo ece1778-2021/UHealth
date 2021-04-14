@@ -29,7 +29,7 @@ tools:showIn="@layout/activity_appointment_updater"
     android:layout_below ="@+id/appointment_note"
     android:text="Add a photo"
     />
-<TextView
+<!--<TextView
     android:id="@+id/current_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,7 +37,7 @@ tools:showIn="@layout/activity_appointment_updater"
     android:layout_centerHorizontal="true"
     android:layout_below ="@+id/btn_photo_uploader"
     android:text="photo title"
-    tools:ignore="Autofill" />
+    tools:ignore="Autofill" />-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_photolist"
         android:layout_width="match_parent"

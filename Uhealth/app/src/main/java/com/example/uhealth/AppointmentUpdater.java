@@ -3,6 +3,7 @@ package com.example.uhealth;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -74,6 +75,12 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         mPermissionHelper.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA});
     }
+    private static Bitmap big(Bitmap bitmap) {
+    Matrix matrix = new Matrix();
+    matrix.postScale(2.2f,2.2f);
+    Bitmap resizeBmp = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
+    return resizeBmp; }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
@@ -84,12 +91,13 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
                 Bitmap bitmap = (Bitmap)extras.get("data");
                 //Toast.makeText(MainActivity.this, "Bad boy!!!", Toast.LENGTH_LONG).show();
                 //
+                Bitmap bigmap = big(bitmap);
                 int ind = PhotoTitleList.size()-1;
                 String title = PhotoTitleList.get(ind);
-                UpdatedPhoto mPhoto = new UpdatedPhoto(title ,bitmap);
+                UpdatedPhoto mPhoto = new UpdatedPhoto(title ,bigmap );
                 PhotoList.add(mPhoto);
                 photoAdapter.notifyDataSetChanged();
-                uploadPhoto(bitmap);
+                uploadPhoto(bigmap );
             }
             else
             {
@@ -111,6 +119,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         uploadmodule(mbitmap,cloudpath);
 
     }
+    private String titleholder;
     public void furtherUpdate(String StringDate,String StringType){
       //  AlertDialog.Builder alertBuilder = new AlertDialog.Builder(AppointmentUpdater.this);
 
@@ -120,7 +129,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         EditText EdNote = (EditText)(findViewById(R.id.appointment_note));
         Button btnPhoto = (Button)(findViewById(R.id.btn_photo_uploader));
         Button btnAdder =  (Button)(findViewById(R.id.btn_information_adder));
-        TextView PhotoTitle  =(TextView)(findViewById(R.id.current_title));
+        //TextView PhotoTitle  =(TextView)(findViewById(R.id.current_title));
 
         final String str_date = StringDate;
         final String str_type = StringType;
@@ -131,7 +140,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
 
                PhotoNameList.add("images/"+mdate.getTime()+".jpg");//cloud path and local path
                 PhotoTitleList.add(mdate.getTime()+".jpg");
-                PhotoTitle.setText(mdate.getTime()+".jpg");
+                titleholder =   mdate.getTime()+".jpg";
                 String t_name = mdate.getTime()+".jpg";
                 String t_path ="/ece1778";
                 takePhoto(t_path,t_name);
@@ -229,16 +238,17 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         recyclerView.setAdapter(photoAdapter);
         mFireBaseInfo = new FireBaseInfo();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        //FloatingActionButton fab = findViewById(R.id.fab);
 
        // mFireBaseInfo = new FireBaseInfo();
+        /*
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show();
             }
-        });
+        });*/
     }
 
     @Override
@@ -261,9 +271,7 @@ public class AppointmentUpdater extends AppCompatActivity  implements Permission
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    /**
-     * 打开Setting
-     */
+
     private void goToAppSetting() {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);

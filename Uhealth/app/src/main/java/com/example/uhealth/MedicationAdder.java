@@ -363,7 +363,7 @@ public class MedicationAdder extends AppCompatActivity {
 
         init_views();
         mFireBaseInfo =new FireBaseInfo();
-
+        /*
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,7 +371,7 @@ public class MedicationAdder extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
     }
 

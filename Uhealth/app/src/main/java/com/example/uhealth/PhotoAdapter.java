@@ -29,7 +29,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull PhotoAdapter.ViewHolder holder, int position){
         final UpdatedPhoto mUpdatedPhoto=mPhotoList.get(position);
-        holder.PhotoTitleView.setText(mUpdatedPhoto.getPhotoTitle());
+       // holder.PhotoTitleView.setText(mUpdatedPhoto.getPhotoTitle());
         holder.PhotoView.setImageBitmap(mUpdatedPhoto.getPhoto());
 
     }
@@ -39,11 +39,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
     }
     public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView PhotoView;
-        TextView PhotoTitleView;
+        //TextView PhotoTitleView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);//btnAppointmentUpdater
             PhotoView = itemView.findViewById(R.id.photo_image);
-            PhotoTitleView=  itemView.findViewById(R.id.photo_title);
+           // PhotoTitleView=  itemView.findViewById(R.id.photo_title);
         }
 
     }
