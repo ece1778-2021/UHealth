@@ -42,12 +42,13 @@ tools:showIn="@layout/activity_appointment_updater"
         android:id="@+id/recycler_view_photolist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/current_title"
         android:layout_above="@+id/btn_information_adder"
-        >
+        android:layout_below="@+id/btn_photo_uploader"
+        android:layout_marginBottom="-103dp">
 
     </androidx.recyclerview.widget.RecyclerView>
-<Button
+
+    <Button
     android:id="@+id/btn_information_adder"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
