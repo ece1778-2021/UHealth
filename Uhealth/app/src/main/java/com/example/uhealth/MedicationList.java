@@ -103,7 +103,7 @@ public class MedicationList extends AppCompatActivity {
     public int bubble(Medication newinstance){
         final Date currentDate = new Date();
         SimpleDateFormat mdateformat= new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-        String init_time = newinstance.getInitDate();
+        String init_time = newinstance.getNextUpdate();
         Long newtime =new  Long(0);
         Long oldtime =new Long(0);
         int index =0;
@@ -117,6 +117,7 @@ public class MedicationList extends AppCompatActivity {
                 {
                     MedicationList.add(i,newinstance);
                     index = i;
+                    break;
                 }else{
                     int res = 0;
                     try{
@@ -182,7 +183,7 @@ public class MedicationList extends AppCompatActivity {
                     if("once".equals(mmedication.getStatus())){
 
                     }else{
-                        booleanArrange(mmedication );
+                        bubble(mmedication );
                     }
 
                 }
