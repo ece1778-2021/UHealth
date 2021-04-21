@@ -21,7 +21,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/guideline2"
-        android:background="@drawable/ic_baseline_favorite_24">
+        android:background="@drawable/ic_logo">
     </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline

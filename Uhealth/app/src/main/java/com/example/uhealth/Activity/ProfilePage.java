@@ -52,7 +52,7 @@ public class ProfilePage extends AppCompatActivity {
         mFireBaseInfo = new FireBaseInfo();
         toolbar = findViewById(R.id.profilepg_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Profile");
+        getSupportActionBar().setTitle("Home");
 
         mUsername = findViewById(R.id.profileusername);
 
